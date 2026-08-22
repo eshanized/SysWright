@@ -1,0 +1,10 @@
+{
+  "name": "linux-engineering",
+  "description": "Research-first engineering intelligence and specialist skills for Linux systems development.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Linux Engineering Contributors"
+  },
+  "homepage": "https://github.com/udaysharmadev/LinuxEngineering",
+  "license": "Apache-2.0"
+}

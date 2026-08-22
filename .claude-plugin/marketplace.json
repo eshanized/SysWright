@@ -1,0 +1,14 @@
+{
+  "name": "linux-engineering-marketplace",
+  "description": "Local marketplace for Linux Engineering skills and plugins",
+  "owner": {
+    "name": "Linux Engineering Contributors"
+  },
+  "plugins": [
+    {
+      "name": "linux-engineering",
+      "source": "./",
+      "description": "Research-first engineering intelligence and specialist skills for Linux systems development."
+    }
+  ]
+}
