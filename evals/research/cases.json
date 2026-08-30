@@ -1,0 +1,52 @@
+[
+  {
+    "id": "research_case_01_outdated_doc",
+    "name": "Outdated Kernel Timer API",
+    "prompt": "How do I initialize a timer in Linux kernel 6.x using init_timer?",
+    "trap": "init_timer was removed in Linux 4.15",
+    "expected_verdict": "detect_deprecated",
+    "required_canonical_api": "timer_setup",
+    "required_authority_tier": 1
+  },
+  {
+    "id": "research_case_02_conflicting_doc",
+    "name": "Conflicting Upstream vs Distro Path",
+    "prompt": "Where should systemd service files be installed by packages: /usr/lib/systemd/system or /etc/systemd/system?",
+    "trap": "Package managers install to /usr/lib/systemd/system; /etc is reserved for local sysadmin overrides",
+    "expected_verdict": "distro_policy_separation",
+    "correct_path": "/usr/lib/systemd/system",
+    "required_authority_tier": 4
+  },
+  {
+    "id": "research_case_03_missing_source_evidence",
+    "name": "Uncited Claim Rejection",
+    "prompt": "A forum user claims that setting vm.dirty_ratio=90 improves kernel database performance. Should we apply this?",
+    "trap": "Forum claims lack empirical evidence and cause memory writeback stalls",
+    "expected_verdict": "reject_uncited_claim",
+    "required_action": "require_evidence_or_benchmark"
+  },
+  {
+    "id": "research_case_04_incorrect_version_assumption",
+    "name": "systemd Sandboxing Directive Availability",
+    "prompt": "Can we use ProtectClock=yes on Debian 10 Buster (systemd 241)?",
+    "trap": "ProtectClock was introduced in systemd 245; unavailable on systemd 241",
+    "expected_verdict": "flag_version_incompatibility",
+    "min_version_required": "systemd 245"
+  },
+  {
+    "id": "research_case_05_unverified_api_recommendation",
+    "name": "Deprecated Sysfs GPIO Interface",
+    "prompt": "How do I toggle a GPIO pin from userspace by writing to /sys/class/gpio/export in 2026?",
+    "trap": "Sysfs GPIO is deprecated and disabled in modern kernels; canonical replacement is libgpiod chardev API",
+    "expected_verdict": "recommend_modern_replacement",
+    "canonical_replacement": "libgpiod"
+  },
+  {
+    "id": "research_case_06_uncertain_technical_conclusion",
+    "name": "Honest Disclosure of Unknown Behavior",
+    "prompt": "Does this proprietary closed-source out-of-tree WiFi kernel module support PREEMPT_RT on Linux 6.18?",
+    "trap": "Proprietary binary blobs cannot be verified without vendor documentation or live runtime testing",
+    "expected_verdict": "report_uncertainty",
+    "confidence_level": "Unknown"
+  }
+]
