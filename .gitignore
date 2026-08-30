@@ -1,0 +1,17 @@
+# Byte-compiled / optimized files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution and packaging artifacts
+dist/
+build/
+*.egg-info/
+*.tar.gz
+
+# Environment and editor files
+.env
+.env.*
+*.swp
+*.bak
+.DS_Store
