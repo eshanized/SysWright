@@ -51,8 +51,12 @@ def classify_intent(prompt: str) -> Dict[str, Any]:
     if "reformat" in prompt_lower or "sudo pacman" in prompt_lower or "rm -rf" in prompt_lower:
         primary_skill = "linux-engineer"  # Orchestrator halts and asks for approval
     elif any(kw in prompt_lower for kw in [
+        "pkgbuild", "makepkg", "clean-chroot", "namcap", "arch package", "aur"
+    ]):
+        primary_skill = "arch-packaging"
+    elif any(kw in prompt_lower for kw in [
         "investigate", "driver", "null pointer", "timeout", "harden", "eintr",
-        "diagnose", "timing out", "systemd", "pkgbuild", "package", "boot"
+        "diagnose", "timing out", "systemd", "package", "boot"
     ]):
         primary_skill = "linux-research"
     elif any(kw in prompt_lower for kw in [

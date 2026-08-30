@@ -28,13 +28,15 @@ flowchart TD
     ENV --> RES_CHECK
 
     RES_CHECK -->|Yes| RES["Invoke linux-research\n(Evidence & Authority Engine)"]
-    RES_CHECK -->|No| SPEC_CHECK{"Target Discipline Available in Phase 1?"}
+    RES_CHECK -->|No| SPEC_CHECK{"Target Discipline Available?"}
     RES --> SPEC_CHECK
 
+    SPEC_CHECK -->|Arch Packaging| ARCH_PKG["Invoke arch-packaging\n(PKGBUILD, clean chroot, namcap, AUR)"]
     SPEC_CHECK -->|Foundation Skills| EXEC["Execute Foundation Workflow\n(linux-engineer / research / environment)"]
-    SPEC_CHECK -->|Future Specialist| DEFER["State Specialist Deferred to Phase 2-5;\nProvide Phase 1 Research/Diagnostics Baseline"]
+    SPEC_CHECK -->|Future Specialist| DEFER["State Specialist Deferred to Phase 2-5;\nProvide Foundation Research/Diagnostics Baseline"]
 
-    EXEC --> SAFE{"Verify Operational Safety Tier"}
+    ARCH_PKG --> SAFE{"Verify Operational Safety Tier"}
+    EXEC --> SAFE
     SAFE --> VERIFY["Execute Contract Verification\n(Deterministic Linting & Testing)"]
     VERIFY --> REPORT["Report Empirical Evidence & Risks"]
 ```
@@ -43,6 +45,7 @@ flowchart TD
 Determine the operational category:
 - **Research / Exploration**: Investigating kernel APIs, RFCs, subsystem architectures, or regression causes $\to$ Route to `linux-research`.
 - **Environment Discovery**: Detecting host distribution, kernel release, toolchains, or container context $\to$ Route to `linux-environment`.
+- **Arch Packaging & Distribution**: Authoring PKGBUILDs, diagnosing makepkg failures, clean-chroot builds, AUR maintenance, package dependency analysis, or repository maintenance $\to$ Route to `arch-packaging`.
 - **Implementation / Refactoring**: Modifying scoped code within declared workspace boundaries.
 - **Review / Verification**: Checking patches, packaging recipes, or unit files against acceptance standards.
 - **Debugging / Diagnostics**: Post-mortem crash analysis, tracing, or log diagnosis.
@@ -64,20 +67,20 @@ Classify the proposed action according to [../../references/safety-policy.md](..
 
 ---
 
-## 2. Specialist Skill Catalog Status (Phase 1 Routing Boundary)
+## 2. Specialist Skill Catalog Status
 
-In Phase 1, only the **three Foundation Skills** are active. When a user requests work in a specialist domain, `linux-engineer` handles the request by executing Phase 1 research and diagnostics, while explicitly reporting that dedicated specialist skills are scheduled for subsequent phases:
+In Phase 2, the **three Foundation Skills** and the first domain specialist—**`arch-packaging`**—are active. When a user requests work in other specialist domains, `linux-engineer` handles the request by executing foundation research and diagnostics, while explicitly reporting that remaining domain specialists are scheduled for subsequent phases:
 
-| Engineering Discipline | Assigned Skill | Status in Phase 1 | Handled via Phase 1 Foundation |
+| Engineering Discipline | Assigned Skill | Status | Handled via Foundation / Specialist |
 |:---|:---|:---:|:---|
 | **High-Level Orchestration** | `linux-engineer` | **ACTIVE** | Master entry-point and intent routing. |
 | **Authoritative Upstream Research** | `linux-research` | **ACTIVE** | Full 10-step research and evidence tracking. |
 | **Environment & Toolchain Probing** | `linux-environment` | **ACTIVE** | Safe discovery of distro, kernel, and compilers. |
+| **Arch Packaging & PKGBUILD** | [`arch-packaging`](../arch-packaging/SKILL.md) | **ACTIVE** | Comprehensive Arch packaging lifecycle, clean chroot, namcap, and AUR. |
 | **Kernel Subsystems & Patches** | `kernel-engineering` | *Phase 2* | Use `linux-research` to investigate upstream trees and `checkpatch.pl`. |
 | **Device Drivers & Hardware** | `driver-engineering` | *Phase 2* | Use `linux-research` for device model APIs; test in QEMU microVM. |
 | **systemd & Service Units** | `systemd-engineering` | *Phase 2* | Use `linux-research` and `systemd-analyze verify`. |
 | **Bootloaders & Initramfs** | `boot-engineering` | *Phase 2* | Treat bootloader files as Tier 3 read-only; diagnose initramfs hooks. |
-| **Arch Packaging & PKGBUILD** | `arch-packaging` | *Phase 2* | Use standard makepkg/namcap guidelines in workspace. |
 | **Native Systems (Rust/C/C++)** | `linux-application-engineering` | *Phase 3* | Use standard compilers and POSIX standards. |
 | **Wayland, X11 & D-Bus** | `desktop-integration` | *Phase 3* | Follow FreeDesktop specifications and XML introspection. |
 | **Build Engineering (Meson/Cargo)**| `linux-build-engineering` | *Phase 3* | Follow compiler hardening flags in [../../references/version-awareness.md](../../references/version-awareness.md). |

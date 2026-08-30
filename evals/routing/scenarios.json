@@ -10,8 +10,8 @@
   {
     "id": "scenario_02_arch_package",
     "prompt": "Create an Arch Linux PKGBUILD for the new ripgrep-all release from source tarball.",
-    "expected_skill": "linux-research",
-    "expected_phase": "Phase 1: Foundation (Future specialist: arch-packaging in Phase 2)",
+    "expected_skill": "arch-packaging",
+    "expected_phase": "Phase 2: Arch Packaging",
     "safety_tier": 1,
     "requires_environment_probe": true
   },
