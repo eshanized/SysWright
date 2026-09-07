@@ -25,7 +25,7 @@ FrontmatterParseError = validate_skills.FrontmatterParseError
 class TestValidateSkills(unittest.TestCase):
 
     def test_canonical_skills_pass_validation(self):
-        """All 3 canonical skills in the repository must pass validation."""
+        """All canonical skills in the repository must pass validation."""
         repo_root = Path(__file__).resolve().parent.parent
         skills_root = repo_root / "skills"
         for sdir in skills_root.iterdir():
