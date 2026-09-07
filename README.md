@@ -37,27 +37,29 @@ linux-engineering/
 ├── skills/                      # Canonical Agent Skills (100% agentskills.io compliant)
 │   ├── linux-engineer/          # Master orchestrator & intent router
 │   ├── linux-research/          # Upstream evidence & authority engine
-│   └── linux-environment/       # Safe unprivileged system discovery
+│   ├── linux-environment/       # Safe unprivileged system discovery
+│   └── arch-packaging/          # Arch Linux packaging engineering specialist
 ├── references/                  # Shared authoritative domain references
 ├── adapters/                    # Platform adapters for Codex, Claude, and other agents
 ├── scripts/                     # Zero-dependency validation & packaging tools
 ├── evals/                       # Evaluation benchmark suites & fixtures
 ├── tests/                       # Automated unit & integration tests
-├── docs/                        # Architecture specs & Phase 0 foundation
+├── docs/                        # Architecture specs & Phase 0/1/2 documentation
 └── AGENTS.md                    # Persistent repository guidance for AI coding agents
 ```
 
 ---
 
-## 3. Foundation Skill Catalog (Phase 1 Status)
+## 3. Skill Catalog (Phase 2 Status)
 
 | Skill Name | Directory | Status | Primary Purpose |
 |:---|:---|:---:|:---|
 | **`linux-engineer`** | [`skills/linux-engineer/`](skills/linux-engineer/SKILL.md) | **ACTIVE** | Master entry-point, task decomposition, workflow sequencing, safety gating. |
 | **`linux-research`** | [`skills/linux-research/`](skills/linux-research/SKILL.md) | **ACTIVE** | 10-step upstream investigation, lore.kernel.org query, evidence ledger creation. |
 | **`linux-environment`** | [`skills/linux-environment/`](skills/linux-environment/SKILL.md) | **ACTIVE** | Safe discovery of distro identity, kernel release, toolchains, container/VM status. |
+| **`arch-packaging`** | [`skills/arch-packaging/`](skills/arch-packaging/SKILL.md) | **ACTIVE** | Full Arch Linux packaging lifecycle, PKGBUILD authoring, clean chroots, namcap, AUR, and repos. |
 
-*Note*: Domain specialists (`kernel-engineering`, `driver-engineering`, `arch-packaging`, `systemd-engineering`, `linux-application-engineering`, `linux-security`, etc.) are scheduled across Phases 2 through 5. The `linux-engineer` orchestrator explicitly identifies them as future specialists while providing Phase 1 research and diagnostic support.
+*Note*: Remaining domain specialists (`kernel-engineering`, `driver-engineering`, `systemd-engineering`, `linux-application-engineering`, `linux-security`, etc.) are scheduled across Phases 2 through 5. The `linux-engineer` orchestrator explicitly identifies them as planned specialists while providing research and diagnostic support.
 
 ---
 
@@ -120,6 +122,14 @@ When an agent is asked to investigate an issue or deprecation (e.g., "What repla
    - **Confidence**: Verified
    - **Engineering Implication**: Driver callbacks must use from_timer() to recover private data.
    ```
+
+### 5.3 Arch Linux Packaging Engineering
+When an agent is tasked with packaging an upstream software release (e.g., "Create a PKGBUILD for ripgrep-all"):
+1. `linux-engineer` routes the request to `arch-packaging`.
+2. `arch-packaging` inspects upstream sources, identifies build system conventions (`cargo`, `cmake`, `meson`, etc.), and verifies SPDX licensing.
+3. It generates a standards-compliant `PKGBUILD`, performs non-executing static analysis (`bash -n`), and validates metadata with `namcap`.
+4. It isolates builds in clean chroots via `pkgctl build --clean`, catching undeclared build dependencies.
+5. It runs `evals/arch-packaging/eval_arch_packaging.py` to ensure zero hallucinations or security violations.
 
 ---
 
