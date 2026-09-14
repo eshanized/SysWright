@@ -1,0 +1,119 @@
+[
+  {
+    "id": "eval_kernel_01_regression",
+    "name": "Investigate a kernel regression",
+    "scenario_description": "A commit in Linux 6.18 causes a NULL pointer dereference in the e1000e network driver probe callback. Diagnose and bisect.",
+    "input": {
+      "log": "BUG: kernel NULL pointer dereference at 0000000000000018, RIP: 0010:e1000_probe+0x54/0x320 [e1000e]",
+      "version": "6.18",
+      "subsystem": "drivers/net/ethernet/intel/e1000e"
+    },
+    "expected_skill": "kernel-engineering",
+    "research_requirements": "Inspect git log -S, faddr2line, and lore.kernel.org for recent changes to e1000_probe.",
+    "expected_behavior": "Decode faulting address offset, translate RIP to source line via faddr2line, identify uninitialized structure pointer, prescribe git bisect and minimal NULL check fix.",
+    "evidence_requirements": [
+      "faddr2line",
+      "git bisect",
+      "NULL pointer check",
+      "RIP translation"
+    ],
+    "safety_expectations": "Tier 0 static analysis; no autonomous module loading.",
+    "failure_conditions": [
+      "Recommending blind reboot",
+      "Failing to translate RIP or decode offset 0x18",
+      "Proposing invasive refactor of working driver"
+    ],
+    "eval_type": "kernel_regression"
+  },
+  {
+    "id": "eval_kernel_02_patch_review",
+    "name": "Review an incorrect kernel patch",
+    "scenario_description": "Review a proposed patch that calls msleep() while holding a spinlock in atomic interrupt context.",
+    "input": {
+      "patch_diff": "- spin_lock(&priv->lock);\n+ spin_lock(&priv->lock);\n+ msleep(10);\n  data = readl(regs);\n  spin_unlock(&priv->lock);"
+    },
+    "expected_skill": "kernel-engineering",
+    "research_requirements": "Linux kernel locking invariants (Documentation/locking/spinlocks.rst).",
+    "expected_behavior": "Reject patch; identify that sleeping inside a spinlock or atomic context causes kernel panic / deadlock; explain mdelay vs msleep or moving sleep outside lock.",
+    "evidence_requirements": [
+      "flag_sleeping_in_atomic_context",
+      "reject_patch",
+      "explain_spinlock_invariant"
+    ],
+    "safety_expectations": "Tier 0 code review; zero code execution.",
+    "failure_conditions": [
+      "Approving the patch",
+      "Failing to recognize that msleep() sleeps and violates spinlock invariants"
+    ],
+    "eval_type": "patch_review"
+  },
+  {
+    "id": "eval_kernel_03_maintainer_identification",
+    "name": "Identify the correct subsystem maintainer",
+    "scenario_description": "Identify the maintainers and mailing list responsible for submitting a patch to fs/ext4/super.c.",
+    "input": {
+      "target_file": "fs/ext4/super.c",
+      "tool": "scripts/get_maintainer.pl"
+    },
+    "expected_skill": "kernel-engineering",
+    "research_requirements": "MAINTAINERS file and scripts/get_maintainer.pl.",
+    "expected_behavior": "Execute get_maintainer.pl logic; identify Ted Ts'o and ext4 list (linux-ext4@vger.kernel.org); format Cc list correctly.",
+    "evidence_requirements": [
+      "scripts/get_maintainer.pl",
+      "linux-ext4@vger.kernel.org",
+      "Theodore Ts'o"
+    ],
+    "safety_expectations": "Tier 0 read-only query.",
+    "failure_conditions": [
+      "Inventing random maintainer names",
+      "Sending patch to generic unmoderated list without subsystem maintainers"
+    ],
+    "eval_type": "maintainer_routing"
+  },
+  {
+    "id": "eval_kernel_04_module_build_failure",
+    "name": "Diagnose a module build failure",
+    "scenario_description": "An out-of-tree kernel module fails to build with 'make[1]: *** /lib/modules/6.18.64-1-lts/build: No such file or directory'.",
+    "input": {
+      "error": "make[1]: *** /lib/modules/6.18.64-1-lts/build: No such file or directory. Stop.",
+      "running_kernel": "6.18.64-1-lts"
+    },
+    "expected_skill": "kernel-engineering",
+    "research_requirements": "Kbuild external module requirements and kernel headers packages.",
+    "expected_behavior": "Diagnose that kernel build directory symlink is broken because kernel headers are not installed; prescribe installing linux-lts-headers matching running kernel release.",
+    "evidence_requirements": [
+      "diagnose_missing_headers",
+      "match_kernel_version: 6.18.64-1-lts",
+      "prescribe_headers_package: linux-lts-headers"
+    ],
+    "safety_expectations": "Tier 0 diagnostics.",
+    "failure_conditions": [
+      "Recommending compiling full kernel from source",
+      "Mismatched headers package version (e.g. installing standard linux-headers for linux-lts)"
+    ],
+    "eval_type": "module_build_diag"
+  },
+  {
+    "id": "eval_kernel_05_upstream_vs_distro_patch",
+    "name": "Distinguish an upstream fix from a distribution-specific patch",
+    "scenario_description": "User encounters a network throughput fix on an Ubuntu PPA kernel and asks to cherry-pick it into mainline Arch.",
+    "input": {
+      "patch_origin": "Ubuntu downstream vendor git tree with custom AppArmor hook",
+      "target": "Arch Linux upstream kernel"
+    },
+    "expected_skill": "kernel-engineering",
+    "research_requirements": "Upstream-vanilla philosophy and patch provenance.",
+    "expected_behavior": "Distinguish between downstream distribution-specific patches and canonical upstream commits; verify whether patch exists on lore.kernel.org/netdev; decline downstream patch if it relies on distribution-specific out-of-tree hooks.",
+    "evidence_requirements": [
+      "distinguish_downstream_from_upstream",
+      "verify_upstream_provenance",
+      "reject_downstream_coupling"
+    ],
+    "safety_expectations": "Tier 0 analysis.",
+    "failure_conditions": [
+      "Blindly applying downstream vendor patches without verifying upstream compatibility",
+      "Failing to check lore.kernel.org"
+    ],
+    "eval_type": "patch_provenance"
+  }
+]

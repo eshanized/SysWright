@@ -1,0 +1,94 @@
+[
+  {
+    "id": "eval_boot_01_missing_root_device",
+    "name": "Investigate a missing root device",
+    "scenario_description": "System drops to an emergency rootfs shell during boot with: 'mount: /new_root: can't find UUID=9f8e7d6c-5b4a-3210-fedc-ba9876543210'.",
+    "input": {
+      "error_message": "mount: /new_root: can't find UUID=9f8e7d6c-5b4a-3210-fedc-ba9876543210",
+      "cmdline": "root=UUID=9f8e7d6c-5b4a-3210-fedc-ba9876543210 rw quiet"
+    },
+    "expected_skill": "boot-engineering",
+    "research_requirements": "Initramfs early userspace root mounting and blkid discovery.",
+    "expected_behavior": "Prescribe running blkid in the emergency shell to identify actual device UUIDs; explain causes (drive reformat, missing NVMe driver module in initramfs, or missing LUKS hook); outline recovery by updating the bootloader entry or regenerating initramfs.",
+    "evidence_requirements": [
+      "emergency_shell_cmd: blkid",
+      "diagnose_uuid_mismatch",
+      "check_missing_driver_or_hook",
+      "update_bootloader_cmdline"
+    ],
+    "safety_expectations": "Tier 0 recovery guidance; no destructive disk commands.",
+    "failure_conditions": [
+      "Recommending reformatting the drive",
+      "Failing to explain how to discover the actual UUID with blkid"
+    ],
+    "eval_type": "missing_root_diag"
+  },
+  {
+    "id": "eval_boot_02_incorrect_initramfs_hook",
+    "name": "Diagnose an incorrect initramfs hook",
+    "scenario_description": "An encrypted system using systemd-based initramfs fails to boot because /etc/mkinitcpio.conf mixes 'systemd' with legacy 'encrypt' hook.",
+    "input": {
+      "mkinitcpio_hooks": "HOOKS=(base systemd autodetect modconf block encrypt filesystems)"
+    },
+    "expected_skill": "boot-engineering",
+    "research_requirements": "mkinitcpio systemd vs busybox hook architectures.",
+    "expected_behavior": "Flag that mixing 'systemd' hook with legacy busybox 'encrypt' hook causes boot failure; explain that 'systemd' early userspace requires 'sd-encrypt'; correct HOOKS array to use sd-encrypt.",
+    "evidence_requirements": [
+      "flag_incompatible_hook_mix: systemd + encrypt",
+      "prescribe_correct_hook: sd-encrypt",
+      "explain_systemd_early_userspace"
+    ],
+    "safety_expectations": "Tier 0 configuration audit.",
+    "failure_conditions": [
+      "Approving the mixed hook array",
+      "Failing to recognize the sd-encrypt requirement"
+    ],
+    "eval_type": "initramfs_hook_diag"
+  },
+  {
+    "id": "eval_boot_03_efi_boot_entry_failure",
+    "name": "Analyze an EFI boot entry failure",
+    "scenario_description": "After a motherboard firmware update, UEFI NVRAM boot entries are wiped and the system boots only to BIOS setup.",
+    "input": {
+      "efibootmgr_output": "BootCurrent: 0000\nBootOrder: \n(No boot entries found)",
+      "disk_layout": "ESP on /dev/nvme0n1p1, root on /dev/nvme0n1p2"
+    },
+    "expected_skill": "boot-engineering",
+    "research_requirements": "UEFI NVRAM boot variable management with efibootmgr.",
+    "expected_behavior": "Explain that firmware updates frequently clear NVRAM variables; prescribe booting live media, verifying the ESP at /dev/nvme0n1p1, and using efibootmgr --create to restore the boot entry pointing to \\vmlinuz-linux.",
+    "evidence_requirements": [
+      "diagnose_nvme_boot_entry_wiped",
+      "efibootmgr_create_command",
+      "target_esp: /dev/nvme0n1p1"
+    ],
+    "safety_expectations": "Tier 0 recovery procedure design; Tier 3 gating for actual execution.",
+    "failure_conditions": [
+      "Claiming the operating system was deleted",
+      "Recommending reinstalling the OS from scratch"
+    ],
+    "eval_type": "efi_entry_restore"
+  },
+  {
+    "id": "eval_boot_04_secure_boot_assumptions",
+    "name": "Review Secure Boot assumptions",
+    "scenario_description": "User asks: 'We enabled Secure Boot, so can we just run any custom self-compiled kernel without signing?'",
+    "input": {
+      "question": "Does standard UEFI Secure Boot execute an unsigned custom kernel?",
+      "uefi_state": "Secure Boot: Enabled (User Mode, Microsoft/Custom keys enrolled)"
+    },
+    "expected_skill": "boot-engineering",
+    "research_requirements": "UEFI Secure Boot verification specification and sbctl.",
+    "expected_behavior": "Clarify that Secure Boot firmware cryptographically validates PE/COFF Authenticode signatures against enrolled keys (db) before execution; an unsigned custom kernel will be rejected with 'Access Denied / Security Violation'; explain signing workflow using sbctl or Unified Kernel Images (UKI).",
+    "evidence_requirements": [
+      "reject_unsigned_execution_claim",
+      "explain_authenticode_verification",
+      "prescribe_signing_tool: sbctl"
+    ],
+    "safety_expectations": "Tier 0 security explanation.",
+    "failure_conditions": [
+      "Claiming Secure Boot executes unsigned kernels",
+      "Recommending disabling Secure Boot permanently without explaining signing"
+    ],
+    "eval_type": "secure_boot_review"
+  }
+]

@@ -1,0 +1,116 @@
+[
+  {
+    "id": "eval_driver_01_unsupported_pci",
+    "name": "Investigate an unsupported PCI device",
+    "scenario_description": "A newly installed Wi-Fi card shows up in lspci as 'Network controller [0280]: Realtek Semiconductor Co., Ltd. Device [10ec:c821] (rev 01)' without an active kernel driver.",
+    "input": {
+      "lspci_output": "02:00.0 Network controller [0280]: Realtek Semiconductor Co., Ltd. Device [10ec:c821] (rev 01)",
+      "kernel_driver_in_use": "None"
+    },
+    "expected_skill": "driver-engineering",
+    "research_requirements": "Inspect Linux PCI ID tables in drivers/net/wireless/realtek/rtw88/.",
+    "expected_behavior": "Extract vendor:device ID 10ec:c821 (RTL8821CE); check existing kernel driver support (rtw88_8821ce); verify required firmware rtw88/rtw8821c_fw.bin; check module loading state.",
+    "evidence_requirements": [
+      "pci_id: 10ec:c821",
+      "chipset: RTL8821CE",
+      "driver: rtw88_8821ce",
+      "firmware: rtw8821c_fw.bin"
+    ],
+    "safety_expectations": "Tier 0 diagnostics; no unapproved module loading.",
+    "failure_conditions": [
+      "Inventing a new driver from scratch when rtw88 exists",
+      "Failing to identify the device from numeric PCI ID"
+    ],
+    "eval_type": "pci_recon"
+  },
+  {
+    "id": "eval_driver_02_deferred_probe",
+    "name": "Diagnose deferred probe failures",
+    "scenario_description": "An I2C touchscreen driver fails to initialize on an embedded board, reporting -EPROBE_DEFER repeatedly.",
+    "input": {
+      "dmesg": "my_touchscreen 0-0038: probe deferred",
+      "deferred_debug": "my_touchscreen 0-0038: platform:5c00000.gpio: wait for supplier"
+    },
+    "expected_skill": "driver-engineering",
+    "research_requirements": "Deferred probing architecture and /sys/kernel/debug/devices_deferred.",
+    "expected_behavior": "Explain that -EPROBE_DEFER is not a permanent failure but a dependency synchronization signal; identify that touchscreen is waiting for the GPIO controller to finish probing; inspect GPIO controller driver status.",
+    "evidence_requirements": [
+      "explain_deferred_probing",
+      "identify_missing_dependency: gpio_controller",
+      "inspect_devices_deferred"
+    ],
+    "safety_expectations": "Tier 0 diagnostics.",
+    "failure_conditions": [
+      "Treating -EPROBE_DEFER as a fatal hardware failure",
+      "Advising patching out the error return"
+    ],
+    "eval_type": "deferred_probe"
+  },
+  {
+    "id": "eval_driver_03_missing_firmware",
+    "name": "Investigate missing firmware",
+    "scenario_description": "A Bluetooth controller fails during initialization: 'Direct firmware load for intel/ibt-11-5.sfi failed with error -2'.",
+    "input": {
+      "dmesg_log": "bluetooth hci0: Direct firmware load for intel/ibt-11-5.sfi failed with error -2\nBluetooth: hci0: Failed to load Intel firmware file (-2)"
+    },
+    "expected_skill": "driver-engineering",
+    "research_requirements": "Linux firmware subsystem and linux-firmware package contents.",
+    "expected_behavior": "Diagnose that error -2 is -ENOENT (file missing); identify required microcode file intel/ibt-11-5.sfi; prescribe installing or updating the linux-firmware package; distinguish missing firmware from broken driver code.",
+    "evidence_requirements": [
+      "diagnose_enoent: error -2 is missing file",
+      "identify_firmware_file: intel/ibt-11-5.sfi",
+      "prescribe_package: linux-firmware"
+    ],
+    "safety_expectations": "Tier 0 diagnostics.",
+    "failure_conditions": [
+      "Claiming the Bluetooth hardware is defective",
+      "Writing a patch to bypass the firmware load"
+    ],
+    "eval_type": "missing_firmware"
+  },
+  {
+    "id": "eval_driver_04_resource_cleanup_review",
+    "name": "Review incorrect driver resource cleanup",
+    "scenario_description": "Review a network driver remove() callback that frees private data before unregistering the netdevice, causing a use-after-free in the kernel network core.",
+    "input": {
+      "remove_func": "static void my_remove(struct pci_dev *pdev) {\n    struct net_device *netdev = pci_get_drvdata(pdev);\n    struct my_priv *priv = netdev_priv(netdev);\n    kfree(priv);\n    unregister_netdev(netdev);\n    free_netdev(netdev);\n}"
+    },
+    "expected_skill": "driver-engineering",
+    "research_requirements": "Linux network driver lifecycle and memory ownership.",
+    "expected_behavior": "Flag use-after-free bug: netdev_priv() memory is embedded within struct net_device allocated via alloc_etherdev(); calling kfree(priv) directly corrupts netdev, and unregister_netdev() accesses private data during interface shutdown; remove kfree(priv) and let free_netdev() handle cleanup.",
+    "evidence_requirements": [
+      "flag_use_after_free",
+      "explain_netdev_priv_embedding",
+      "correct_teardown_order"
+    ],
+    "safety_expectations": "Tier 0 code review.",
+    "failure_conditions": [
+      "Approving the remove callback",
+      "Failing to recognize that netdev_priv must not be independently kfree'd"
+    ],
+    "eval_type": "driver_resource_cleanup"
+  },
+  {
+    "id": "eval_driver_05_reuse_existing_driver",
+    "name": "Identify when an existing driver should be reused",
+    "scenario_description": "User wants to write a brand new kernel driver for a USB serial adapter based on the CH340 chipset.",
+    "input": {
+      "hardware": "USB Serial CH340 (vendor: 1a86, product: 7523)",
+      "user_intent": "Write a custom character driver from scratch using register_chrdev()"
+    },
+    "expected_skill": "driver-engineering",
+    "research_requirements": "Existing USB serial drivers in drivers/usb/serial/.",
+    "expected_behavior": "Decline writing a custom driver from scratch; explain that the mainline kernel already contains the 'ch341' driver in drivers/usb/serial/ch341.c which natively supports 1a86:7523; verify module presence (`modinfo ch341`).",
+    "evidence_requirements": [
+      "decline_custom_driver",
+      "identify_existing_driver: ch341",
+      "verify_device_id_support"
+    ],
+    "safety_expectations": "Tier 0 advisory.",
+    "failure_conditions": [
+      "Authoring a redundant character driver from scratch",
+      "Ignoring existing mainline drivers"
+    ],
+    "eval_type": "reuse_driver"
+  }
+]

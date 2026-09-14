@@ -1,0 +1,117 @@
+[
+  {
+    "id": "eval_systemd_01_unit_ordering",
+    "name": "Diagnose incorrect unit ordering",
+    "scenario_description": "A database client service fails to connect on startup because it specifies Requires=postgresql.service but lacks After=postgresql.service.",
+    "input": {
+      "unit_file": "[Unit]\nDescription=Web App\nRequires=postgresql.service\n\n[Service]\nExecStart=/usr/bin/webapp\n\n[Install]\nWantedBy=multi-user.target",
+      "error": "webapp[412]: connection to server on socket failed: Connection refused"
+    },
+    "expected_skill": "systemd-engineering",
+    "research_requirements": "systemd dependency vs ordering semantics (systemd.unit manual).",
+    "expected_behavior": "Diagnose parallel execution race condition: Requires= only ensures postgresql is started, but does NOT establish ordering; add After=postgresql.service so webapp waits until postgresql finishes initialization.",
+    "evidence_requirements": [
+      "explain_dependency_vs_ordering",
+      "diagnose_parallel_startup_race",
+      "add_ordering_directive: After=postgresql.service"
+    ],
+    "safety_expectations": "Tier 0 static analysis.",
+    "failure_conditions": [
+      "Adding arbitrary sleep command in ExecStartPre",
+      "Failing to explain that Requires does not imply After"
+    ],
+    "eval_type": "unit_ordering"
+  },
+  {
+    "id": "eval_systemd_02_misconfigured_service",
+    "name": "Fix an incorrectly configured service",
+    "scenario_description": "A service configures Type=notify but the underlying binary is a legacy Python script that does not call sd_notify(), causing systemd to time out after 90 seconds and kill the process.",
+    "input": {
+      "unit_service_section": "[Service]\nType=notify\nExecStart=/usr/bin/python3 /opt/server.py",
+      "error": "Job for myserver.service failed because a timeout was exceeded."
+    },
+    "expected_skill": "systemd-engineering",
+    "research_requirements": "systemd service types (systemd.service manual).",
+    "expected_behavior": "Diagnose that Type=notify waits for READY=1 notification via $NOTIFY_SOCKET; since the Python script does not implement sd_notify(), systemd hits TimeoutStartSec and terminates the service; fix by changing Type=exec (or implementing systemd-daemon notification).",
+    "evidence_requirements": [
+      "diagnose_notify_timeout",
+      "explain_sd_notify_requirement",
+      "correct_service_type: Type=exec"
+    ],
+    "safety_expectations": "Tier 0 static unit review.",
+    "failure_conditions": [
+      "Simply increasing TimeoutStartSec to infinity",
+      "Failing to understand the Type=notify protocol"
+    ],
+    "eval_type": "service_config_fix"
+  },
+  {
+    "id": "eval_systemd_03_unsafe_sandbox",
+    "name": "Review a potentially unsafe sandbox configuration",
+    "scenario_description": "A web daemon service runs as root with full capabilities and write access across the host filesystem.",
+    "input": {
+      "current_unit": "[Unit]\nDescription=Web Daemon\n\n[Service]\nExecStart=/usr/bin/webd\nUser=root"
+    },
+    "expected_skill": "systemd-engineering",
+    "research_requirements": "systemd sandboxing directives and systemd-analyze security.",
+    "expected_behavior": "Harden the service: introduce DynamicUser=yes, ProtectSystem=strict, ProtectHome=yes, PrivateTmp=yes, CapabilityBoundingSet=, and SystemCallFilter=@system-service; reduce exposure score below 2.5.",
+    "evidence_requirements": [
+      "DynamicUser=yes",
+      "ProtectSystem=strict",
+      "PrivateTmp=yes",
+      "drop_capabilities: CapabilityBoundingSet=",
+      "SystemCallFilter=@system-service"
+    ],
+    "safety_expectations": "Tier 0 security audit.",
+    "failure_conditions": [
+      "Leaving service running as unconstrained root",
+      "Omitting filesystem protection"
+    ],
+    "eval_type": "sandbox_hardening"
+  },
+  {
+    "id": "eval_systemd_04_startup_failure",
+    "name": "Diagnose a service startup failure",
+    "scenario_description": "A hardened daemon with DynamicUser=yes fails to start with: 'open(/var/lib/mydaemon/data.db): Permission denied'.",
+    "input": {
+      "unit": "[Service]\nDynamicUser=yes\nExecStart=/usr/bin/mydaemon\nProtectSystem=strict",
+      "error": "mydaemon[520]: open(/var/lib/mydaemon/data.db): Permission denied"
+    },
+    "expected_skill": "systemd-engineering",
+    "research_requirements": "systemd state directory management with DynamicUser.",
+    "expected_behavior": "Diagnose that DynamicUser generates ephemeral unprivileged UIDs that do not own host paths, and ProtectSystem=strict makes /var read-only; fix by declaring StateDirectory=mydaemon in [Service], which instructs systemd to provision /var/lib/mydaemon with proper ownership.",
+    "evidence_requirements": [
+      "diagnose_dynamic_user_permission_boundary",
+      "prescribe_directive: StateDirectory=mydaemon"
+    ],
+    "safety_expectations": "Tier 0 diagnostics.",
+    "failure_conditions": [
+      "Recommending chmod 777 on /var/lib",
+      "Disabling DynamicUser or running as root to bypass the error"
+    ],
+    "eval_type": "state_directory_diag"
+  },
+  {
+    "id": "eval_systemd_05_resource_control_limits",
+    "name": "Identify resource-control limitations",
+    "scenario_description": "Configure an unprivileged worker service to strictly limit CPU to 1.5 cores and maximum RAM usage to 2GB to prevent system starvation.",
+    "input": {
+      "target_service": "batch-worker.service",
+      "resource_constraints": "Max 1.5 CPU cores, max 2GB memory"
+    },
+    "expected_skill": "systemd-engineering",
+    "research_requirements": "systemd.resource-control manual and cgroups v2.",
+    "expected_behavior": "Configure cgroups v2 directives in [Service]: CPUQuota=150% and MemoryMax=2G (with optional MemoryHigh=1.8G soft limit); explain OOM killer behavior if MemoryMax is exceeded.",
+    "evidence_requirements": [
+      "CPUQuota=150%",
+      "MemoryMax=2G",
+      "explain_cgroup_oom_behavior"
+    ],
+    "safety_expectations": "Tier 0 configuration design.",
+    "failure_conditions": [
+      "Using legacy cgroups v1 directives",
+      "Confusing soft limits (MemoryHigh) with hard limits (MemoryMax)"
+    ],
+    "eval_type": "resource_control"
+  }
+]
