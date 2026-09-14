@@ -50,16 +50,20 @@ linux-engineering/
 
 ---
 
-## 3. Skill Catalog (Phase 2 Status)
+## 3. Skill Catalog (Phase 3 Status)
 
 | Skill Name | Directory | Status | Primary Purpose |
 |:---|:---|:---:|:---|
-| **`linux-engineer`** | [`skills/linux-engineer/`](skills/linux-engineer/SKILL.md) | **ACTIVE** | Master entry-point, task decomposition, workflow sequencing, safety gating. |
+| **`linux-engineer`** | [`skills/linux-engineer/`](skills/linux-engineer/SKILL.md) | **ACTIVE** | Master entry-point, task decomposition, workflow sequencing, multi-subsystem orchestration. |
 | **`linux-research`** | [`skills/linux-research/`](skills/linux-research/SKILL.md) | **ACTIVE** | 10-step upstream investigation, lore.kernel.org query, evidence ledger creation. |
 | **`linux-environment`** | [`skills/linux-environment/`](skills/linux-environment/SKILL.md) | **ACTIVE** | Safe discovery of distro identity, kernel release, toolchains, container/VM status. |
 | **`arch-packaging`** | [`skills/arch-packaging/`](skills/arch-packaging/SKILL.md) | **ACTIVE** | Full Arch Linux packaging lifecycle, PKGBUILD authoring, clean chroots, namcap, AUR, and repos. |
-
-*Note*: Remaining domain specialists (`kernel-engineering`, `driver-engineering`, `systemd-engineering`, `linux-application-engineering`, `linux-security`, etc.) are scheduled across Phases 2 through 5. The `linux-engineer` orchestrator explicitly identifies them as planned specialists while providing research and diagnostic support.
+| **`kernel-engineering`** | [`skills/kernel-engineering/`](skills/kernel-engineering/SKILL.md) | **ACTIVE** | Subsystem architecture, Kbuild/Kconfig, regression bisect, kernel patching, debugging, and upstream LKML workflow. |
+| **`driver-engineering`** | [`skills/driver-engineering/`](skills/driver-engineering/SKILL.md) | **ACTIVE** | Device model, bus subsystems (PCI/USB/I2C/SPI), probe lifecycle, DMA, interrupts, and power management. |
+| **`systemd-engineering`** | [`skills/systemd-engineering/`](skills/systemd-engineering/SKILL.md) | **ACTIVE** | Unit architecture, service lifecycle, security sandboxing, cgroups v2 resource limits, and journald troubleshooting. |
+| **`boot-engineering`** | [`skills/boot-engineering/`](skills/boot-engineering/SKILL.md) | **ACTIVE** | UEFI/BIOS firmware, bootloaders, initramfs (mkinitcpio/dracut), Unified Kernel Images (UKI), and Secure Boot. |
+| **`linux-networking`** | [`skills/linux-networking/`](skills/linux-networking/SKILL.md) | **ACTIVE** | Kernel networking stack, network managers, policy routing, nftables firewalling, and network namespaces. |
+| **`linux-storage`** | [`skills/linux-storage/`](skills/linux-storage/SKILL.md) | **ACTIVE** | Block layer (blk-mq), filesystems (ext4/Btrfs/XFS), device-mapper/LVM, LUKS encryption, RAID, and recovery. |
 
 ---
 
@@ -131,6 +135,14 @@ When an agent is tasked with packaging an upstream software release (e.g., "Crea
 4. It isolates builds in clean chroots via `pkgctl build --clean`, catching undeclared build dependencies.
 5. It runs `evals/arch-packaging/eval_arch_packaging.py` to ensure zero hallucinations or security violations.
 
+### 5.4 Core Linux Systems Engineering
+When an agent diagnoses an operating system or hardware issue (e.g., "Why is our NVMe volume failing to mount after an unclean shutdown?"):
+1. `linux-engineer` coordinates diagnostics across `linux-storage` and `linux-environment`.
+2. `linux-storage` inspects `dmesg` and NVMe SMART telemetry (`nvme smart-log`) to separate media wearout from filesystem corruption.
+3. It enforces safety invariants: filesystems must be unmounted before any check (`e2fsck -n`), and autonomous reformatting (`mkfs`, `wipefs`) is strictly refused as a Tier 3 action requiring human sign-off.
+4. It provides evidence-backed recovery procedures using backup superblocks or snapshot rollbacks.
+5. It runs `evals/eval_systems.py` to ensure compliance across all 28 systems engineering benchmarks.
+
 ---
 
 ## 6. Development & Quality Assurance
@@ -138,30 +150,42 @@ When an agent is tasked with packaging an upstream software release (e.g., "Crea
 All tooling is implemented using the Python 3 standard library with zero external dependencies.
 
 ### 6.1 Validate Skills
-Verify that all skills comply with the `agentskills.io` specification:
+Verify that all 10 canonical skills comply with the `agentskills.io` specification:
 ```bash
 python3 scripts/validate-skills.py
 ```
 
 ### 6.2 Check Reference Integrity
-Verify that all relative documentation links and cross-references resolve:
+Verify that all relative documentation links and cross-references resolve (0 broken links):
 ```bash
 python3 scripts/check-references.py
 ```
 
 ### 6.3 Run the Test Suite
-Execute the complete automated test suite (26+ unit and integration tests):
+Execute the complete automated test suite (39+ unit and integration tests):
 ```bash
 python3 tests/run_all_tests.py
 ```
 
-### 6.4 Run Skill-Routing Evaluations
-Run the 10 real-world routing scenarios:
+### 6.4 Run Systems Engineering Evaluations
+Run the 28 core systems engineering evaluation scenarios across kernel, drivers, systemd, boot, networking, and storage:
+```bash
+python3 evals/eval_systems.py
+```
+
+### 6.5 Run Packaging Evaluations
+Run the 18 Arch Linux packaging evaluation scenarios:
+```bash
+python3 evals/arch-packaging/eval_arch_packaging.py
+```
+
+### 6.6 Run Skill-Routing Evaluations
+Run the routing evaluation scenarios:
 ```bash
 python3 evals/routing/eval_router.py
 ```
 
-### 6.5 Run Research Evaluations
+### 6.7 Run Research Evaluations
 Run the 6 research and evidence evaluation scenarios:
 ```bash
 python3 evals/research/eval_research.py
