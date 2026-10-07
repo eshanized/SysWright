@@ -37,8 +37,13 @@ flowchart TD
     SPEC_CHECK -->|UEFI, Boot & Initramfs| BOOT["Invoke boot-engineering"]
     SPEC_CHECK -->|Networking & Firewalls| NET["Invoke linux-networking"]
     SPEC_CHECK -->|Block, FS & Encryption| STOR["Invoke linux-storage"]
+    SPEC_CHECK -->|App Architecture & CLI| APP["Invoke linux-application-engineering"]
+    SPEC_CHECK -->|Qt 6 & QML GUI| QT["Invoke qt-qml-engineering"]
+    SPEC_CHECK -->|GTK 4 & Libadwaita| GTK["Invoke gtk-engineering"]
+    SPEC_CHECK -->|Desktop, Wayland & D-Bus| DSK["Invoke desktop-integration"]
+    SPEC_CHECK -->|Build Systems & Toolchains| BLD["Invoke linux-build-engineering"]
     SPEC_CHECK -->|Arch Packaging| ARCH_PKG["Invoke arch-packaging"]
-    SPEC_CHECK -->|Future Domains| DEFER["State Specialist Deferred to Phase 4-5;\nProvide Systems Research Baseline"]
+    SPEC_CHECK -->|Future Domains| DEFER["State Specialist Deferred to Phase 5;\nProvide Systems Research Baseline"]
 
     KERN --> SAFE{"Verify Operational Safety Tier"}
     DRV --> SAFE
@@ -46,6 +51,11 @@ flowchart TD
     BOOT --> SAFE
     NET --> SAFE
     STOR --> SAFE
+    APP --> SAFE
+    QT --> SAFE
+    GTK --> SAFE
+    DSK --> SAFE
+    BLD --> SAFE
     ARCH_PKG --> SAFE
     SAFE --> VERIFY["Execute Contract Verification\n(Deterministic Linting & Testing)"]
     VERIFY --> REPORT["Report Empirical Evidence & Risks"]
@@ -59,8 +69,18 @@ Determine the operational category and select all relevant specialists:
 - **Bootloaders & Initramfs**: UEFI NVRAM, systemd-boot, GRUB, mkinitcpio hooks, missing root UUID $\to$ Route to `boot-engineering`.
 - **Linux Networking & Firewalls**: Network interfaces, policy routing, nftables, network namespaces, DNS $\to$ Route to `linux-networking`.
 - **Storage, Filesystems & Encryption**: Block layer, ext4/Btrfs/XFS, LVM, LUKS encryption, RAID, fsck safety $\to$ Route to `linux-storage`.
+- **Native Applications (CLI & Daemons)**: Application architecture, Rust/C/C++ systems programming, XDG paths, process lifecycle $\to$ Route to `linux-application-engineering`.
+- **Qt 6 & QML Desktop Applications**: Qt Quick, QML/C++ integration, QAbstractItemModel, Qt Widgets, QTest $\to$ Route to `qt-qml-engineering`.
+- **GTK 4 & GNOME Applications**: GTK 4, GLib/GObject/GIO, GtkApplication, Libadwaita, accessibility $\to$ Route to `gtk-engineering`.
+- **Desktop Integration & Wayland**: Wayland protocols, X11/XWayland, D-Bus IPC, XDG Portals, Desktop Entries, AppStream $\to$ Route to `desktop-integration`.
+- **Linux Build Engineering**: Toolchains (GCC/Clang), modern CMake, Meson, Ninja, Cargo workspaces, linking/ABI, packaging prep $\to$ Route to `linux-build-engineering`.
 - **Arch Packaging & Distribution**: Authoring PKGBUILDs, clean-chroot builds, AUR maintenance, repo-add $\to$ Route to `arch-packaging`.
 - **Multi-Subsystem Coordination**:
+  - *Rust CLI tool*: `linux-application-engineering` + `linux-build-engineering`.
+  - *Qt/QML desktop application*: `linux-application-engineering` + `qt-qml-engineering` + `desktop-integration` + `linux-build-engineering`.
+  - *GTK 4 application with D-Bus*: `linux-application-engineering` + `gtk-engineering` + `desktop-integration` + `linux-build-engineering`.
+  - *System daemon*: `linux-application-engineering` + `systemd-engineering` + `linux-build-engineering`.
+  - *Full Arch desktop package*: Application/Toolkit specialist + `desktop-integration` + `linux-build-engineering` + `arch-packaging`.
   - *Encrypted root boot issue*: Activate `boot-engineering` + `linux-storage`.
   - *Network service startup failure*: Activate `systemd-engineering` + `linux-networking`.
   - *Custom kernel with out-of-tree module*: Activate `kernel-engineering` + `driver-engineering` + `arch-packaging`.
@@ -85,7 +105,7 @@ Classify the proposed action according to [../../references/safety-policy.md](..
 
 ## 2. Specialist Skill Catalog Status
 
-In Phase 3, the **three Foundation Skills** and **seven Domain Specialists** are active. When a user requests work in deferred domains, `linux-engineer` handles the request by executing foundation research and diagnostics:
+In Phase 4, the **three Foundation Skills** and **twelve Domain Specialists** are active. When a user requests work in deferred domains, `linux-engineer` handles the request by executing foundation research and diagnostics:
 
 | Engineering Discipline | Assigned Skill | Status | Handled via Foundation / Specialist |
 |:---|:---|:---:|:---|
@@ -99,13 +119,15 @@ In Phase 3, the **three Foundation Skills** and **seven Domain Specialists** are
 | **Bootloaders & Initramfs** | [`boot-engineering`](../boot-engineering/SKILL.md) | **ACTIVE** | UEFI NVRAM (efibootmgr), systemd-boot, GRUB, mkinitcpio hooks, UKI. |
 | **Linux Networking & Firewalls** | [`linux-networking`](../linux-networking/SKILL.md) | **ACTIVE** | iproute2, policy routing, nftables, network namespaces, DNS. |
 | **Storage, Filesystems & Encryption** | [`linux-storage`](../linux-storage/SKILL.md) | **ACTIVE** | Block layer, ext4/Btrfs/XFS, LVM, LUKS encryption, RAID, fsck safety. |
-| **Native Systems (Rust/C/C++)** | `linux-application-engineering` | *Phase 4* | Use standard compilers and POSIX standards. |
-| **Wayland, X11 & D-Bus** | `desktop-integration` | *Phase 4* | Follow FreeDesktop specifications and XML introspection. |
-| **Build Engineering (Meson/Cargo)**| `linux-build-engineering` | *Phase 4* | Follow compiler hardening flags in [../../references/version-awareness.md](../../references/version-awareness.md). |
-| **Post-Mortem Debugging** | `linux-debugging` | *Phase 4* | Use GDB, strace, and sanitizers. |
-| **Performance Profiling (perf/eBPF)**| `linux-performance` | *Phase 4* | Collect baseline metrics before optimizing. |
-| **Security, Capabilities & Seccomp**| `linux-security` | *Phase 4* | Follow least-privilege principles and capability dropping. |
-| **Distribution Abstraction** | `linux-distribution-engineering`| *Phase 4* | Decouple upstream software from packaging manifests. |
+| **Native Systems (Rust/C/C++)** | [`linux-application-engineering`](../linux-application-engineering/SKILL.md) | **ACTIVE** | Application architecture, Rust/C/C++, CLI tools, daemons, XDG state, security. |
+| **Qt 6 & QML Desktop Applications** | [`qt-qml-engineering`](../qt-qml-engineering/SKILL.md) | **ACTIVE** | Qt 6, QML modules, Qt Quick, C++ integration, Qt Widgets, QTest. |
+| **GTK 4 & GNOME Applications** | [`gtk-engineering`](../gtk-engineering/SKILL.md) | **ACTIVE** | GTK 4, GLib/GObject/GIO, GtkApplication, Libadwaita, accessibility. |
+| **Desktop Integration & Wayland** | [`desktop-integration`](../desktop-integration/SKILL.md) | **ACTIVE** | Wayland protocols, X11/XWayland, D-Bus IPC, XDG Portals, Freedesktop metadata. |
+| **Build Engineering (CMake/Cargo)**| [`linux-build-engineering`](../linux-build-engineering/SKILL.md) | **ACTIVE** | Modern CMake, Meson, Ninja, Cargo workspaces, toolchains, linking/ABI. |
+| **Post-Mortem Debugging** | `linux-debugging` | *Phase 5* | Use GDB, strace, and sanitizers. |
+| **Performance Profiling (perf/eBPF)**| `linux-performance` | *Phase 5* | Collect baseline metrics before optimizing. |
+| **Security, Capabilities & Seccomp**| `linux-security` | *Phase 5* | Follow least-privilege principles and capability dropping. |
+| **Distribution Abstraction** | `linux-distribution-engineering`| *Phase 5* | Decouple upstream software from packaging manifests. |
 | **Upstream Contribution (b4)** | `linux-release-maintenance` | *Phase 5* | Format patches with imperative logs and Signed-off-by. |
 
 ---
