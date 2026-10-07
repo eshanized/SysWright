@@ -50,7 +50,7 @@ linux-engineering/
 
 ---
 
-## 3. Skill Catalog (Phase 3 Status)
+## 3. Skill Catalog (Phase 4 Status)
 
 | Skill Name | Directory | Status | Primary Purpose |
 |:---|:---|:---:|:---|
@@ -64,6 +64,11 @@ linux-engineering/
 | **`boot-engineering`** | [`skills/boot-engineering/`](skills/boot-engineering/SKILL.md) | **ACTIVE** | UEFI/BIOS firmware, bootloaders, initramfs (mkinitcpio/dracut), Unified Kernel Images (UKI), and Secure Boot. |
 | **`linux-networking`** | [`skills/linux-networking/`](skills/linux-networking/SKILL.md) | **ACTIVE** | Kernel networking stack, network managers, policy routing, nftables firewalling, and network namespaces. |
 | **`linux-storage`** | [`skills/linux-storage/`](skills/linux-storage/SKILL.md) | **ACTIVE** | Block layer (blk-mq), filesystems (ext4/Btrfs/XFS), device-mapper/LVM, LUKS encryption, RAID, and recovery. |
+| **`linux-application-engineering`** | [`skills/linux-application-engineering/`](skills/linux-application-engineering/SKILL.md) | **ACTIVE** | Native application architecture, Rust/C/C++, CLI tools, system daemons, XDG Base Directory, security. |
+| **`qt-qml-engineering`** | [`skills/qt-qml-engineering/`](skills/qt-qml-engineering/SKILL.md) | **ACTIVE** | Qt 6, QML modules, Qt Quick scene graph, declarative QML/C++ integration, Qt Widgets, QTest. |
+| **`gtk-engineering`** | [`skills/gtk-engineering/`](skills/gtk-engineering/SKILL.md) | **ACTIVE** | GTK 4, GLib/GObject/GIO, GtkApplication, composite XML templates, Libadwaita, AT-SPI accessibility. |
+| **`desktop-integration`** | [`skills/desktop-integration/`](skills/desktop-integration/SKILL.md) | **ACTIVE** | Wayland protocols, X11/XWayland, D-Bus IPC, XDG Desktop Portals, Freedesktop metadata, and systemd user services. |
+| **`linux-build-engineering`** | [`skills/linux-build-engineering/`](skills/linux-build-engineering/SKILL.md) | **ACTIVE** | Modern target-based CMake, Meson, Ninja, Cargo workspaces, compiler toolchains (GCC/Clang), and ABI stability. |
 
 ---
 
@@ -143,6 +148,15 @@ When an agent diagnoses an operating system or hardware issue (e.g., "Why is our
 4. It provides evidence-backed recovery procedures using backup superblocks or snapshot rollbacks.
 5. It runs `evals/eval_systems.py` to ensure compliance across all 28 systems engineering benchmarks.
 
+### 5.5 Native Linux Application & Desktop Engineering
+When an agent develops or reviews a native Linux desktop application (e.g., "Develop a Qt 6 desktop utility with Wayland integration"):
+1. `linux-engineer` routes the request across `linux-application-engineering`, `qt-qml-engineering`, `desktop-integration`, and `linux-build-engineering`.
+2. `linux-application-engineering` designs the process model, signal handling, and XDG Base Directory storage.
+3. `qt-qml-engineering` sets up modern Qt 6 CMake modules (`qt_add_qml_module`), separates UI from C++ models, and avoids GUI thread starvation.
+4. `desktop-integration` generates and validates the `.desktop` launcher (`desktop-file-validate`), AppStream metadata (`appstreamcli validate`), and mediates file access via XDG Desktop Portals.
+5. `linux-build-engineering` applies compiler hardening flags (`-D_FORTIFY_SOURCE=3 -fstack-protector-strong`) and configures reproducible build inputs (`SOURCE_DATE_EPOCH`).
+6. It runs `evals/eval_native_apps.py` to ensure compliance across all 34 native application benchmarks.
+
 ---
 
 ## 6. Development & Quality Assurance
@@ -150,7 +164,7 @@ When an agent diagnoses an operating system or hardware issue (e.g., "Why is our
 All tooling is implemented using the Python 3 standard library with zero external dependencies.
 
 ### 6.1 Validate Skills
-Verify that all 10 canonical skills comply with the `agentskills.io` specification:
+Verify that all 15 canonical skills comply with the `agentskills.io` specification:
 ```bash
 python3 scripts/validate-skills.py
 ```
@@ -162,30 +176,36 @@ python3 scripts/check-references.py
 ```
 
 ### 6.3 Run the Test Suite
-Execute the complete automated test suite (39+ unit and integration tests):
+Execute the complete automated test suite (47+ unit and integration tests):
 ```bash
 python3 tests/run_all_tests.py
 ```
 
-### 6.4 Run Systems Engineering Evaluations
+### 6.4 Run Native Application Engineering Evaluations
+Run the 34 native application engineering evaluation scenarios across applications, Qt, GTK, desktop integration, and build systems:
+```bash
+python3 evals/eval_native_apps.py
+```
+
+### 6.5 Run Systems Engineering Evaluations
 Run the 28 core systems engineering evaluation scenarios across kernel, drivers, systemd, boot, networking, and storage:
 ```bash
 python3 evals/eval_systems.py
 ```
 
-### 6.5 Run Packaging Evaluations
+### 6.6 Run Packaging Evaluations
 Run the 18 Arch Linux packaging evaluation scenarios:
 ```bash
 python3 evals/arch-packaging/eval_arch_packaging.py
 ```
 
-### 6.6 Run Skill-Routing Evaluations
+### 6.7 Run Skill-Routing Evaluations
 Run the routing evaluation scenarios:
 ```bash
 python3 evals/routing/eval_router.py
 ```
 
-### 6.7 Run Research Evaluations
+### 6.8 Run Research Evaluations
 Run the 6 research and evidence evaluation scenarios:
 ```bash
 python3 evals/research/eval_research.py

@@ -55,11 +55,25 @@ python3 scripts/validate-skills.py
 # 2. Verify all internal relative markdown links:
 python3 scripts/check-references.py
 
-# 3. Run the complete automated test suite:
+# 3. Run the complete automated test suite (47+ unit and integration tests):
 python3 tests/run_all_tests.py
+
+# 4. Run application and systems evaluation suites:
+python3 evals/eval_native_apps.py
+python3 evals/eval_systems.py
 ```
 
-All 26+ automated tests must pass with exit code `0`.
+All 47+ automated tests and benchmark evaluations must pass with exit code `0`.
+
+---
+
+## 5. Adding and Reviewing Application-Oriented Skills
+
+When contributing to application, desktop, or build engineering skills:
+- **Desktop Standards**: Verify Desktop Entries via `desktop-file-validate` and AppStream metadata via `appstreamcli validate --strict`.
+- **Accessibility Invariant**: Treat AT-SPI accessibility as an inviolable engineering requirement. Never approve interfaces that lack accessible labels or keyboard focus paths.
+- **Build Reproducibility**: Ensure build recommendations respect `SOURCE_DATE_EPOCH` and strip non-deterministic host paths (`-ffile-prefix-map`).
+- **No Unsanctioned Privileges**: Never recommend running desktop applications as root. Enforce unprivileged execution and narrow polkit-gated D-Bus interfaces.
 
 ---
 
