@@ -1,0 +1,161 @@
+[
+  {
+    "id": "eval_qt_01_poorly_structured_qml",
+    "name": "Review a Poorly Structured QML Application",
+    "scenario_description": "Review a proposed QML codebase that embeds raw SQLite queries and file parsing directly inside QML JavaScript event handlers.",
+    "input": {
+      "qml_snippet": "Button {\n    text: \"Load Data\"\n    onClicked: {\n        var db = LocalStorage.openDatabaseSync(\"mydb\", \"1.0\", \"\", 1000000);\n        db.transaction(function(tx) {\n            var rs = tx.executeSql('SELECT * FROM items WHERE status = ?', ['active']);\n            for (var i = 0; i < rs.rows.length; i++) {\n                myListModel.append(rs.rows.item(i));\n            }\n        });\n    }\n}"
+    },
+    "expected_skill": "qt-qml-engineering",
+    "research_requirements": "QML/C++ architectural boundary, separation of concerns, QAbstractListModel, database offload.",
+    "expected_behavior": "Critique embedding business logic, synchronous database transactions, and data modeling inside QML; explain that running SQLite on the GUI main thread causes UI stuttering and frame drops; instruct moving database queries and data ownership to C++; implement a C++ QAbstractListModel or QObject controller exposed via QML_ELEMENT.",
+    "evidence_requirements": [
+      "flag_business_logic_in_qml",
+      "flag_gui_thread_database_blocking",
+      "prescribe_cpp_backend_controller",
+      "recommend_qabstractitemmodel_subclass"
+    ],
+    "safety_expectations": "Tier 0 code review.",
+    "failure_conditions": [
+      "Approving SQL queries inside QML event handlers",
+      "Failing to separate UI presentation from data persistence"
+    ],
+    "eval_type": "qt_poorly_structured_qml"
+  },
+  {
+    "id": "eval_qt_02_qt_quick_architecture",
+    "name": "Design a Qt Quick Application Architecture",
+    "scenario_description": "Design the CMake build configuration and component structure for a modern Qt 6 Qt Quick application.",
+    "input": {
+      "user_prompt": "How do I configure CMake for a modern Qt 6 Qt Quick application with custom C++ models and QML components without using legacy qrc files or qmlRegisterType?"
+    },
+    "expected_skill": "qt-qml-engineering",
+    "research_requirements": "Qt 6 CMake integration, qt_add_qml_module, QML_ELEMENT, QML_SINGLETON, ahead-of-time QML compilation.",
+    "expected_behavior": "Provide modern Qt 6.5+ CMake configuration using qt_standard_project_setup() and qt_add_qml_module(); explain URI specification (e.g. MyCompany.App) and declaring QML_FILES and SOURCES together; explain how qt_add_qml_module compiles QML to C++ AOT and automatically registers classes marked with QML_ELEMENT and QML_SINGLETON without manual runtime registration.",
+    "evidence_requirements": [
+      "qt_add_qml_module_cmake_directive",
+      "qt_standard_project_setup",
+      "qml_element_macro",
+      "explain_aot_qml_compilation_and_registration"
+    ],
+    "safety_expectations": "Tier 0 architecture design.",
+    "failure_conditions": [
+      "Recommending obsolete Qt 5 qmlRegisterType in main.cpp",
+      "Generating manual XML .qrc resource files instead of qt_add_qml_module"
+    ],
+    "eval_type": "qt_quick_architecture"
+  },
+  {
+    "id": "eval_qt_03_business_logic_in_qml",
+    "name": "Identify Excessive Business Logic Inside QML",
+    "scenario_description": "A developer writes an entire REST client and JSON parsing pipeline in QML JavaScript XMLHttpRequest callbacks and asks why the UI freezes during payload parsing.",
+    "input": {
+      "qml_code": "function fetchLargeDataset() {\n    var xhr = new XMLHttpRequest();\n    xhr.open('GET', 'https://api.example.com/massive.json', false); // Synchronous XMLHttpRequest!\n    xhr.send();\n    var parsed = JSON.parse(xhr.responseText); // 50MB JSON parsed on GUI thread!\n    processData(parsed);\n}"
+    },
+    "expected_skill": "qt-qml-engineering",
+    "research_requirements": "QML threading, QNetworkAccessManager, QJsonDocument, asynchronous C++ offload.",
+    "expected_behavior": "Diagnose two severe flaws: 1) Synchronous XMLHttpRequest completely halts the QML scene graph rendering loop; 2) Parsing massive JSON payloads in JavaScript blocks the UI thread for seconds; instruct moving network operations to C++ using QNetworkAccessManager and QJsonDocument; offload parsing to QtConcurrent::run or a worker QThread, emitting signals back to QML upon completion.",
+    "evidence_requirements": [
+      "flag_synchronous_xhr_blocking_render_loop",
+      "flag_heavy_json_parsing_on_ui_thread",
+      "prescribe_cpp_qnetworkaccessmanager",
+      "offload_to_qtconcurrent_or_worker_qthread"
+    ],
+    "safety_expectations": "Tier 0 code review.",
+    "failure_conditions": [
+      "Approving synchronous XMLHttpRequest in QML",
+      "Failing to offload heavy JSON parsing from the GUI thread"
+    ],
+    "eval_type": "qt_business_logic_in_qml"
+  },
+  {
+    "id": "eval_qt_04_broken_property_binding",
+    "name": "Diagnose a Broken Property Binding",
+    "scenario_description": "In a responsive Qt Quick panel, the width binding ceases to respond to window resizing after the user clicks a reset button.",
+    "input": {
+      "qml_snippet": "Rectangle {\n    id: panel\n    width: parent.width * 0.4 // Reactive binding to parent.width\n    \n    Button {\n        text: \"Reset Width\"\n        onClicked: panel.width = 300 // Imperative assignment destroys binding!\n    }\n}"
+    },
+    "expected_skill": "qt-qml-engineering",
+    "research_requirements": "QML property binding lifecycle, imperative assignment destruction, ternary expressions, Binding element, Qt.binding().",
+    "expected_behavior": "Diagnose that assigning panel.width = 300 imperatively permanently destroys the declarative binding to parent.width * 0.4; explain that future changes to parent.width will no longer update panel.width; prescribe solutions: 1) Use a state variable with a declarative ternary binding (`width: isCustom ? 300 : parent.width * 0.4`); 2) Re-establish the binding programmatically via `panel.width = Qt.binding(() => parent.width * 0.4)` or use a `Binding` item.",
+    "evidence_requirements": [
+      "diagnose_imperative_assignment_destroys_binding",
+      "explain_loss_of_reactivity_to_parent_width",
+      "prescribe_ternary_state_binding_or_qt_binding"
+    ],
+    "safety_expectations": "Tier 0 QML diagnostic.",
+    "failure_conditions": [
+      "Failing to explain that assigning a value destroys the binding",
+      "Blaming parent layout or window resizing"
+    ],
+    "eval_type": "qt_broken_property_binding"
+  },
+  {
+    "id": "eval_qt_05_qml_cpp_integration",
+    "name": "Review QML/C++ Integration",
+    "scenario_description": "A team uses setContextProperty() in main.cpp for 25 different C++ objects and asks why qmllint fails and QML AOT compilation cannot resolve property types.",
+    "input": {
+      "main_cpp": "engine.rootContext()->setContextProperty(\"userManager\", new UserManager(&app));\nengine.rootContext()->setContextProperty(\"deviceManager\", new DeviceManager(&app));\n// ... 23 more setContextProperty calls"
+    },
+    "expected_skill": "qt-qml-engineering",
+    "research_requirements": "Modern Qt 6 QML registration, setContextProperty limitations, QML_ELEMENT, QML_SINGLETON, qmllint type safety.",
+    "expected_behavior": "Explain that setContextProperty() injects dynamically typed untyped globals into the QML root context, which blinds qmllint from verifying types at compile time and prevents qmlcachegen from compiling QML to native C++; prescribe refactoring: mark manager classes with QML_ELEMENT or QML_SINGLETON, export them via qt_add_qml_module, and import them with explicit namespaces in QML files.",
+    "evidence_requirements": [
+      "explain_setcontextproperty_disables_qmllint_and_aot",
+      "prescribe_qml_element_or_qml_singleton",
+      "organize_into_qt_add_qml_module",
+      "import_explicit_module_namespace_in_qml"
+    ],
+    "safety_expectations": "Tier 0 architectural review.",
+    "failure_conditions": [
+      "Recommending keeping setContextProperty for all objects",
+      "Failing to explain why qmllint cannot resolve context properties"
+    ],
+    "eval_type": "qt_qml_cpp_integration"
+  },
+  {
+    "id": "eval_qt_06_gui_thread_blocking",
+    "name": "Diagnose GUI Thread Blocking",
+    "scenario_description": "A Qt application window becomes completely unresponsive with 'Application Not Responding' (ANR) / spinning beachball whenever the user generates a cryptographic report.",
+    "input": {
+      "cpp_code": "void ReportGenerator::onGenerateClicked() {\n    // Executed directly on GUI main thread!\n    for (int i = 0; i < 100000; i++) {\n        computeHeavyCryptoHash(data[i]);\n        progressBar->setValue(i);\n    }\n}"
+    },
+    "expected_skill": "qt-qml-engineering",
+    "research_requirements": "Qt GUI thread responsiveness, event loop starvation, QThread, moveToThread, QtConcurrent::run, QProgressDialog.",
+    "expected_behavior": "Diagnose that the tight loop executes on the GUI main thread, starving the QCoreApplication event loop of CPU time and preventing window redraws, input processing, and OS heartbeat replies; explain that updating progressBar->setValue inside the loop does not repaint the screen without event loop processing; prescribe offloading computation to a worker QThread via moveToThread or QtConcurrent::run, reporting progress via queued signals and slots.",
+    "evidence_requirements": [
+      "diagnose_event_loop_starvation_on_gui_thread",
+      "explain_why_progressbar_fails_to_redraw",
+      "offload_to_worker_qthread_or_qtconcurrent",
+      "use_queued_signals_slots_for_progress"
+    ],
+    "failure_conditions": [
+      "Recommending calling QCoreApplication::processEvents() in the loop as the primary fix",
+      "Leaving heavy computation on the GUI thread"
+    ],
+    "eval_type": "qt_gui_thread_blocking"
+  },
+  {
+    "id": "eval_qt_07_widgets_vs_quick",
+    "name": "Evaluate Qt Widgets vs Qt Quick",
+    "scenario_description": "A scientific team is designing a desktop CAD tool featuring dockable toolbars, thousands of dense spreadsheet cells, nested menus, and traditional desktop controls, and asks whether Qt Widgets or Qt Quick is better suited.",
+    "input": {
+      "requirements": "Data-dense desktop application, complex dockable panels, MDI interface, thousands of visible cells, pixel-perfect integration with KDE Breeze desktop theme, accessibility via screen readers."
+    },
+    "expected_skill": "qt-qml-engineering",
+    "research_requirements": "Qt Widgets vs Qt Quick decision matrix, QMainWindow, QDockWidget, QTableView, QStyle, AT-SPI accessibility.",
+    "expected_behavior": "Advise choosing Qt Widgets; explain that Qt Widgets is purpose-built for data-dense desktop workstation software with native QMainWindow dockable layouts (QDockWidget), complex menus, mature Model/View virtualization (QTableView with custom QStyledItemDelegate), mature AT-SPI accessibility, and pixel-perfect native desktop styling via QStyle; explain that Qt Quick is optimized for fluid animations and touch/mobile interfaces, making complex dockable MDI desktop tools harder to build and maintain.",
+    "evidence_requirements": [
+      "recommend_qt_widgets_for_data_dense_desktop",
+      "cite_qmainwindow_and_qdockwidget_architecture",
+      "cite_qtableview_and_qstyleditemdelegate",
+      "explain_tradeoffs_vs_qt_quick"
+    ],
+    "safety_expectations": "Tier 0 architectural evaluation.",
+    "failure_conditions": [
+      "Recommending Qt Quick for a complex dockable desktop CAD tool without evaluating trade-offs",
+      "Claiming Qt Widgets is deprecated"
+    ],
+    "eval_type": "qt_widgets_vs_quick"
+  }
+]

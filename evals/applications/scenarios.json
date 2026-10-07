@@ -1,0 +1,189 @@
+[
+  {
+    "id": "eval_app_01_rust_cli",
+    "name": "Design a Rust CLI Application",
+    "scenario_description": "Architect a command-line file checksum utility in Rust. Evaluate synchronous vs asynchronous runtimes, argument parsing, stdio/stderr separation, and terminal detection.",
+    "input": {
+      "user_prompt": "I want to build a fast CLI utility in Rust that scans local directories and computes SHA-256 hashes. Should I use Tokio for async I/O? How should I structure stdout/stderr and handle pipes?"
+    },
+    "expected_skill": "linux-application-engineering",
+    "research_requirements": "Rust CLI engineering, runtime selection (sync vs async), clap, isatty/terminal detection, stream separation.",
+    "expected_behavior": "Advise AGAINST pulling in Tokio or heavy async runtimes for local disk file scanning; recommend standard synchronous library with thread-pool/data parallelism via rayon; use clap v4 for declarative argument parsing; enforce strict stream separation (hashes/payload on stdout, progress/logs on stderr); detect terminal capabilities via is_terminal before emitting ANSI colors; respect NO_COLOR.",
+    "evidence_requirements": [
+      "reject_unnecessary_async_runtime_tokio",
+      "recommend_synchronous_or_rayon",
+      "strict_stdout_stderr_separation",
+      "terminal_detection_or_no_color",
+      "clap_argument_parsing"
+    ],
+    "safety_expectations": "Tier 0 architectural design.",
+    "failure_conditions": [
+      "Recommending Tokio as mandatory for simple local file hashing",
+      "Mixing progress messages and machine output on stdout",
+      "Ignoring terminal detection for colors"
+    ],
+    "eval_type": "app_rust_cli"
+  },
+  {
+    "id": "eval_app_02_c_systems_utility",
+    "name": "Design a C Systems Utility",
+    "scenario_description": "Review a C file processing utility for resource leaks, buffer bounds safety, and proper single-point-of-exit cleanup.",
+    "input": {
+      "code_snippet": "int process_log(const char *path) {\n    FILE *f = fopen(path, \"r\");\n    char *buf = malloc(1024);\n    char line[256];\n    while (fgets(line, sizeof(line), f)) {\n        if (strstr(line, \"ERROR\")) {\n            strcpy(buf, line);\n            return 1; // Leaks f and buf!\n        }\n    }\n    free(buf);\n    fclose(f);\n    return 0;\n}"
+    },
+    "expected_skill": "linux-application-engineering",
+    "research_requirements": "C resource ownership, memory leak prevention, goto cleanup pattern or __attribute__((cleanup)), bounds safety.",
+    "expected_behavior": "Identify severe resource leaks of both FILE pointer 'f' and memory buffer 'buf' on early return; flag unsafe strcpy and potential null dereference if fopen or malloc fails; rewrite function using the single-point-of-exit cleanup goto pattern (or GCC/Clang __attribute__((cleanup)) / autofree); ensure NULL checks for fopen and malloc.",
+    "evidence_requirements": [
+      "flag_resource_leak_early_return",
+      "flag_missing_null_checks_fopen_malloc",
+      "prescribe_cleanup_goto_or_attribute_cleanup",
+      "ensure_fclose_and_free_on_all_paths"
+    ],
+    "safety_expectations": "Tier 0 code review.",
+    "failure_conditions": [
+      "Approving the code without flagging resource leaks",
+      "Missing the leaked file descriptor on early return"
+    ],
+    "eval_type": "app_c_utility"
+  },
+  {
+    "id": "eval_app_03_cpp_modern_app",
+    "name": "Design a Modern C++ Application",
+    "scenario_description": "Review a proposed C++ service for raw pointer usage, unjoined threads causing crashes, and missing move semantics.",
+    "input": {
+      "code_snippet": "class Service {\n    int *raw_buffer;\n    std::thread worker;\npublic:\n    Service() { raw_buffer = new int[1024]; worker = std::thread(&Service::run, this); }\n    ~Service() { delete raw_buffer; } // Crash: worker not joined, delete instead of delete[]!\n};"
+    },
+    "expected_skill": "linux-application-engineering",
+    "research_requirements": "Modern C++ (C++20/C++17) RAII, std::unique_ptr, std::vector, std::jthread, Rule of Zero/Five.",
+    "expected_behavior": "Flag fatal flaws: calling delete instead of delete[] on raw array causing undefined behavior; std::thread destructor calling std::terminate() because thread is neither joined nor detached; recommend modern C++ RAII: replace raw pointer with std::vector<int> or std::unique_ptr<int[]>, replace std::thread with C++20 std::jthread with std::stop_token for cooperative cancellation.",
+    "evidence_requirements": [
+      "flag_delete_array_mismatch",
+      "flag_unjoined_thread_std_terminate",
+      "recommend_raii_unique_ptr_or_vector",
+      "recommend_std_jthread_with_stop_token"
+    ],
+    "safety_expectations": "Tier 0 code review.",
+    "failure_conditions": [
+      "Approving raw pointer and raw std::thread usage",
+      "Failing to recognize std::terminate on std::thread destruction"
+    ],
+    "eval_type": "app_cpp_modern"
+  },
+  {
+    "id": "eval_app_04_system_daemon",
+    "name": "Design a Long-Running System Daemon",
+    "scenario_description": "Review a proposed background service implementation attempting traditional double-forking and daemonize() on modern Linux.",
+    "input": {
+      "user_prompt": "I am writing a background network daemon in C. Should I use fork() twice, setsid(), and redirect stdin/stdout to /dev/null so it runs as a daemon?"
+    },
+    "expected_skill": "linux-application-engineering",
+    "research_requirements": "systemd daemon engineering, Type=notify, sd_notify, double-fork anti-pattern, journald logging.",
+    "expected_behavior": "Advise AGAINST legacy double-fork daemonization; explain that on modern systemd Linux, double-forking breaks PID tracking, causes cgroup leakage, and disconnects logs; instruct daemon to run in foreground and integrate with systemd via Type=notify and sd_notify('READY=1'); direct logs to stderr for native journald capture; handle SIGHUP for atomic config reloading and SIGTERM for graceful drain and exit.",
+    "evidence_requirements": [
+      "reject_double_fork_daemonize_antipattern",
+      "instruct_foreground_execution_under_systemd",
+      "prescribe_sd_notify_ready",
+      "handle_sighup_and_sigterm_lifecycle"
+    ],
+    "safety_expectations": "Tier 0 architectural advisory.",
+    "failure_conditions": [
+      "Recommending or generating obsolete double-fork daemonize() code",
+      "Failing to cite systemd Type=notify or sd_notify"
+    ],
+    "eval_type": "app_system_daemon"
+  },
+  {
+    "id": "eval_app_05_inappropriate_microservices",
+    "name": "Identify Inappropriate Use of Microservices",
+    "scenario_description": "An engineer proposes splitting a local single-user CLI audio converter into 4 containerized microservices communicating over localhost TCP.",
+    "input": {
+      "architecture_proposal": "Split our desktop audio converter into 4 Docker microservices: ui-service, decoder-service, filter-service, and encoder-service, communicating over localhost HTTP/REST on ports 8001-8004."
+    },
+    "expected_skill": "linux-application-engineering",
+    "research_requirements": "Local application architecture, IPC overhead, modular monolith, Unix domain sockets vs local TCP.",
+    "expected_behavior": "Reject the microservices architecture as inappropriate for a single-host desktop application; explain massive serialization, latency, and resource overhead of multiple container runtimes and HTTP stacks; explain that localhost TCP exposes internal interfaces to all unprivileged users on the host; recommend a clean modular monolith using shared libraries, thread pools, or if process separation is required, Unix domain sockets (AF_UNIX) with shared memory buffers (memfd_create).",
+    "evidence_requirements": [
+      "reject_local_microservice_bloat",
+      "recommend_modular_monolith",
+      "explain_localhost_tcp_security_and_overhead",
+      "prescribe_unix_domain_sockets_or_shared_memory"
+    ],
+    "safety_expectations": "Tier 0 architectural review.",
+    "failure_conditions": [
+      "Approving 4 containerized HTTP microservices for a local CLI utility",
+      "Ignoring localhost TCP security risks"
+    ],
+    "eval_type": "app_microservices_critique"
+  },
+  {
+    "id": "eval_app_06_process_lifecycle_bug",
+    "name": "Diagnose a Process Lifecycle Bug",
+    "scenario_description": "A long-running daemon spawns worker processes using fork() and execve(), but after several days the system process table is exhausted with thousands of '<defunct>' processes.",
+    "input": {
+      "ps_output": "1041 ? Ss 0:02 mydaemon\n1045 ? Z  0:00 [worker] <defunct>\n1048 ? Z  0:00 [worker] <defunct>\n1052 ? Z  0:00 [worker] <defunct> ... (4000+ entries)",
+      "symptom": "System reports 'fork: Resource temporarily unavailable' (PID exhaustion)."
+    },
+    "expected_skill": "linux-application-engineering",
+    "research_requirements": "Process lifecycle, zombie process accumulation, SIGCHLD, waitpid(2), WNOHANG.",
+    "expected_behavior": "Diagnose zombie process accumulation caused by the parent daemon failing to reap terminated child processes; explain that when a child exits, its PID and exit status remain in the kernel process table until the parent reads them via wait/waitpid; prescribe registering a SIGCHLD signal handler (or using signalfd/prctl) that calls waitpid(-1, &status, WNOHANG) in a loop until no reaped children remain.",
+    "evidence_requirements": [
+      "diagnose_zombie_defunct_processes",
+      "identify_unreaped_child_exit_status",
+      "prescribe_sigchld_handler",
+      "call_waitpid_with_wnohang_loop"
+    ],
+    "safety_expectations": "Tier 0 diagnostics.",
+    "failure_conditions": [
+      "Recommending increasing kernel.pid_max without fixing the leak",
+      "Failing to prescribe waitpid with WNOHANG in SIGCHLD"
+    ],
+    "eval_type": "app_process_lifecycle"
+  },
+  {
+    "id": "eval_app_07_unsafe_filesystem_access",
+    "name": "Review Unsafe Filesystem Access",
+    "scenario_description": "Review an image processing utility that extracts user-uploaded zip archives and opens files in /tmp using predictable filenames.",
+    "input": {
+      "code_snippet": "void extract_image(const char *filename) {\n    char path[512];\n    sprintf(path, \"/tmp/app_cache/%s\", filename); // Vulnerable to path traversal!\n    FILE *f = fopen(path, \"w\"); // Predictable path in shared /tmp!\n    // ...\n}"
+    },
+    "expected_skill": "linux-application-engineering",
+    "research_requirements": "Path traversal, symlink attacks, openat2 with RESOLVE_BENEATH, mkstemp, XDG_CACHE_HOME.",
+    "expected_behavior": "Flag two critical security vulnerabilities: 1) Path traversal via filenames containing '../' allowing arbitrary file overwrites; 2) Symlink/TOCTOU race in shared /tmp directory allowing link target overwrites; prescribe validating and sanitizing paths, using openat2 with RESOLVE_BENEATH or canonical path verification, using mkstemp/O_EXCL for temporary files, and respecting XDG_CACHE_HOME instead of hardcoding /tmp.",
+    "evidence_requirements": [
+      "flag_path_traversal_vulnerability",
+      "flag_symlink_attack_in_shared_tmp",
+      "prescribe_openat2_resolve_beneath_or_canonicalize",
+      "prescribe_mkstemp_or_xdg_cache_home"
+    ],
+    "safety_expectations": "Tier 0 security audit.",
+    "failure_conditions": [
+      "Approving the sprintf path construction",
+      "Failing to recognize path traversal via '../'"
+    ],
+    "eval_type": "app_unsafe_filesystem"
+  },
+  {
+    "id": "eval_app_08_concurrency_deadlock",
+    "name": "Diagnose a Concurrency Deadlock",
+    "scenario_description": "A multi-threaded C++ service experiences intermittent deadlocks during concurrent account transfers between Thread 1 (transfer A->B) and Thread 2 (transfer B->A).",
+    "input": {
+      "code_snippet": "void transfer(Account &from, Account &to, double amount) {\n    from.mutex.lock();\n    to.mutex.lock(); // Deadlock when Thread 1 transfers A->B and Thread 2 transfers B->A simultaneously!\n    from.balance -= amount;\n    to.balance += amount;\n    to.mutex.unlock();\n    from.mutex.unlock();\n}"
+    },
+    "expected_skill": "linux-application-engineering",
+    "research_requirements": "Concurrency deadlocks, lock acquisition ordering, std::scoped_lock (C++17), deadlock-avoidance algorithms.",
+    "expected_behavior": "Diagnose classic lock-order inversion deadlock: Thread 1 acquires lock A and waits for B, while Thread 2 acquires lock B and waits for A; prescribe modern C++ solution using std::scoped_lock (or std::lock) which acquires multiple mutexes simultaneously using a deadlock-avoidance algorithm; alternatively establish a strict global lock hierarchy (e.g. always lock account with smaller memory address or ID first).",
+    "evidence_requirements": [
+      "diagnose_lock_order_inversion_deadlock",
+      "explain_circular_wait_condition",
+      "prescribe_std_scoped_lock_or_std_lock",
+      "explain_consistent_lock_hierarchy"
+    ],
+    "safety_expectations": "Tier 0 concurrency analysis.",
+    "failure_conditions": [
+      "Failing to identify the lock-order inversion between transfer(A, B) and transfer(B, A)",
+      "Recommending arbitrary sleep loops instead of atomic multi-lock acquisition"
+    ],
+    "eval_type": "app_concurrency_deadlock"
+  }
+]

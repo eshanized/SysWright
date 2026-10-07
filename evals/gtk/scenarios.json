@@ -1,0 +1,117 @@
+[
+  {
+    "id": "eval_gtk_01_gtk4_application",
+    "name": "Design a GTK 4 Application Architecture",
+    "scenario_description": "Structure a modern GTK 4 application using GtkApplication. Differentiate startup from activate signals, and implement declarative actions and accelerators.",
+    "input": {
+      "user_prompt": "How should I structure the main entry point and window creation for a modern GTK 4 C application? Where do actions get registered, and why shouldn't I create the window in startup?"
+    },
+    "expected_skill": "gtk-engineering",
+    "research_requirements": "GtkApplication, GApplication lifecycle, startup vs activate signal separation, GActions, accelerators.",
+    "expected_behavior": "Explain the GtkApplication lifecycle: startup signal runs once in the primary instance to initialize actions, load CSS, and register accelerators; activate signal runs whenever the application is launched (including secondary instances) to create or present the window via gtk_window_present(); explain that creating the window in startup breaks single-instance activation on secondary launches; demonstrate GActionEntry and gtk_application_set_accels_for_action().",
+    "evidence_requirements": [
+      "differentiate_startup_and_activate_signals",
+      "create_or_present_window_in_activate",
+      "register_actions_in_startup",
+      "explain_single_instance_activation"
+    ],
+    "safety_expectations": "Tier 0 architecture design.",
+    "failure_conditions": [
+      "Creating and showing the window in startup",
+      "Ignoring single-instance multi-launch behavior"
+    ],
+    "eval_type": "gtk_application_architecture"
+  },
+  {
+    "id": "eval_gtk_02_gobject_ownership",
+    "name": "Identify Misuse of GObject Ownership",
+    "scenario_description": "Review a C codebase managing GTK widgets and GObject signal handlers for floating reference leaks and circular reference cycles.",
+    "input": {
+      "code_snippet": "void create_dialog(MyObject *obj) {\n    GtkWidget *dialog = gtk_dialog_new(); // Floating reference\n    // Never added to parent container or presented!\n    g_signal_connect(dialog, \"response\", G_CALLBACK(on_response), g_object_ref(obj)); // Circular ref leak!\n}"
+    },
+    "expected_skill": "gtk-engineering",
+    "research_requirements": "GObject floating references, GInitiallyUnowned, g_object_ref_sink, g_signal_connect_object, reference cycle prevention.",
+    "expected_behavior": "Identify two memory flaws: 1) The unparented, unshown dialog leaks its floating reference because widgets inherit from GInitiallyUnowned and only have their reference sunk when added to a container; 2) Manually calling g_object_ref(obj) in user_data without unrefing it creates a memory leak or reference cycle; prescribe using g_signal_connect_object to tie callback lifetime to the target object, and calling g_object_unref on unparented widgets.",
+    "evidence_requirements": [
+      "explain_floating_reference_leak_on_unparented_widget",
+      "flag_circular_reference_in_signal_callback",
+      "prescribe_g_signal_connect_object",
+      "prescribe_g_object_unref_or_parenting"
+    ],
+    "safety_expectations": "Tier 0 code review.",
+    "failure_conditions": [
+      "Approving the unparented widget creation without unref",
+      "Failing to understand floating reference mechanics"
+    ],
+    "eval_type": "gtk_gobject_ownership"
+  },
+  {
+    "id": "eval_gtk_03_blocked_main_loop",
+    "name": "Diagnose a Blocked GTK Main Loop",
+    "scenario_description": "A GTK 4 file manager freezes completely and stops animating spinners whenever the user opens a remote network share.",
+    "input": {
+      "c_code": "static void on_open_share_clicked(GtkButton *btn, gpointer user_data) {\n    // Executed on GMainContext UI thread!\n    char *contents = NULL;\n    gsize len = 0;\n    GError *err = NULL;\n    g_file_load_contents(remote_file, NULL, &contents, &len, NULL, &err); // Blocking network syscall!\n    update_view(contents);\n}"
+    },
+    "expected_skill": "gtk-engineering",
+    "research_requirements": "GLib main context, non-blocking UI, GFile asynchronous operations (g_file_load_contents_async), GTask, GCancellable.",
+    "expected_behavior": "Diagnose that invoking synchronous g_file_load_contents() blocks the GMainContext thread on network I/O, preventing the GSK rendering pipeline from redrawing the window and rendering the UI frozen; prescribe replacing synchronous calls with asynchronous GIO primitives: g_file_load_contents_async() and g_file_load_contents_finish() with GCancellable support, allowing the main loop to remain responsive while waiting for network responses.",
+    "evidence_requirements": [
+      "diagnose_gmaincontext_blocking_on_synchronous_io",
+      "prescribe_g_file_load_contents_async",
+      "prescribe_async_callback_with_finish",
+      "recommend_gcancellable_support"
+    ],
+    "safety_expectations": "Tier 0 diagnostic.",
+    "failure_conditions": [
+      "Recommending legacy g_thread_new without GIO async primitives",
+      "Failing to identify the blocking synchronous call"
+    ],
+    "eval_type": "gtk_blocked_main_loop"
+  },
+  {
+    "id": "eval_gtk_04_libadwaita_compatibility",
+    "name": "Review GTK and Libadwaita Compatibility",
+    "scenario_description": "An engineer asks whether a cross-desktop system monitor utility targeting Xfce, KDE Plasma, and Cinnamon should use Libadwaita or standard GTK 4.",
+    "input": {
+      "user_prompt": "We are building an unprivileged system monitor intended to run across Xfce, KDE Plasma, COSMIC, and Cinnamon. Should we base it on Libadwaita (AdwApplication)?"
+    },
+    "expected_skill": "gtk-engineering",
+    "research_requirements": "Libadwaita vs standard GTK 4, GNOME HIG styling, desktop neutrality, theme respect.",
+    "expected_behavior": "Advise AGAINST adopting Libadwaita for a cross-desktop utility targeting non-GNOME desktops; explain that Libadwaita hardcodes GNOME styling, overrides system GTK themes, and is specifically tailored to GNOME Human Interface Guidelines; recommend using standard GTK 4 (GtkApplication, standard GtkBox, GtkHeaderBar) which respects user-configured GTK themes on Xfce, Cinnamon, and KDE Plasma, ensuring clean cross-desktop neutrality.",
+    "evidence_requirements": [
+      "advise_standard_gtk4_for_cross_desktop_neutrality",
+      "explain_libadwaita_gnome_hig_coupling",
+      "explain_theme_overriding_and_styling_assumptions",
+      "cite_gtkapplication_standard_components"
+    ],
+    "safety_expectations": "Tier 0 architectural evaluation.",
+    "failure_conditions": [
+      "Recommending Libadwaita indiscriminately for cross-desktop environments",
+      "Claiming standard GTK 4 cannot run on non-GNOME desktops"
+    ],
+    "eval_type": "gtk_libadwaita_compatibility"
+  },
+  {
+    "id": "eval_gtk_05_accessibility_audit",
+    "name": "Evaluate Application Accessibility",
+    "scenario_description": "Audit a GTK 4 audio player toolbar containing three icon-only buttons (Play, Pause, Stop) that Orca screen reader cannot announce.",
+    "input": {
+      "xml_ui": "<object class=\"GtkBox\">\n  <child>\n    <object class=\"GtkButton\" id=\"btn_play\">\n      <property name=\"icon-name\">media-playback-start-symbolic</property>\n    </object>\n  </child>\n</object>"
+    },
+    "expected_skill": "gtk-engineering",
+    "research_requirements": "AT-SPI accessibility in GTK 4, GtkAccessible, accessible roles, accessible names/labels, keyboard focus.",
+    "expected_behavior": "Diagnose that icon-only buttons have no text content, causing AT-SPI screen readers (Orca) to announce them as empty, unlabeled buttons; explain that accessibility is an engineering invariant; prescribe adding accessible names using the 'accessible-role' and updating properties via GtkAccessible: in XML via <property name=\"tooltip-text\"> and accessible label, or in C via gtk_accessible_update_property(GTK_ACCESSIBLE(btn), GTK_ACCESSIBLE_PROPERTY_LABEL, \"Play\", -1); verify keyboard focusability via gtk_widget_set_focusable.",
+    "evidence_requirements": [
+      "flag_missing_accessible_label_on_icon_button",
+      "explain_at_spi_screen_reader_failure",
+      "prescribe_gtk_accessible_property_label_or_xml_property",
+      "verify_keyboard_focus_and_navigation"
+    ],
+    "safety_expectations": "Tier 0 accessibility audit.",
+    "failure_conditions": [
+      "Claiming tooltip alone satisfies screen readers without accessible properties",
+      "Treating accessibility as an optional enhancement"
+    ],
+    "eval_type": "gtk_accessibility_audit"
+  }
+]

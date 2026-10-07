@@ -1,0 +1,166 @@
+[
+  {
+    "id": "eval_build_01_modern_cmake",
+    "name": "Review an Incorrect Modern CMake Configuration",
+    "scenario_description": "Review a legacy CMakeLists.txt that pollutes global directories with include_directories(), link_libraries(), and add_definitions().",
+    "input": {
+      "cmake_code": "cmake_minimum_required(VERSION 2.8)\nproject(MyLegacyProject)\ninclude_directories(/usr/include/mycustom /opt/boost/include)\nlink_libraries(pthread m ssl crypto)\nadd_definitions(-DDEBUG_MODE=1 -Wall)\nadd_executable(myapp main.cpp)"
+    },
+    "expected_skill": "linux-build-engineering",
+    "research_requirements": "Modern target-based CMake 3.20+, target_include_directories, target_link_libraries, target_compile_definitions, PUBLIC/PRIVATE visibility.",
+    "expected_behavior": "Flag that global directory-level commands (include_directories, link_libraries, add_definitions) violate modern target-based CMake principles and leak flags to unrelated subdirectories; rewrite using target-based commands: bump cmake_minimum_required to 3.20+, declare add_executable(myapp main.cpp), and attach scoped properties: target_include_directories(myapp PRIVATE ...), target_link_libraries(myapp PRIVATE ...), target_compile_definitions(myapp PRIVATE ...), and target_compile_options(myapp PRIVATE -Wall).",
+    "evidence_requirements": [
+      "flag_global_directory_level_commands",
+      "prescribe_target_include_directories",
+      "prescribe_target_link_libraries",
+      "prescribe_target_compile_definitions",
+      "enforce_private_public_interface_visibility"
+    ],
+    "safety_expectations": "Tier 0 code review.",
+    "failure_conditions": [
+      "Approving the legacy global CMake syntax",
+      "Failing to explain target-based visibility requirements"
+    ],
+    "eval_type": "build_modern_cmake"
+  },
+  {
+    "id": "eval_build_02_meson_dependencies",
+    "name": "Diagnose a Meson Dependency Failure",
+    "scenario_description": "A developer runs 'meson setup build' on an application depending on GTK 4, but Meson halts with 'Dependency \"gtk4\" not found, tried pkgconfig'.",
+    "input": {
+      "meson_code": "gtk_dep = dependency('gtk4', version : '>= 4.12.0')",
+      "error_log": "Run-time dependency 'gtk4' found: NO (tried pkgconfig)\nmeson.build:8:10: ERROR: Dependency \"gtk4\" not found, tried pkgconfig"
+    },
+    "expected_skill": "linux-build-engineering",
+    "research_requirements": "Meson dependency resolution, pkg-config, PKG_CONFIG_PATH, subprojects/wrap fallback.",
+    "expected_behavior": "Diagnose that Meson queries pkg-config by default to locate system development libraries; explain that 'gtk4.pc' is missing from PKG_CONFIG_PATH because the development headers package (gtk4) is not installed on the system; prescribe installing the system package (e.g. pacman -S gtk4); explain that if compiling an embedded or isolated build, a Meson wrap file (subprojects/gtk4.wrap) can be provided as a fallback via dependency('gtk4', fallback : ['gtk4', 'gtk_dep']).",
+    "evidence_requirements": [
+      "diagnose_missing_pkg_config_metadata",
+      "explain_pkg_config_path_search",
+      "prescribe_installing_system_gtk4_package",
+      "explain_meson_wrap_subproject_fallback"
+    ],
+    "safety_expectations": "Tier 0 diagnostic.",
+    "failure_conditions": [
+      "Recommending manually hardcoding -I/usr/include in CFLAGS",
+      "Failing to identify the missing pkg-config .pc file"
+    ],
+    "eval_type": "build_meson_dependencies"
+  },
+  {
+    "id": "eval_build_03_cargo_workspace",
+    "name": "Review a Cargo Workspace and Packaging Configuration",
+    "scenario_description": "Review a multi-crate Cargo project for clean workspace structure, LTO/strip release profiles, and offline reproducible build flags.",
+    "input": {
+      "user_prompt": "We have 3 crates (cli, core, server). How should we structure the root Cargo.toml workspace? What profile settings should we configure for production releases, and how do we ensure offline builds in CI chroots?"
+    },
+    "expected_skill": "linux-build-engineering",
+    "research_requirements": "Cargo workspaces, [workspace.dependencies], release profile optimization (lto, codegen-units, strip), --frozen, --locked.",
+    "expected_behavior": "Provide root Cargo.toml with [workspace] declaring members and centralized [workspace.dependencies]; configure production [profile.release] with lto = 'thin', codegen-units = 1, and strip = 'debuginfo'; prescribe the standard offline build workflow for clean chroots: run 'cargo fetch --locked' during prepare phase with network access, and execute 'cargo build --frozen --release' during offline build phase to ensure reproducibility and prevent network calls.",
+    "evidence_requirements": [
+      "structure_root_cargo_workspace_members",
+      "configure_release_profile_lto_and_strip",
+      "prescribe_cargo_fetch_locked_in_prepare",
+      "prescribe_cargo_build_frozen_in_build"
+    ],
+    "safety_expectations": "Tier 0 build architecture.",
+    "failure_conditions": [
+      "Recommending running cargo build without --frozen in chroots",
+      "Missing workspace centralized dependency management"
+    ],
+    "eval_type": "build_cargo_workspace"
+  },
+  {
+    "id": "eval_build_04_abi_compatibility",
+    "name": "Diagnose an ABI Compatibility Issue",
+    "scenario_description": "A shared library release adds a new virtual member function in the middle of a public C++ class and removes an exported symbol without bumping the library SOVERSION, causing existing client applications to crash with SIGSEGV.",
+    "input": {
+      "cxx_diff": "class MyEngine {\npublic:\n    virtual void init();\n+   virtual void configure(); // Inserted before start()!\n    virtual void start();\n};",
+      "cmake_code": "set_target_properties(myengine PROPERTIES VERSION 1.1.0 SOVERSION 1)"
+    },
+    "expected_skill": "linux-build-engineering",
+    "research_requirements": "C++ ABI stability, virtual method table (vtable) ordering, SONAME, SOVERSION, symbol versioning.",
+    "expected_behavior": "Diagnose catastrophic C++ ABI breakage: inserting a virtual function into the class alters the vtable layout and offsets for all subsequent virtual functions (such as start()); existing binaries compiled against SOVERSION 1 will invoke configure() when attempting to call start(), causing data corruption or SIGSEGV; explain that breaking the binary ABI strictly requires incrementing the SOVERSION (e.g. to SOVERSION 2) or preserving backward compatibility by appending virtual functions at the end of the class or using the Pimpl idiom.",
+    "evidence_requirements": [
+      "diagnose_vtable_layout_shift_and_abi_breakage",
+      "explain_why_soversion_must_be_incremented",
+      "recommend_soversion_2_bump",
+      "prescribe_pimpl_idiom_or_append_order"
+    ],
+    "safety_expectations": "Tier 0 ABI analysis.",
+    "failure_conditions": [
+      "Claiming adding a virtual function is ABI-safe without changing SOVERSION",
+      "Failing to understand C++ vtable dispatch mechanics"
+    ],
+    "eval_type": "build_abi_compatibility"
+  },
+  {
+    "id": "eval_build_05_inappropriate_rpath",
+    "name": "Identify an Inappropriate RPATH",
+    "scenario_description": "A package build produces a binary that embeds hardcoded developer paths (/home/builder/work/lib) in the ELF DT_RUNPATH header.",
+    "input": {
+      "readelf_output": "Dynamic section at offset 0x3d00 contains 30 entries:\n  Tag        Type                         Name/Value\n 0x000000000000001d (RUNPATH)            Library runpath: [/home/builder/work/build/lib:/usr/local/lib]\n 0x0000000000000001 (NEEDED)             Shared library: [libmyhelper.so.1]"
+    },
+    "expected_skill": "linux-build-engineering",
+    "research_requirements": "ELF dynamic section, DT_RPATH, DT_RUNPATH, $ORIGIN, CMAKE_SKIP_INSTALL_RPATH, reproducible builds.",
+    "expected_behavior": "Identify that embedding build-host directory paths (/home/builder/work/build/lib) in the production binary DT_RUNPATH violates distribution packaging standards, breaks build reproducibility, and creates a potential security vulnerability; prescribe remediation: 1) For system-wide software installed to /usr/bin linking against /usr/lib, clear unnecessary RPATHs on install (set CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE or chrpath -d); 2) For self-contained application bundles, use relocatable relative RPATHs using $ORIGIN (e.g. set_target_properties(myapp PROPERTIES INSTALL_RPATH \"$ORIGIN/../lib\")).",
+    "evidence_requirements": [
+      "flag_hardcoded_build_host_rpath_violation",
+      "explain_security_and_reproducibility_risks",
+      "prescribe_clearing_rpath_for_system_install",
+      "prescribe_origin_relative_rpath_for_bundles"
+    ],
+    "safety_expectations": "Tier 0 ELF audit.",
+    "failure_conditions": [
+      "Approving the hardcoded builder path in RUNPATH",
+      "Failing to explain $ORIGIN for relative bundles"
+    ],
+    "eval_type": "build_inappropriate_rpath"
+  },
+  {
+    "id": "eval_build_06_cross_compilation",
+    "name": "Review a Cross-Compilation Configuration",
+    "scenario_description": "Review a CMake cross-compilation toolchain file targeting AArch64 that mistakenly searches the build host for headers and libraries and runs target binaries during build.",
+    "input": {
+      "toolchain_code": "set(CMAKE_SYSTEM_NAME Linux)\nset(CMAKE_SYSTEM_PROCESSOR aarch64)\nset(CMAKE_C_COMPILER aarch64-linux-gnu-gcc)\n# Missing CMAKE_SYSROOT!\n# CMAKE_FIND_ROOT_PATH_MODE set to BOTH or NEVER!"
+    },
+    "expected_skill": "linux-build-engineering",
+    "research_requirements": "CMake cross-compilation, CMAKE_SYSROOT, CMAKE_FIND_ROOT_PATH_MODE_*, target triples.",
+    "expected_behavior": "Identify critical cross-compilation flaws: 1) Missing CMAKE_SYSROOT pointing to the target architecture rootfs, which causes the compiler to inadvertently link against host x86_64 glibc; 2) Failing to configure root path search modes, allowing find_package() to locate host libraries; prescribe setting CMAKE_SYSROOT, CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER (run only host tools), and CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY and CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY (search only target sysroot).",
+    "evidence_requirements": [
+      "require_cmake_sysroot_specification",
+      "configure_cmake_find_root_path_mode_program_never",
+      "configure_cmake_find_root_path_mode_library_only",
+      "configure_cmake_find_root_path_mode_include_only"
+    ],
+    "safety_expectations": "Tier 0 cross-compilation review.",
+    "failure_conditions": [
+      "Allowing search modes to search host root paths for target libraries",
+      "Omitting CMAKE_SYSROOT"
+    ],
+    "eval_type": "build_cross_compilation"
+  },
+  {
+    "id": "eval_build_07_unnecessary_bundled_dependency",
+    "name": "Diagnose an Unnecessary Bundled Dependency",
+    "scenario_description": "A CMake project vendors old versions of zlib and sqlite in source subdirectories (3rdparty/zlib, 3rdparty/sqlite) and compiles them statically into the binary.",
+    "input": {
+      "cmake_code": "add_subdirectory(3rdparty/zlib)\nadd_subdirectory(3rdparty/sqlite)\ntarget_link_libraries(myapp PRIVATE zlib_static sqlite_static)"
+    },
+    "expected_skill": "linux-build-engineering",
+    "research_requirements": "Vendored dependencies policy, system library linking, find_package, PkgConfig, security patching.",
+    "expected_behavior": "Audit against Linux distribution engineering standards: compiling vendored/bundled copies of system libraries (zlib, sqlite) conceals security vulnerabilities, prevents system-wide security patching, increases binary bloat, and duplicates memory across processes; instruct unbundling: use find_package(ZLIB REQUIRED) and PkgConfig (or find_package(SQLite3 REQUIRED)) to link against system shared libraries; provide CMake options (e.g. USE_SYSTEM_ZLIB=ON) to allow toggling.",
+    "evidence_requirements": [
+      "flag_vendored_bundled_libraries_policy_violation",
+      "explain_security_patching_and_bloat_risks",
+      "prescribe_find_package_or_pkgconfig_for_system_libs",
+      "provide_use_system_libraries_cmake_option"
+    ],
+    "safety_expectations": "Tier 0 build audit.",
+    "failure_conditions": [
+      "Encouraging bundling of common system libraries",
+      "Failing to cite find_package for ZLIB/SQLite"
+    ],
+    "eval_type": "build_bundled_dependency"
+  }
+]

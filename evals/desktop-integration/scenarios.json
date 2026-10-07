@@ -1,0 +1,165 @@
+[
+  {
+    "id": "eval_desktop_01_desktop_entry",
+    "name": "Prepare and Validate a Desktop Entry",
+    "scenario_description": "Review an invalid desktop launcher file containing path-hardcoded icons, missing required fields, and incorrect field codes.",
+    "input": {
+      "desktop_content": "[Desktop Entry]\nName=My App\nExec=/usr/bin/myapp %f\nIcon=/home/user/icons/app.png\nTerminal=0\nCategories=Utility"
+    },
+    "expected_skill": "desktop-integration",
+    "research_requirements": "Freedesktop Desktop Entry Specification 1.5, desktop-file-validate, Hicolor icon resolution, Categories trailing semicolon.",
+    "expected_behavior": "Identify multiple specification violations: 1) Icon must specify the base icon name without path or extension ('Icon=my-app'), relying on /usr/share/icons/hicolor/; 2) Terminal should be a boolean string ('Terminal=false'); 3) Categories must end with a trailing semicolon ('Categories=Utility;'); 4) Missing 'Type=Application' declaration; 5) Prescribe validating the corrected file with desktop-file-validate.",
+    "evidence_requirements": [
+      "flag_icon_path_hardcoding",
+      "require_type_application",
+      "require_trailing_semicolon_on_categories",
+      "prescribe_desktop_file_validate"
+    ],
+    "safety_expectations": "Tier 0 static file review.",
+    "failure_conditions": [
+      "Approving the hardcoded icon path",
+      "Failing to cite desktop-file-validate"
+    ],
+    "eval_type": "desktop_entry_validation"
+  },
+  {
+    "id": "eval_desktop_02_dbus_api_design",
+    "name": "Design a D-Bus API",
+    "scenario_description": "Design the D-Bus interface and introspection XML for a background hardware temperature monitoring service on the session bus.",
+    "input": {
+      "user_prompt": "We need to expose CPU and GPU temperature sensors over D-Bus for desktop shell applets. How should we name the bus, paths, and interface, and what does the introspection XML look like?"
+    },
+    "expected_skill": "desktop-integration",
+    "research_requirements": "D-Bus specification, reverse-domain naming, object paths, introspection XML, properties, signals.",
+    "expected_behavior": "Provide standardized reverse-domain naming: bus name 'org.example.HardwareMonitor', object path '/org/example/HardwareMonitor', interface 'org.example.HardwareMonitor.Sensors'; generate standard D-Bus introspection XML declaring read-only properties ('CpuTemperature' type 'd', 'GpuTemperature' type 'd') with org.freedesktop.DBus.Properties interface; define a 'TemperatureAlert' signal and a 'GetSensorReport' method.",
+    "evidence_requirements": [
+      "reverse_domain_naming_conventions",
+      "standard_dbus_introspection_xml",
+      "declare_properties_methods_and_signals",
+      "org_freedesktop_dbus_properties_interface"
+    ],
+    "safety_expectations": "Tier 0 API architecture.",
+    "failure_conditions": [
+      "Using non-reverse-domain names (e.g. 'mybus')",
+      "Generating invalid introspection XML"
+    ],
+    "eval_type": "desktop_dbus_design"
+  },
+  {
+    "id": "eval_desktop_03_dbus_authorization",
+    "name": "Identify Incorrect D-Bus Authorization",
+    "scenario_description": "Review a proposed system bus service that exposes an unrestricted privileged method allowing unauthenticated desktop clients to execute arbitrary shell commands.",
+    "input": {
+      "dbus_xml": "<interface name=\"org.example.SystemHelper\">\n  <method name=\"RunCommand\">\n    <arg name=\"cmd\" type=\"s\" direction=\"in\"/>\n  </method>\n</interface>",
+      "policy_conf": "<policy context=\"default\">\n  <allow send_destination=\"org.example.SystemHelper\"/>\n</policy>"
+    },
+    "expected_skill": "desktop-integration",
+    "research_requirements": "D-Bus system bus security, polkit authorization, command injection, least privilege.",
+    "expected_behavior": "Flag a catastrophic security vulnerability: the system bus configuration grants unrestricted access to RunCommand, allowing any unprivileged local user to execute arbitrary commands as root; explain that arbitrary command execution should never be exposed over D-Bus; require replacing generic command execution with narrowly scoped, parameterized methods; enforce polkit authorization checks (polkit_authority_check_authorization) on the system bus.",
+    "evidence_requirements": [
+      "flag_critical_privilege_escalation",
+      "reject_arbitrary_command_execution_over_dbus",
+      "prescribe_narrow_parameterized_methods",
+      "enforce_polkit_authorization_check"
+    ],
+    "safety_expectations": "Tier 0 security audit.",
+    "failure_conditions": [
+      "Approving the open RunCommand interface",
+      "Failing to mandate polkit authorization"
+    ],
+    "eval_type": "desktop_dbus_authorization"
+  },
+  {
+    "id": "eval_desktop_04_missing_portal",
+    "name": "Diagnose Missing Portal Functionality",
+    "scenario_description": "A sandboxed graphics editor fails to open files chosen by the user, logging 'Permission denied' when attempting to open /home/user/Pictures directly.",
+    "input": {
+      "error_log": "open(\"/home/user/Pictures/photo.jpg\"): Permission denied (errno 13)\nEnvironment: Flatpak / Bubblewrap isolated mount namespace"
+    },
+    "expected_skill": "desktop-integration",
+    "research_requirements": "XDG Desktop Portals, org.freedesktop.portal.FileChooser, sandboxing mediation, Document portal.",
+    "expected_behavior": "Diagnose that sandboxed applications run inside isolated mount namespaces without direct host filesystem access; explain that legacy direct open() calls are denied by the kernel sandbox; prescribe replacing legacy file pickers with the XDG Desktop Portal FileChooser interface (org.freedesktop.portal.FileChooser / GtkFileChooserNative / QFileDialog); explain that the portal prompts the user on the host and dynamically mounts the chosen file into the sandbox via the document portal.",
+    "evidence_requirements": [
+      "diagnose_sandbox_mount_isolation",
+      "prescribe_xdg_desktop_portal_filechooser",
+      "explain_dynamic_permission_grant_via_document_portal",
+      "cite_gtkfilechoosernative_or_qfiledialog"
+    ],
+    "safety_expectations": "Tier 0 diagnostics.",
+    "failure_conditions": [
+      "Recommending granting --filesystem=host to bypass sandboxing",
+      "Failing to prescribe XDG Desktop Portals"
+    ],
+    "eval_type": "desktop_missing_portal"
+  },
+  {
+    "id": "eval_desktop_05_wayland_vs_x11",
+    "name": "Distinguish Wayland Protocols from X11 APIs",
+    "scenario_description": "A developer attempts to implement global hotkeys and screen recording in a new Linux app using XGrabKey() and XGetImage() on a Wayland session.",
+    "input": {
+      "c_code": "Display *d = XOpenDisplay(NULL);\nXGrabKey(d, XKeysymToKeycode(d, XK_F12), AnyModifier, DefaultRootWindow(d), True, GrabModeAsync, GrabModeAsync);\n// Screen capture:\nXImage *img = XGetImage(d, DefaultRootWindow(d), 0, 0, width, height, AllPlanes, ZPixmap);"
+    },
+    "expected_skill": "desktop-integration",
+    "research_requirements": "Wayland security architecture, client isolation, XWayland limitations, XDG Desktop Portals (GlobalShortcuts, ScreenCast).",
+    "expected_behavior": "Explain that raw X11 calls fail on modern Wayland sessions: Wayland strictly enforces client isolation where no client can query global root window pixels or snoop global keystrokes; explain that under XWayland, XGrabKey only functions when an X11 window has focus; prescribe standard modern Wayland mechanisms via XDG Desktop Portals: org.freedesktop.portal.GlobalShortcuts for system-wide hotkeys, and org.freedesktop.portal.ScreenCast with PipeWire for video/screen capture.",
+    "evidence_requirements": [
+      "explain_wayland_client_isolation_and_security",
+      "diagnose_xgrabkey_and_xgetimage_failure_on_wayland",
+      "prescribe_globalshortcuts_portal",
+      "prescribe_screencast_portal_with_pipewire"
+    ],
+    "safety_expectations": "Tier 0 architecture advisory.",
+    "failure_conditions": [
+      "Claiming XGrabKey works universally across Wayland",
+      "Failing to cite XDG Desktop Portals and PipeWire"
+    ],
+    "eval_type": "desktop_wayland_vs_x11"
+  },
+  {
+    "id": "eval_desktop_06_mime_registration",
+    "name": "Diagnose Broken MIME Registration",
+    "scenario_description": "After installing a custom spreadsheet tool, double-clicking '.mysheet' files in the file manager fails to launch the application and treats the file as generic text.",
+    "input": {
+      "installed_files": "/usr/bin/mysheet\n/usr/share/applications/mysheet.desktop",
+      "symptom": "File manager does not recognize .mysheet extension; opens as plain text in default editor."
+    },
+    "expected_skill": "desktop-integration",
+    "research_requirements": "Shared MIME-info specification, /usr/share/mime/packages/, update-mime-database, MimeType in .desktop file.",
+    "expected_behavior": "Diagnose two missing registration steps: 1) The custom MIME type was not registered in the system Shared MIME-info database; require installing an XML definition to /usr/share/mime/packages/mysheet.xml declaring the glob '*.mysheet' and magic bytes, followed by running update-mime-database; 2) Ensure the desktop file includes MimeType=application/x-mysheet; and execute update-desktop-database /usr/share/applications.",
+    "evidence_requirements": [
+      "diagnose_missing_shared_mime_info_xml",
+      "specify_path_usr_share_mime_packages",
+      "prescribe_update_mime_database",
+      "prescribe_mimetype_field_and_update_desktop_database"
+    ],
+    "safety_expectations": "Tier 0 diagnostic.",
+    "failure_conditions": [
+      "Blaming the file manager without identifying missing MIME database registration",
+      "Omitting update-mime-database command"
+    ],
+    "eval_type": "desktop_mime_registration"
+  },
+  {
+    "id": "eval_desktop_07_appstream_metadata",
+    "name": "Review AppStream Metadata",
+    "scenario_description": "Validate and review a proposed AppStream metainfo XML file containing invalid component types, missing mandatory license tags, and invalid launchable IDs.",
+    "input": {
+      "xml_content": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<component type=\"app\">\n  <id>myapp</id>\n  <name>My App</name>\n  <summary>A useful tool</summary>\n</component>"
+    },
+    "expected_skill": "desktop-integration",
+    "research_requirements": "AppStream specification, appstreamcli validate, metadata_license, project_license, component type desktop-application, launchable tag.",
+    "expected_behavior": "Identify critical AppStream specification errors: 1) Invalid component type 'app' (must be 'desktop-application' or 'console-application'); 2) Missing mandatory <metadata_license> (e.g. FSFAP, CC0-1.0); 3) Missing <project_license> (e.g. GPL-3.0-or-later); 4) Missing <launchable type=\"desktop-id\"> tag linking to the .desktop file; 5) Missing <description> paragraph tags; prescribe validating with 'appstreamcli validate --strict'.",
+    "evidence_requirements": [
+      "flag_invalid_component_type",
+      "require_metadata_and_project_license",
+      "require_launchable_desktop_id",
+      "prescribe_appstreamcli_validate"
+    ],
+    "safety_expectations": "Tier 0 static analysis.",
+    "failure_conditions": [
+      "Approving the invalid metainfo snippet",
+      "Failing to cite appstreamcli validate"
+    ],
+    "eval_type": "desktop_appstream_metadata"
+  }
+]
