@@ -43,7 +43,12 @@ flowchart TD
     SPEC_CHECK -->|Desktop, Wayland & D-Bus| DSK["Invoke desktop-integration"]
     SPEC_CHECK -->|Build Systems & Toolchains| BLD["Invoke linux-build-engineering"]
     SPEC_CHECK -->|Arch Packaging| ARCH_PKG["Invoke arch-packaging"]
-    SPEC_CHECK -->|Future Domains| DEFER["State Specialist Deferred to Phase 5;\nProvide Systems Research Baseline"]
+    SPEC_CHECK -->|Defect & Crash Analysis| DBG["Invoke linux-debugging"]
+    SPEC_CHECK -->|Profiling & Performance| PERF["Invoke linux-performance"]
+    SPEC_CHECK -->|Defensive Security & Hardening| SEC["Invoke linux-security"]
+    SPEC_CHECK -->|Observability & eBPF| OBS["Invoke linux-observability"]
+    SPEC_CHECK -->|Fuzzing & Input Testing| FUZZ["Invoke linux-fuzzing"]
+    SPEC_CHECK -->|Regressions & Git Bisect| REG["Invoke linux-regression-engineering"]
 
     KERN --> SAFE{"Verify Operational Safety Tier"}
     DRV --> SAFE
@@ -57,6 +62,12 @@ flowchart TD
     DSK --> SAFE
     BLD --> SAFE
     ARCH_PKG --> SAFE
+    DBG --> SAFE
+    PERF --> SAFE
+    SEC --> SAFE
+    OBS --> SAFE
+    FUZZ --> SAFE
+    REG --> SAFE
     SAFE --> VERIFY["Execute Contract Verification\n(Deterministic Linting & Testing)"]
     VERIFY --> REPORT["Report Empirical Evidence & Risks"]
 ```
@@ -75,7 +86,19 @@ Determine the operational category and select all relevant specialists:
 - **Desktop Integration & Wayland**: Wayland protocols, X11/XWayland, D-Bus IPC, XDG Portals, Desktop Entries, AppStream $\to$ Route to `desktop-integration`.
 - **Linux Build Engineering**: Toolchains (GCC/Clang), modern CMake, Meson, Ninja, Cargo workspaces, linking/ABI, packaging prep $\to$ Route to `linux-build-engineering`.
 - **Arch Packaging & Distribution**: Authoring PKGBUILDs, clean-chroot builds, AUR maintenance, repo-add $\to$ Route to `arch-packaging`.
+- **Linux Debugging & Diagnostics**: Segmentation faults, core dumps, memory leaks, thread deadlocks, kernel panics $\to$ Route to `linux-debugging`.
+- **Performance Engineering & Profiling**: CPU hotspots, memory bloat, I/O latency, network throughput degradation, benchmarking $\to$ Route to `linux-performance`.
+- **Defensive Security & Hardening**: Threat modeling, sandboxing (systemd, seccomp, Landlock), capabilities, CVE triage, backport verification $\to$ Route to `linux-security`.
+- **Observability & eBPF Telemetry**: Non-invasive kernel tracing, eBPF programs, PSI metrics, distributed tracing, cardinality control $\to$ Route to `linux-observability`.
+- **Automated Fuzzing & Sanitizers**: In-process fuzz targets (libFuzzer), mutation campaigns (AFL++), kernel fuzzing (syzkaller/KCOV), crash triage $\to$ Route to `linux-fuzzing`.
+- **Regression Engineering & Bisecting**: Automated `git bisect` predicates, exit code 125 handling, ABI breakages (libabigail), regression tests $\to$ Route to `linux-regression-engineering`.
 - **Multi-Subsystem Coordination**:
+  - *Kernel crash investigation*: `linux-debugging` + `kernel-engineering` + `linux-observability` + `linux-regression-engineering`.
+  - *Memory leak in a Qt application*: `linux-debugging` + `qt-qml-engineering` + `linux-performance` + `linux-regression-engineering`.
+  - *Security review of a system daemon*: `linux-security` + `systemd-engineering` + `linux-debugging`.
+  - *Kernel fuzzing investigation*: `linux-fuzzing` + `kernel-engineering` + `linux-debugging` + `linux-observability`.
+  - *Storage performance problem*: `linux-performance` + `linux-observability` + `linux-storage` + `linux-regression-engineering`.
+  - *Production application latency investigation*: `linux-performance` + `linux-observability` + `linux-debugging` + `linux-application-engineering`.
   - *Rust CLI tool*: `linux-application-engineering` + `linux-build-engineering`.
   - *Qt/QML desktop application*: `linux-application-engineering` + `qt-qml-engineering` + `desktop-integration` + `linux-build-engineering`.
   - *GTK 4 application with D-Bus*: `linux-application-engineering` + `gtk-engineering` + `desktop-integration` + `linux-build-engineering`.
@@ -105,7 +128,7 @@ Classify the proposed action according to [../../references/safety-policy.md](..
 
 ## 2. Specialist Skill Catalog Status
 
-In Phase 4, the **three Foundation Skills** and **twelve Domain Specialists** are active. When a user requests work in deferred domains, `linux-engineer` handles the request by executing foundation research and diagnostics:
+In Phase 5, the **three Foundation Skills** and **eighteen Domain Specialists** are fully active:
 
 | Engineering Discipline | Assigned Skill | Status | Handled via Foundation / Specialist |
 |:---|:---|:---:|:---|
@@ -124,11 +147,12 @@ In Phase 4, the **three Foundation Skills** and **twelve Domain Specialists** ar
 | **GTK 4 & GNOME Applications** | [`gtk-engineering`](../gtk-engineering/SKILL.md) | **ACTIVE** | GTK 4, GLib/GObject/GIO, GtkApplication, Libadwaita, accessibility. |
 | **Desktop Integration & Wayland** | [`desktop-integration`](../desktop-integration/SKILL.md) | **ACTIVE** | Wayland protocols, X11/XWayland, D-Bus IPC, XDG Portals, Freedesktop metadata. |
 | **Build Engineering (CMake/Cargo)**| [`linux-build-engineering`](../linux-build-engineering/SKILL.md) | **ACTIVE** | Modern CMake, Meson, Ninja, Cargo workspaces, toolchains, linking/ABI. |
-| **Post-Mortem Debugging** | `linux-debugging` | *Phase 5* | Use GDB, strace, and sanitizers. |
-| **Performance Profiling (perf/eBPF)**| `linux-performance` | *Phase 5* | Collect baseline metrics before optimizing. |
-| **Security, Capabilities & Seccomp**| `linux-security` | *Phase 5* | Follow least-privilege principles and capability dropping. |
-| **Distribution Abstraction** | `linux-distribution-engineering`| *Phase 5* | Decouple upstream software from packaging manifests. |
-| **Upstream Contribution (b4)** | `linux-release-maintenance` | *Phase 5* | Format patches with imperative logs and Signed-off-by. |
+| **Post-Mortem Debugging** | [`linux-debugging`](../linux-debugging/SKILL.md) | **ACTIVE** | GDB, LLDB, strace, coredumpctl, memory/concurrency defects, kernel panics. |
+| **Performance Profiling (perf/eBPF)**| [`linux-performance`](../linux-performance/SKILL.md) | **ACTIVE** | perf, flame graphs, memory allocations, I/O latency, network throughput. |
+| **Security, Sandboxing & Seccomp**| [`linux-security`](../linux-security/SKILL.md) | **ACTIVE** | Threat modeling, least privilege, capabilities, seccomp, Landlock, CVE backports. |
+| **Observability, Tracing & eBPF** | [`linux-observability`](../linux-observability/SKILL.md) | **ACTIVE** | /proc, /sys, tracefs, ftrace, eBPF CO-RE/verifier, metrics, OpenTelemetry. |
+| **Fuzzing & Sanitizer Engineering**| [`linux-fuzzing`](../linux-fuzzing/SKILL.md) | **ACTIVE** | libFuzzer, AFL++, syzkaller, ASan, UBSan, MSan, TSan, crash triage. |
+| **Regression & Bisect Engineering** | [`linux-regression-engineering`](../linux-regression-engineering/SKILL.md) | **ACTIVE** | git bisect automated predicates (exit 125), kernel/app regressions, ABI. |
 
 ---
 
