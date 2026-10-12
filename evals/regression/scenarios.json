@@ -1,0 +1,47 @@
+[
+  {
+    "id": "eval_reg_01_git_bisect",
+    "domain": "regression",
+    "eval_type": "reg_git_bisect",
+    "title": "Isolate breaking commit using automated git bisect run",
+    "input": "A test suite passed cleanly at tag v1.4.0 (commit abc1234) but fails at v1.5.0 (commit def5678) across 450 intermediate commits. How should an engineer automate git bisect to isolate the culprit commit?",
+    "expected_specialists": ["linux-regression-engineering"],
+    "evidence_requirements": ["Authoring an automated bash test predicate script", "Execution of `git bisect start def5678 abc1234` and `git bisect run ./predicate.sh`", "Understanding log2(N) complexity isolating the culprit commit in ~9 steps"]
+  },
+  {
+    "id": "eval_reg_02_unbuildable_commits",
+    "domain": "regression",
+    "eval_type": "reg_unbuildable_commits",
+    "title": "Handle unbuildable intermediate commits during automated bisect",
+    "input": "During an automated `git bisect run`, commit #12 fails to compile due to a temporary syntax error introduced in an unrelated file. If the test script exits with code 1, what happens, and what exit code must be used instead?",
+    "expected_specialists": ["linux-regression-engineering"],
+    "evidence_requirements": ["Identification that exit code 1 falsely marks the unbuildable commit as having the regression", "Mandatory use of exit code 125 to signal git bisect to skip the untestable revision", "Understanding that exit code 0 would falsely mark the commit as good"]
+  },
+  {
+    "id": "eval_reg_03_kernel_version_regression",
+    "domain": "regression",
+    "eval_type": "reg_kernel_version_regression",
+    "title": "Investigate Linux kernel version regression violating user-space contract",
+    "input": "An existing user-space networking tool fails on Linux 6.6 with EINVAL, but worked cleanly on Linux 6.5. A kernel developer suggests: 'User-space should just update its code to match the new behavior.' How should an engineer respond and investigate?",
+    "expected_specialists": ["linux-regression-engineering", "kernel-engineering"],
+    "evidence_requirements": ["Citing Linus Torvalds's strict invariant: 'We do not break userspace'", "Explanation that breaking user-space API/ABI is considered a kernel regression requiring an upstream fix/revert", "Methodology for reproducing in QEMU and preparing a git bisect against torvalds/linux"]
+  },
+  {
+    "id": "eval_reg_04_abi_incompatibility",
+    "domain": "regression",
+    "eval_type": "reg_abi_incompatibility",
+    "title": "Detect shared library ABI breakage with libabigail and enforce SOVERSION rules",
+    "input": "A C library patch adds a new field `int priority` in the middle of an exported public `struct Config` in `config.h`, but keeps `SOVERSION=1`. What will happen to pre-compiled client binaries and how should this be detected and resolved?",
+    "expected_specialists": ["linux-regression-engineering", "linux-build-engineering"],
+    "evidence_requirements": ["Identification of struct member offset shift breaking ABI compatibility with existing client binaries", "Use of libabigail (abidiff) to detect the layout change automatically", "Enforcing rule that ABI-breaking changes strictly require incrementing SOVERSION to 2"]
+  },
+  {
+    "id": "eval_reg_05_validate_perf_regression",
+    "domain": "performance",
+    "eval_type": "reg_validate_perf_regression",
+    "title": "Validate performance regression distinguishing real degradation from measurement noise",
+    "input": "A nightly CI build reports that benchmark execution time changed from 100ms to 102ms, and an automated gate failed the build claiming a '2% performance regression'. Historical baseline data shows mean 100ms with standard deviation ±3.5ms. Is this a genuine regression?",
+    "expected_specialists": ["linux-regression-engineering", "linux-performance"],
+    "evidence_requirements": ["Identification that a 2ms delta is well within the 1-sigma noise margin (±3.5ms)", "Explanation that single-run or low-delta variations represent random measurement noise rather than true regression", "Recommendation of multi-sigma threshold (e.g., 3-sigma: delta > 10.5ms) or statistical t-test before failing builds"]
+  }
+]

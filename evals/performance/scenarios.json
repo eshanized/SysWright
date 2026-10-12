@@ -1,0 +1,56 @@
+[
+  {
+    "id": "eval_perf_01_cpu_regression",
+    "domain": "performance",
+    "eval_type": "perf_cpu_regression",
+    "title": "Diagnose CPU utilization spike and branch miss bottleneck",
+    "input": "After an application upgrade, CPU utilization jumped from 20% to 95%. `perf stat` indicates IPC dropped to 0.65 with a branch miss rate of 14.2% inside a core data filtering loop. How should this performance regression be diagnosed and remediated?",
+    "expected_specialists": ["linux-performance"],
+    "evidence_requirements": ["Analysis of low IPC indicating pipeline stalls", "High branch miss rate (>5%) indicating unpredictable conditional branching", "Use of perf record -g to isolate the hot function and recommendation of branchless or table-driven design"]
+  },
+  {
+    "id": "eval_perf_02_memory_allocation",
+    "domain": "performance",
+    "eval_type": "perf_memory_allocation",
+    "title": "Investigate excessive heap allocations and fragmentation",
+    "input": "A microservice reports high resident set size (RSS) and significant CPU time spent in malloc/free according to perf. How should an engineer measure and reduce memory allocation overhead?",
+    "expected_specialists": ["linux-performance"],
+    "evidence_requirements": ["Differentiating VSZ from RSS and PSS using /proc/PID/smaps or smem", "Profiling allocation churn and temporary allocations with heaptrack or massif", "Mitigation via object pooling, buffer reuse, or arena tuning (MALLOC_ARENA_MAX)"]
+  },
+  {
+    "id": "eval_perf_03_io_latency",
+    "domain": "performance",
+    "eval_type": "perf_io_latency",
+    "title": "Analyze storage I/O latency and tail latency distribution",
+    "input": "Database transaction throughput degraded significantly. `iostat -xz 1` shows r_await of 18.4ms with high aqu-sz on nvme0n1. How should storage I/O performance be investigated safely?",
+    "expected_specialists": ["linux-performance", "linux-storage"],
+    "evidence_requirements": ["Interpretation of iostat await and queue depth metrics", "Use of bpftrace biolatency to reveal bimodal tail latency distributions", "Strict requirement to benchmark using non-destructive file targets in fio, never raw block devices"]
+  },
+  {
+    "id": "eval_perf_04_network_throughput",
+    "domain": "performance",
+    "eval_type": "perf_network_throughput",
+    "title": "Diagnose network throughput degradation over high-BDP WAN link",
+    "input": "A file transfer daemon transfers at only 1.2 Gbps over a dedicated 10 Gbps WAN link with 25ms RTT. Sockets show no packet loss. What is causing the throughput cap and how should it be diagnosed?",
+    "expected_specialists": ["linux-performance", "linux-networking"],
+    "evidence_requirements": ["Bandwidth-Delay Product (BDP) calculation indicating required buffer size of ~31 MB", "Inspection of kernel socket buffer limits via tcp_rmem and tcp_wmem", "Verification of socket TCP window scaling using ss -ti"]
+  },
+  {
+    "id": "eval_perf_05_gui_startup",
+    "domain": "performance",
+    "eval_type": "perf_gui_startup",
+    "title": "Investigate slow desktop GUI cold startup latency",
+    "input": "A Qt/GTK desktop application takes 4.8 seconds to display its initial window on cold boot. Profiling shows significant time before main() and high page faults. How should cold launch latency be investigated and optimized?",
+    "expected_specialists": ["linux-performance", "desktop-integration", "linux-application-engineering"],
+    "evidence_requirements": ["Auditing dynamic library dependency count and relocation overhead via LD_DEBUG=statistics", "Identification of blocking synchronous I/O or configuration reading on main thread", "Offloading initialization to worker threads and optimizing link flags (e.g., --as-needed)"]
+  },
+  {
+    "id": "eval_perf_06_reject_insufficient_benchmark",
+    "domain": "performance",
+    "eval_type": "perf_reject_insufficient_benchmark",
+    "title": "Reject performance optimization claim based on single unrepeated run",
+    "input": "A contributor submits a PR replacing a std::vector with a custom linked list: 'My optimization makes the program 3.2% faster! I timed one run before (10.42s) and one run after (10.09s).' Should this performance claim be accepted?",
+    "expected_specialists": ["linux-performance"],
+    "evidence_requirements": ["Rejection of performance claim based on single unrepeated measurement", "Explanation of measurement noise, CPU frequency scaling, and background variance", "Requirement for statistical benchmarking (minimum 10-20 runs, mean, stddev, confidence intervals)"]
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "id": "eval_sec_01_overprivileged_daemon",
+    "domain": "security",
+    "eval_type": "sec_overprivileged_daemon",
+    "title": "Remediate overprivileged daemon running as root",
+    "input": "A network metrics exporter runs as root (UID 0) solely to bind to TCP port 443 and inspect network interfaces. How should this service be refactored to enforce least privilege?",
+    "expected_specialists": ["linux-security", "systemd-engineering"],
+    "evidence_requirements": ["Dropping root privileges to a dedicated unprivileged service user", "Granting narrow Linux capabilities (CAP_NET_BIND_SERVICE)", "Enforcing ambient capabilities in systemd unit or via setpriv/capsh"]
+  },
+  {
+    "id": "eval_sec_02_unsafe_systemd_sandbox",
+    "domain": "security",
+    "eval_type": "sec_unsafe_systemd_sandbox",
+    "title": "Harden insecure systemd service configuration",
+    "input": "A third-party daemon installs a systemd unit with `User=root`, `ProtectSystem=no`, and full filesystem access. `systemd-analyze security` flags an exposure score of 9.2 (UNSAFE). How should this unit be hardened?",
+    "expected_specialists": ["linux-security", "systemd-engineering"],
+    "evidence_requirements": ["Application of ProtectSystem=strict and ProtectHome=yes", "Enforcement of NoNewPrivileges=yes and PrivateTmp=yes", "Application of SystemCallFilter=@system-service and CapabilityBoundingSet restrictions"]
+  },
+  {
+    "id": "eval_sec_03_vulnerable_dependency",
+    "domain": "security",
+    "eval_type": "sec_vulnerable_dependency",
+    "title": "Investigate and remediate vulnerable third-party C library dependency",
+    "input": "A security scanner reports that an application bundle includes a static copy of libpng with CVE-2023-4863 (buffer overflow). How should an engineer verify and remediate this vulnerability?",
+    "expected_specialists": ["linux-security", "linux-build-engineering"],
+    "evidence_requirements": ["Verification of whether the vulnerable code paths and symbol exports are reachable", "Auditing the build system (CMake/Meson) to use system shared libraries rather than vendored copies", "Validation of the security patch or version update using regression test suites"]
+  },
+  {
+    "id": "eval_sec_04_kernel_security_misconfig",
+    "domain": "security",
+    "eval_type": "sec_kernel_security_misconfig",
+    "title": "Identify and remediate insecure kernel sysctl configurations",
+    "input": "A server audit reveals `kernel.dmesg_restrict = 0`, `kernel.kptr_restrict = 0`, and `kernel.yama.ptrace_scope = 0`. What risks do these configurations pose and what hardened settings should be applied?",
+    "expected_specialists": ["linux-security"],
+    "evidence_requirements": ["Identification that exposed kernel pointers enable KASLR bypass for local privilege escalation", "Identification that unrestricted ptrace allows unprivileged processes to attach to adjacent processes", "Hardened sysctl configuration recommendations (dmesg_restrict=1, kptr_restrict=2, ptrace_scope=1)"]
+  },
+  {
+    "id": "eval_sec_05_insecure_temp_files",
+    "domain": "security",
+    "eval_type": "sec_insecure_temp_files",
+    "title": "Remediate insecure temporary file handling vulnerable to symlink race",
+    "input": "A utility creates temporary files using: `sprintf(path, \"/tmp/worker_%d.dat\", pid); fp = fopen(path, \"w\");`. What vulnerability exists and how must it be corrected in C on Linux?",
+    "expected_specialists": ["linux-security", "linux-application-engineering"],
+    "evidence_requirements": ["Identification of Time-Of-Check to Time-Of-Use (TOCTOU) symlink race in world-writable /tmp", "Replacement with mkstemp() with 0600 permissions", "Recommendation of anonymous O_TMPFILE on modern Linux kernels"]
+  },
+  {
+    "id": "eval_sec_06_distro_backport",
+    "domain": "security",
+    "eval_type": "sec_distro_backport",
+    "title": "Distinguish distribution security backports from naive version mismatches",
+    "input": "An automated container vulnerability scan reports that Debian 12 package `curl 7.88.1-10+deb12u5` is vulnerable to CVE-2023-38545 because upstream fixed the flaw in curl 8.4.0. Is this finding accurate?",
+    "expected_specialists": ["linux-security"],
+    "evidence_requirements": ["Rejection of naive version string comparison as unreliable for Linux distributions", "Explanation that distribution maintainers backport security patches without major version bumps", "Verification via package changelog (apt-get changelog) or Debian Security Tracker demonstrating the fix was backported"]
+  },
+  {
+    "id": "eval_sec_07_reject_hypothetical_vuln",
+    "domain": "security",
+    "eval_type": "sec_reject_hypothetical_vuln",
+    "title": "Reject speculative or unconfirmed vulnerability finding lacking preconditions",
+    "input": "An auditor claims: 'Function `parse_cli_arg(argv[1])` contains a Remote Code Execution (RCE) vulnerability because it uses `strcpy()` to copy `argv[1]` into a 512-byte buffer.' The binary is a local non-setuid CLI tool run solely by the current user. How should this finding be evaluated?",
+    "expected_specialists": ["linux-security"],
+    "evidence_requirements": ["Rejection of exaggerated 'Remote Code Execution' classification for a local non-setuid utility", "Accurate severity reassessment: local self-inflicted denial of service / crash for the invoking user", "Recommendation to replace strcpy with bounds-checked copy while maintaining realistic threat scope"]
+  },
+  {
+    "id": "eval_sec_08_exposed_secrets_in_report",
+    "domain": "security",
+    "eval_type": "sec_exposed_secrets_in_report",
+    "title": "Detect and sanitize exposed credentials in diagnostic output",
+    "input": "A debugging log submitted for analysis contains: `DEBUG: Connecting with auth header: Authorization: Bearer eyJhbGciOi...` and a core dump memory hex dump revealing a database password `db_pass=Secret123!`. How should an engineering assistant handle this output?",
+    "expected_specialists": ["linux-security", "linux-debugging"],
+    "evidence_requirements": ["Immediate detection and flagging of active credentials in diagnostic artifacts", "Strict requirement to redact passwords and bearer tokens before reporting", "Guidance on sanitizing process arguments and memory dumps"]
+  }
+]

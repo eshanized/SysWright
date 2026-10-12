@@ -1,0 +1,47 @@
+[
+  {
+    "id": "eval_obs_01_ebpf_strategy",
+    "domain": "observability",
+    "eval_type": "obs_ebpf_strategy",
+    "title": "Design low-overhead eBPF tracing strategy for file access auditing",
+    "input": "An operations team needs to trace which processes open sensitive files in `/etc/` in real time with minimal CPU overhead on high-throughput Linux servers. How should this observability pipeline be designed?",
+    "expected_specialists": ["linux-observability"],
+    "evidence_requirements": ["Selection of tracepoint (sys_enter_openat) over unstable kprobe", "Filtering inside the kernel eBPF program rather than copying all events to user-space", "Use of BPF ring buffer (BPF_MAP_TYPE_RINGBUF) for efficient event streaming"]
+  },
+  {
+    "id": "eval_obs_02_bpf_verifier_rejection",
+    "domain": "observability",
+    "eval_type": "obs_bpf_verifier_rejection",
+    "title": "Diagnose and resolve BPF verifier rejection on unbounded memory access",
+    "input": "An eBPF program fails to load with error: `R6 invalid mem access 'inv' ... R1 unbounded memory access`. What caused the verifier rejection and how is it corrected in eBPF C code?",
+    "expected_specialists": ["linux-observability"],
+    "evidence_requirements": ["Identification of verifier safety invariant violation (unbounded array indexing or missing safety proof)", "Use of bitwise masking or bounds checking (`idx &= (MAX - 1)`) to prove bound to verifier", "Use of BPF_CORE_READ or bpf_probe_read_kernel() for kernel pointer dereference"]
+  },
+  {
+    "id": "eval_obs_03_metric_cardinality",
+    "domain": "observability",
+    "eval_type": "obs_metric_cardinality",
+    "title": "Remediate Prometheus metric cardinality explosion",
+    "input": "A Prometheus server crashes with out-of-memory errors after a developer added an `http_requests_total` metric labeled with `{method=\"GET\", user_id=\"...\", request_uuid=\"...\"}`. How should this cardinality explosion be diagnosed and corrected?",
+    "expected_specialists": ["linux-observability"],
+    "evidence_requirements": ["Identification of unbounded high-cardinality labels (user_id and request_uuid) creating millions of time-series", "Recommendation to restrict metric labels strictly to bounded enumerations (e.g., status code, method)", "Relocating unique request identifiers to structured logs or distributed trace attributes"]
+  },
+  {
+    "id": "eval_obs_04_sensitive_telemetry",
+    "domain": "observability",
+    "eval_type": "obs_sensitive_telemetry",
+    "title": "Detect sensitive data leakage in distributed tracing spans",
+    "input": "An OpenTelemetry span attribute includes: `http.request.header.authorization = \"Bearer eyJhbG...\"` and `db.statement = \"INSERT INTO users (password) VALUES ('P@ssword123')\"`. What privacy and security issue exists and how must it be remediated?",
+    "expected_specialists": ["linux-observability", "linux-security"],
+    "evidence_requirements": ["Identification of credential and PII leakage in observability telemetry pipelines", "Implementation of redaction filters in the OpenTelemetry collector or application SDK", "Use of SQL parameterization placeholders in trace attributes instead of raw literal values"]
+  },
+  {
+    "id": "eval_obs_05_kernel_tracepoints",
+    "domain": "observability",
+    "eval_type": "obs_kernel_tracepoints",
+    "title": "Select appropriate kernel tracepoints for scheduling latency analysis",
+    "input": "An engineer needs to monitor thread scheduling latency across kernel versions. Should they hook `kprobe:finish_task_switch` or use static tracepoints? How should they proceed?",
+    "expected_specialists": ["linux-observability"],
+    "evidence_requirements": ["Recommendation of static kernel tracepoints (sched:sched_switch, sched:sched_wakeup) over kprobes", "Explanation of tracepoint ABI stability across kernel releases compared to internal function symbols", "Inspection of tracepoint argument formats via /sys/kernel/tracing/events/sched/*/format"]
+  }
+]

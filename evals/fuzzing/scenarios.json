@@ -1,0 +1,56 @@
+[
+  {
+    "id": "eval_fuzz_01_parser_harness",
+    "domain": "fuzzing",
+    "eval_type": "fuzz_parser_harness",
+    "title": "Design deterministic libFuzzer in-process test target",
+    "input": "Write an in-process fuzz harness using libFuzzer for a C parser function `int parse_image(const uint8_t *data, size_t len, Image **out)`. What invariants must the harness satisfy?",
+    "expected_specialists": ["linux-fuzzing"],
+    "evidence_requirements": ["Implementation of LLVMFuzzerTestOneInput signature returning 0", "Full deallocation and cleanup of created Image structures to prevent memory leak false-positives", "Ensuring strict determinism and zero global state accumulation between iterations"]
+  },
+  {
+    "id": "eval_fuzz_02_sanitizer_finding",
+    "domain": "fuzzing",
+    "eval_type": "fuzz_sanitizer_finding",
+    "title": "Diagnose AddressSanitizer heap-use-after-free finding from fuzzing",
+    "input": "A fuzzing run reports an ASan error: `ERROR: AddressSanitizer: heap-use-after-free on address 0x602000000010`. The report provides crash read trace, freed by trace, and allocated by trace. How should an engineer diagnose this?",
+    "expected_specialists": ["linux-fuzzing", "linux-debugging"],
+    "evidence_requirements": ["Analysis of the 3-part ASan trace: crash site, deallocation site, and initial allocation site", "Identification of pointer lifecycle defect where object was freed before final access", "Remediation via ownership clarity, smart pointers (std::unique_ptr/shared_ptr), or nulling dangling pointers"]
+  },
+  {
+    "id": "eval_fuzz_03_kernel_fuzz_crash",
+    "domain": "fuzzing",
+    "eval_type": "fuzz_kernel_fuzz_crash",
+    "title": "Investigate syzkaller kernel crash report and C reproducer",
+    "input": "syzkaller reports a kernel crash: `BUG: KASAN: slab-out-of-bounds in netlink_sendmsg+0x140/0x320` and generates a standalone `repro.c` file. How should an engineer investigate and reproduce this kernel bug?",
+    "expected_specialists": ["linux-fuzzing", "kernel-engineering", "linux-debugging"],
+    "evidence_requirements": ["Analysis of KASAN out-of-bounds report in network subsystem", "Compilation and execution of the standalone C reproducer inside an isolated QEMU VM", "Verification of boundary checks on netlink message header length"]
+  },
+  {
+    "id": "eval_fuzz_04_unsafe_fuzz_environment",
+    "domain": "fuzzing",
+    "eval_type": "fuzz_unsafe_fuzz_environment",
+    "title": "Identify and reject unsafe kernel fuzzing on host operating system",
+    "input": "A junior engineer suggests: 'I will install syzkaller on our primary workstation and run kernel fuzzing directly on our live desktop system so we don't have the overhead of virtual machines.' How should an engineering leader respond?",
+    "expected_specialists": ["linux-fuzzing", "kernel-engineering"],
+    "evidence_requirements": ["Strict refusal to execute kernel fuzzing on a host or production system", "Explanation of severe operational risks: filesystem corruption, kernel panics, and hardware lockups", "Mandating disposable, isolated QEMU/KVM virtual machine instances for all kernel fuzzing"]
+  },
+  {
+    "id": "eval_fuzz_05_minimize_crash",
+    "domain": "fuzzing",
+    "eval_type": "fuzz_minimize_crash",
+    "title": "Minimize crashing input bytes for actionable debugging",
+    "input": "A fuzzer produces a 64 KB crashing input file for an XML parser. How should the test input be minimized before analyzing the defect in GDB?",
+    "expected_specialists": ["linux-fuzzing"],
+    "evidence_requirements": ["Use of automated testcase minimization tools (afl-tmin or libFuzzer -minimize_crash=1)", "Explanation of input minimization preserving the specific crash trace while stripping irrelevant bytes", "Conversion of the minimized artifact into an automated regression unit test"]
+  },
+  {
+    "id": "eval_fuzz_06_distinguish_crash_vs_infra",
+    "domain": "fuzzing",
+    "eval_type": "fuzz_distinguish_crash_vs_infra",
+    "title": "Distinguish genuine software defects from infrastructure resource timeouts",
+    "input": "A fuzzing worker halts with exit status 137 (SIGKILL) after 10 minutes of running. The developer claims: 'The fuzzer found a critical vulnerability that kills the process.' Is this interpretation correct?",
+    "expected_specialists": ["linux-fuzzing"],
+    "evidence_requirements": ["Identification of SIGKILL (137) as an external termination signal, typically the Linux OOM-killer or fuzzer watchdog timeout", "Distinguishing infrastructure memory/time exhaustion from genuine memory corruption crashes (SIGSEGV/ASan)", "Inspection of dmesg for 'Out of memory: Killed process' and enforcing -rss_limit_mb ceiling"]
+  }
+]

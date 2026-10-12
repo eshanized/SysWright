@@ -1,0 +1,56 @@
+[
+  {
+    "id": "eval_dbg_01_segfault",
+    "domain": "debugging",
+    "eval_type": "dbg_segfault",
+    "title": "Diagnose segmentation fault from null pointer dereference with struct offset",
+    "input": "An unprivileged daemon crashes immediately upon startup with exit code 139 (SIGSEGV). GDB backtrace shows: #0 0x0000555555555182 in parse_config (cfg=0x0) at config.c:42, Instruction: mov 0x20(%rax), %rdx with %rax = 0x0000000000000000. How should an engineer diagnose and resolve this?",
+    "expected_specialists": ["linux-debugging"],
+    "evidence_requirements": ["Instruction pointer %rip and faulting register %rax analysis", "Identification that 0x20 is a struct member offset from NULL base pointer", "Pointer provenance investigation rather than superficial null check"]
+  },
+  {
+    "id": "eval_dbg_02_missing_symbols",
+    "domain": "debugging",
+    "eval_type": "dbg_missing_symbols",
+    "title": "Analyze core dump with missing debug symbols",
+    "input": "A production core dump loaded into GDB shows frames filled with '?? () from /usr/lib/libfoo.so.1' and no file or line numbers. How should an engineer proceed with post-mortem analysis?",
+    "expected_specialists": ["linux-debugging"],
+    "evidence_requirements": ["Refusal to claim definitive diagnosis from incomplete ?? frames", "Extraction of ELF .note.gnu.build-id", "Use of debuginfod or unstripped debug packages"]
+  },
+  {
+    "id": "eval_dbg_03_memory_leak",
+    "domain": "debugging",
+    "eval_type": "dbg_memory_leak",
+    "title": "Investigate dynamic memory leak in long-running C/C++ service",
+    "input": "A network proxy service steadily grows resident memory (RSS) from 50 MB to 2 GB over 48 hours without releasing it. Valgrind reports 'definitely lost: 4,096 bytes in 16 blocks'. How should an engineer diagnose and fix this?",
+    "expected_specialists": ["linux-debugging", "linux-performance"],
+    "evidence_requirements": ["Distinction between definitely lost and still reachable heap memory", "Identification of allocation site without corresponding free() in error handling paths", "Recommendation of AddressSanitizer/LeakSanitizer or heaptrack for profiling"]
+  },
+  {
+    "id": "eval_dbg_04_deadlock",
+    "domain": "debugging",
+    "eval_type": "dbg_deadlock",
+    "title": "Diagnose thread deadlock with circular mutex dependency",
+    "input": "A multi-threaded C++ payment daemon hangs with 0% CPU consumption. GDB thread inspection reveals Thread 1 waiting in futex holding mutex A and requesting mutex B, while Thread 2 is waiting in futex holding mutex B and requesting mutex A. How should this be resolved?",
+    "expected_specialists": ["linux-debugging"],
+    "evidence_requirements": ["Identification of classic ABBA circular wait deadlock", "Inspection of all thread stacks via thread apply all bt", "Architectural resolution via strict global lock acquisition ordering"]
+  },
+  {
+    "id": "eval_dbg_05_kernel_panic",
+    "domain": "debugging",
+    "eval_type": "dbg_kernel_panic",
+    "title": "Analyze kernel panic from driver NULL pointer dereference",
+    "input": "Kernel crashes with dmesg: 'BUG: kernel NULL pointer dereference, address: 0000000000000018', RIP: 0010:custom_driver_read+0x42/0x120 [custom_driver], Tainted: G O. How should an engineer analyze and fix this kernel fault?",
+    "expected_specialists": ["linux-debugging", "kernel-engineering", "driver-engineering"],
+    "evidence_requirements": ["Fault address 0x18 identified as struct field offset from NULL base pointer", "Taint flag analysis (G O indicates out-of-tree module loaded)", "Dynamic debug, ftrace, or QEMU debugging recommendations"]
+  },
+  {
+    "id": "eval_dbg_06_reject_incorrect_root_cause",
+    "domain": "debugging",
+    "eval_type": "dbg_reject_incorrect_root_cause",
+    "title": "Reject premature root cause conclusion that masks underlying defect",
+    "input": "A developer submits a patch for a SIGSEGV in cache_lookup(entry): 'The function crashed because entry was NULL. My patch adds `if (!entry) return NULL;` at the beginning of cache_lookup so it stops crashing.' Should this patch be accepted as a sufficient root-cause fix?",
+    "expected_specialists": ["linux-debugging"],
+    "evidence_requirements": ["Rejection of superficial symptom patching without pointer provenance investigation", "Requirement to determine why callers or allocator produced an unexpected NULL pointer", "Hypothesis testing to identify whether state was corrupted or prematurely freed"]
+  }
+]
