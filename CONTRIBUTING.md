@@ -55,15 +55,16 @@ python3 scripts/validate-skills.py
 # 2. Verify all internal relative markdown links:
 python3 scripts/check-references.py
 
-# 3. Run the complete automated test suite (47+ unit and integration tests):
+# 3. Run the complete automated test suite (55+ unit and integration tests):
 python3 tests/run_all_tests.py
 
-# 4. Run application and systems evaluation suites:
+# 4. Run application, systems, and advanced engineering evaluation suites:
+python3 evals/eval_advanced_engineering.py
 python3 evals/eval_native_apps.py
 python3 evals/eval_systems.py
 ```
 
-All 47+ automated tests and benchmark evaluations must pass with exit code `0`.
+All 55+ automated tests and benchmark evaluations must pass with exit code `0`.
 
 ---
 

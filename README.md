@@ -50,7 +50,7 @@ linux-engineering/
 
 ---
 
-## 3. Skill Catalog (Phase 4 Status)
+## 3. Skill Catalog (Phase 5 Status)
 
 | Skill Name | Directory | Status | Primary Purpose |
 |:---|:---|:---:|:---|
@@ -69,6 +69,12 @@ linux-engineering/
 | **`gtk-engineering`** | [`skills/gtk-engineering/`](skills/gtk-engineering/SKILL.md) | **ACTIVE** | GTK 4, GLib/GObject/GIO, GtkApplication, composite XML templates, Libadwaita, AT-SPI accessibility. |
 | **`desktop-integration`** | [`skills/desktop-integration/`](skills/desktop-integration/SKILL.md) | **ACTIVE** | Wayland protocols, X11/XWayland, D-Bus IPC, XDG Desktop Portals, Freedesktop metadata, and systemd user services. |
 | **`linux-build-engineering`** | [`skills/linux-build-engineering/`](skills/linux-build-engineering/SKILL.md) | **ACTIVE** | Modern target-based CMake, Meson, Ninja, Cargo workspaces, compiler toolchains (GCC/Clang), and ABI stability. |
+| **`linux-debugging`** | [`skills/linux-debugging/`](skills/linux-debugging/SKILL.md) | **ACTIVE** | GDB/LLDB post-mortem analysis, core dumps, memory leaks, thread deadlocks, kernel panics, hypothesis testing. |
+| **`linux-performance`** | [`skills/linux-performance/`](skills/linux-performance/SKILL.md) | **ACTIVE** | perf CPU profiling, memory allocation churn, storage I/O latency, network BDP tuning, statistical benchmarking. |
+| **`linux-security`** | [`skills/linux-security/`](skills/linux-security/SKILL.md) | **ACTIVE** | Threat modeling, least privilege, systemd sandboxing, capabilities, seccomp, Landlock, CVE backport verification. |
+| **`linux-observability`** | [`skills/linux-observability/`](skills/linux-observability/SKILL.md) | **ACTIVE** | Native tracefs, ftrace, eBPF CO-RE/verifier, metrics cardinality management, and distributed tracing. |
+| **`linux-fuzzing`** | [`skills/linux-fuzzing/`](skills/linux-fuzzing/SKILL.md) | **ACTIVE** | In-process libFuzzer targets, AFL++ persistent campaigns, syzkaller QEMU kernel fuzzing, and crash triage. |
+| **`linux-regression-engineering`** | [`skills/linux-regression-engineering/`](skills/linux-regression-engineering/SKILL.md) | **ACTIVE** | Automated git bisect predicates (exit 125), kernel/app version regressions, and shared library ABI guards. |
 
 ---
 
