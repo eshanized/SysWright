@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "distribution": "debian",
+  "suite": "bookworm",
+  "component": "main",
+  "timestamp": "2026-04-01T12:00:00Z",
+  "signing_key_fingerprint": "ABCD1234EF567890ABCD1234EF567890ABCD1234",
+  "packages": [
+    {
+      "name": "myapp",
+      "version": "1.2.3-1",
+      "architecture": "amd64",
+      "filename": "pool/main/m/myapp/myapp_1.2.3-1_amd64.deb",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 1048576,
+      "dependencies": [
+        "libc6 (>= 2.35)",
+        "libssl3 (>= 3.0.0)"
+      ]
+    }
+  ]
+}

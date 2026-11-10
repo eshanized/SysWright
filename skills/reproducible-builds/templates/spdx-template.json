@@ -1,0 +1,41 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "myapp-1.2.3",
+  "documentNamespace": "https://example.org/spdx/myapp-1.2.3-uuid-placeholder",
+  "creationInfo": {
+    "creators": [
+      "Tool: LinuxEngineering-SBOMGenerator-1.0",
+      "Organization: Linux Engineering Team"
+    ],
+    "created": "2026-04-01T12:00:00Z"
+  },
+  "packages": [
+    {
+      "name": "myapp",
+      "SPDXID": "SPDXRef-Package-myapp",
+      "versionInfo": "1.2.3",
+      "downloadLocation": "https://example.org/releases/myapp-1.2.3.tar.xz",
+      "packageVerificationCode": {
+        "packageVerificationCodeValue": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+      },
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "licenseConcluded": "Apache-2.0",
+      "licenseDeclared": "Apache-2.0",
+      "copyrightText": "Copyright 2026 Linux Engineering Contributors"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relatedSpdxElement": "SPDXRef-Package-myapp",
+      "relationshipType": "DESCRIBES"
+    }
+  ]
+}

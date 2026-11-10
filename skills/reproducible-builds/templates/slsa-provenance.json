@@ -1,0 +1,40 @@
+{
+  "_type": "https://in-toto.io/Statement/v1",
+  "subject": [
+    {
+      "name": "myapp-1.2.3-1.x86_64.rpm",
+      "digest": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "predicateType": "https://slsa.dev/provenance/v1",
+  "predicate": {
+    "buildDefinition": {
+      "buildType": "https://slsa.dev/spec/v1.0/isolated-builder",
+      "externalParameters": {
+        "source": {
+          "uri": "git+https://example.org/myapp.git",
+          "digest": {
+            "gitCommit": "0123456789abcdef0123456789abcdef01234567"
+          }
+        },
+        "buildScript": "rpmbuild -ba SPECS/myapp.spec"
+      },
+      "internalParameters": {
+        "SOURCE_DATE_EPOCH": "1775044800"
+      },
+      "resolvedDependencies": []
+    },
+    "runDetails": {
+      "builder": {
+        "id": "https://build.example.org/runners/isolated-worker-01"
+      },
+      "metadata": {
+        "invocationId": "run-20260401-120000",
+        "startedOn": "2026-04-01T12:00:00Z",
+        "finishedOn": "2026-04-01T12:05:00Z"
+      }
+    }
+  }
+}
