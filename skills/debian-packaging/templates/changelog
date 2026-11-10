@@ -1,0 +1,6 @@
+example-package (1.0.0-1) unstable; urgency=medium
+
+  * Initial release (Closes: #1000000).
+  * Conforms to Debian Policy 4.6.2 and debhelper-compat 13.
+
+ -- Debian Package Maintainer <maintainer@debian.org>  Mon, 15 Jan 2024 12:00:00 +0000

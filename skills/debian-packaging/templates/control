@@ -1,0 +1,26 @@
+Source: example-package
+Section: utils
+Priority: optional
+Maintainer: Debian Package Maintainer <maintainer@debian.org>
+Build-Depends:
+ debhelper-compat (= 13),
+ cmake,
+ pkgconf,
+Standards-Version: 4.6.2
+Homepage: https://example.org/project
+Vcs-Git: https://salsa.debian.org/debian/example-package.git
+Vcs-Browser: https://salsa.debian.org/debian/example-package
+Rules-Requires-Root: no
+
+Package: example-package
+Architecture: any
+Multi-Arch: foreign
+Depends:
+ ${misc:Depends},
+ ${shlibs:Depends},
+Recommends:
+ ca-certificates,
+Description: short one-line synopsis of the package
+ Comprehensive multi-line description explaining the utility,
+ its core features, and architectural principles conforming to
+ Debian Policy formatting rules.

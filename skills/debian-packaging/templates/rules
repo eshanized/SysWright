@@ -1,0 +1,19 @@
+#!/usr/bin/make -f
+# Modern Debhelper Build Recipe (dh 13+)
+export DH_VERBOSE = 1
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+%:
+	dh $@
+
+# Example override for CMake configuration
+# override_dh_auto_configure:
+# 	dh_auto_configure -- \
+# 		-DCMAKE_BUILD_TYPE=Release \
+# 		-DENABLE_TESTING=ON
+
+# Example override for test execution
+# override_dh_auto_test:
+# ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
+# 	dh_auto_test
+# endif
