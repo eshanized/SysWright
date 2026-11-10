@@ -43,6 +43,14 @@ flowchart TD
     SPEC_CHECK -->|Desktop, Wayland & D-Bus| DSK["Invoke desktop-integration"]
     SPEC_CHECK -->|Build Systems & Toolchains| BLD["Invoke linux-build-engineering"]
     SPEC_CHECK -->|Arch Packaging| ARCH_PKG["Invoke arch-packaging"]
+    SPEC_CHECK -->|Debian Source & Binaries| DEB_PKG["Invoke debian-packaging"]
+    SPEC_CHECK -->|Ubuntu Delta, PPA & SRU| UBU_PKG["Invoke ubuntu-packaging"]
+    SPEC_CHECK -->|Core RPM Anatomy & Specs| RPM_PKG["Invoke rpm-packaging"]
+    SPEC_CHECK -->|Fedora, Koji & Mock| FED_PKG["Invoke fedora-packaging"]
+    SPEC_CHECK -->|openSUSE, OBS & Osc| SUSE_PKG["Invoke opensuse-packaging"]
+    SPEC_CHECK -->|Repo Architecture & Signing| DIST_ENG["Invoke linux-distribution-engineering"]
+    SPEC_CHECK -->|Reproducibility & SBOM| REPRO["Invoke reproducible-builds"]
+    SPEC_CHECK -->|Release Sync & Upstream| REL_MAINT["Invoke linux-release-maintenance"]
     SPEC_CHECK -->|Defect & Crash Analysis| DBG["Invoke linux-debugging"]
     SPEC_CHECK -->|Profiling & Performance| PERF["Invoke linux-performance"]
     SPEC_CHECK -->|Defensive Security & Hardening| SEC["Invoke linux-security"]
@@ -50,24 +58,7 @@ flowchart TD
     SPEC_CHECK -->|Fuzzing & Input Testing| FUZZ["Invoke linux-fuzzing"]
     SPEC_CHECK -->|Regressions & Git Bisect| REG["Invoke linux-regression-engineering"]
 
-    KERN --> SAFE{"Verify Operational Safety Tier"}
-    DRV --> SAFE
-    SYS --> SAFE
-    BOOT --> SAFE
-    NET --> SAFE
-    STOR --> SAFE
-    APP --> SAFE
-    QT --> SAFE
-    GTK --> SAFE
-    DSK --> SAFE
-    BLD --> SAFE
-    ARCH_PKG --> SAFE
-    DBG --> SAFE
-    PERF --> SAFE
-    SEC --> SAFE
-    OBS --> SAFE
-    FUZZ --> SAFE
-    REG --> SAFE
+    KERN & DRV & SYS & BOOT & NET & STOR & APP & QT & GTK & DSK & BLD & ARCH_PKG & DEB_PKG & UBU_PKG & RPM_PKG & FED_PKG & SUSE_PKG & DIST_ENG & REPRO & REL_MAINT & DBG & PERF & SEC & OBS & FUZZ & REG --> SAFE{"Verify Operational Safety Tier"}
     SAFE --> VERIFY["Execute Contract Verification\n(Deterministic Linting & Testing)"]
     VERIFY --> REPORT["Report Empirical Evidence & Risks"]
 ```
@@ -86,6 +77,14 @@ Determine the operational category and select all relevant specialists:
 - **Desktop Integration & Wayland**: Wayland protocols, X11/XWayland, D-Bus IPC, XDG Portals, Desktop Entries, AppStream $\to$ Route to `desktop-integration`.
 - **Linux Build Engineering**: Toolchains (GCC/Clang), modern CMake, Meson, Ninja, Cargo workspaces, linking/ABI, packaging prep $\to$ Route to `linux-build-engineering`.
 - **Arch Packaging & Distribution**: Authoring PKGBUILDs, clean-chroot builds, AUR maintenance, repo-add $\to$ Route to `arch-packaging`.
+- **Debian Packaging & Maintenance**: Debian source formats (3.0 quilt), debhelper 13+, DEP-3 patches, sbuild, lintian, autopkgtest $\to$ Route to `debian-packaging`.
+- **Ubuntu Packaging & PPAs**: Ubuntu delta over Debian, Launchpad PPAs, LTS vs Interim series, SRU bug workflows, dput $\to$ Route to `ubuntu-packaging`.
+- **RPM Packaging Core**: RPM anatomy, spec preambles, scriptlets, file triggers, macro standards, automatic soname provides/requires $\to$ Route to `rpm-packaging`.
+- **Fedora & Enterprise Linux Packaging**: Fedora packaging guidelines, SPDX licensing, strict unbundling, mock chroots, fedpkg, Koji, Bodhi $\to$ Route to `fedora-packaging`.
+- **openSUSE & SUSE Enterprise Packaging**: openSUSE spec macros, Open Build Service (OBS), osc command-line, Tumbleweed vs Leap $\to$ Route to `opensuse-packaging`.
+- **Distribution & Repository Engineering**: APT, DNF repomd, Zypper, Pacman repo architectures; GPG signing; package promotion; rollback $\to$ Route to `linux-distribution-engineering`.
+- **Reproducible Builds & Supply Chain**: Bit-for-bit determinism, SOURCE_DATE_EPOCH, diffoscope, reprotest, SPDX/CycloneDX SBOMs, SLSA $\to$ Route to `reproducible-builds`.
+- **Release Maintenance & Upstream Sync**: Tracking upstream releases (uscan/Anitya), patch lifecycle, ABI transitions, CVE backporting $\to$ Route to `linux-release-maintenance`.
 - **Linux Debugging & Diagnostics**: Segmentation faults, core dumps, memory leaks, thread deadlocks, kernel panics $\to$ Route to `linux-debugging`.
 - **Performance Engineering & Profiling**: CPU hotspots, memory bloat, I/O latency, network throughput degradation, benchmarking $\to$ Route to `linux-performance`.
 - **Defensive Security & Hardening**: Threat modeling, sandboxing (systemd, seccomp, Landlock), capabilities, CVE triage, backport verification $\to$ Route to `linux-security`.
@@ -93,6 +92,10 @@ Determine the operational category and select all relevant specialists:
 - **Automated Fuzzing & Sanitizers**: In-process fuzz targets (libFuzzer), mutation campaigns (AFL++), kernel fuzzing (syzkaller/KCOV), crash triage $\to$ Route to `linux-fuzzing`.
 - **Regression Engineering & Bisecting**: Automated `git bisect` predicates, exit code 125 handling, ABI breakages (libabigail), regression tests $\to$ Route to `linux-regression-engineering`.
 - **Multi-Subsystem Coordination**:
+  - *Cross-distribution application release*: `linux-application-engineering` + `linux-release-maintenance` + `arch-packaging` + `debian-packaging` + `fedora-packaging` + `opensuse-packaging` + `reproducible-builds`.
+  - *Ubuntu LTS security backport*: `ubuntu-packaging` + `linux-release-maintenance` + `linux-security` + `debian-packaging`.
+  - *Upstream shared library ABI upgrade*: `linux-release-maintenance` + `linux-regression-engineering` + `debian-packaging` + `fedora-packaging`.
+  - *Supply-chain audit of public repository*: `reproducible-builds` + `linux-distribution-engineering` + `linux-security`.
   - *Kernel crash investigation*: `linux-debugging` + `kernel-engineering` + `linux-observability` + `linux-regression-engineering`.
   - *Memory leak in a Qt application*: `linux-debugging` + `qt-qml-engineering` + `linux-performance` + `linux-regression-engineering`.
   - *Security review of a system daemon*: `linux-security` + `systemd-engineering` + `linux-debugging`.
@@ -128,7 +131,7 @@ Classify the proposed action according to [../../references/safety-policy.md](..
 
 ## 2. Specialist Skill Catalog Status
 
-In Phase 5, the **three Foundation Skills** and **eighteen Domain Specialists** are fully active:
+In Phase 6, the **three Foundation Skills** and **twenty-six Domain Specialists** are fully active:
 
 | Engineering Discipline | Assigned Skill | Status | Handled via Foundation / Specialist |
 |:---|:---|:---:|:---|
@@ -136,6 +139,14 @@ In Phase 5, the **three Foundation Skills** and **eighteen Domain Specialists** 
 | **Authoritative Upstream Research** | `linux-research` | **ACTIVE** | Full 10-step research and evidence tracking. |
 | **Environment & Toolchain Probing** | `linux-environment` | **ACTIVE** | Safe discovery of distro, kernel, and compilers. |
 | **Arch Packaging & PKGBUILD** | [`arch-packaging`](../arch-packaging/SKILL.md) | **ACTIVE** | Comprehensive Arch packaging lifecycle, clean chroots, namcap, AUR. |
+| **Debian Packaging & Debhelper** | [`debian-packaging`](../debian-packaging/SKILL.md) | **ACTIVE** | 3.0 (quilt), debhelper 13+, DEP-3, sbuild, lintian, autopkgtest, mentors. |
+| **Ubuntu Packaging & Launchpad** | [`ubuntu-packaging`](../ubuntu-packaging/SKILL.md) | **ACTIVE** | Ubuntu delta over Debian, Launchpad PPAs, LTS vs Interim, SRU, dput. |
+| **Core RPM Packaging & Macros** | [`rpm-packaging`](../rpm-packaging/SKILL.md) | **ACTIVE** | Spec anatomy, scriptlets ($1=0), file triggers, macros, rpmbuild, rpmsign. |
+| **Fedora & Koji Packaging** | [`fedora-packaging`](../fedora-packaging/SKILL.md) | **ACTIVE** | Packaging guidelines, SPDX licensing, strict unbundling, mock, fedpkg, Koji, Bodhi. |
+| **openSUSE & OBS Packaging** | [`opensuse-packaging`](../opensuse-packaging/SKILL.md) | **ACTIVE** | openSUSE spec conventions, OBS projects, osc CLI, Tumbleweed vs Leap. |
+| **Distribution & Repo Architecture** | [`linux-distribution-engineering`](../linux-distribution-engineering/SKILL.md) | **ACTIVE** | APT, DNF repomd, Zypper, Pacman repo architectures; GPG signing; promotion; rollback. |
+| **Reproducible Builds & SBOM** | [`reproducible-builds`](../reproducible-builds/SKILL.md) | **ACTIVE** | Determinism, SOURCE_DATE_EPOCH, diffoscope, reprotest, SPDX/CycloneDX, SLSA. |
+| **Release Maintenance & Lifecycle** | [`linux-release-maintenance`](../linux-release-maintenance/SKILL.md) | **ACTIVE** | Upstream tracking (uscan/Anitya), patch lifecycle, ABI transitions, CVE backports. |
 | **Kernel Subsystems & Patches** | [`kernel-engineering`](../kernel-engineering/SKILL.md) | **ACTIVE** | Kernel architecture, Kconfig, builds, checkpatch.pl, panic analysis. |
 | **Device Drivers & Hardware** | [`driver-engineering`](../driver-engineering/SKILL.md) | **ACTIVE** | Device model, PCI, USB, I2C, SPI, DMA, probe failures, QEMU mocks. |
 | **systemd & Service Units** | [`systemd-engineering`](../systemd-engineering/SKILL.md) | **ACTIVE** | Unit architecture, Type=notify, sandboxing, cgroups v2, verify. |
