@@ -50,7 +50,7 @@ linux-engineering/
 
 ---
 
-## 3. Skill Catalog (Phase 5 Status)
+## 3. Skill Catalog (Phase 6 Status)
 
 | Skill Name | Directory | Status | Primary Purpose |
 |:---|:---|:---:|:---|
@@ -58,6 +58,14 @@ linux-engineering/
 | **`linux-research`** | [`skills/linux-research/`](skills/linux-research/SKILL.md) | **ACTIVE** | 10-step upstream investigation, lore.kernel.org query, evidence ledger creation. |
 | **`linux-environment`** | [`skills/linux-environment/`](skills/linux-environment/SKILL.md) | **ACTIVE** | Safe discovery of distro identity, kernel release, toolchains, container/VM status. |
 | **`arch-packaging`** | [`skills/arch-packaging/`](skills/arch-packaging/SKILL.md) | **ACTIVE** | Full Arch Linux packaging lifecycle, PKGBUILD authoring, clean chroots, namcap, AUR, and repos. |
+| **`debian-packaging`** | [`skills/debian-packaging/`](skills/debian-packaging/SKILL.md) | **ACTIVE** | Debian source/binary packaging, debhelper 13+, DEP-3 quilt patches, sbuild, lintian, autopkgtest, mentors. |
+| **`ubuntu-packaging`** | [`skills/ubuntu-packaging/`](skills/ubuntu-packaging/SKILL.md) | **ACTIVE** | Ubuntu delta over Debian, Launchpad PPAs, source-only uploads, LTS vs Interim series, SRU test plans, dput. |
+| **`rpm-packaging`** | [`skills/rpm-packaging/`](skills/rpm-packaging/SKILL.md) | **ACTIVE** | Core RPM spec anatomy, directory macros, automatic soname dependencies, scriptlet $1=0 trap, rpmsign. |
+| **`fedora-packaging`** | [`skills/fedora-packaging/`](skills/fedora-packaging/SKILL.md) | **ACTIVE** | Fedora packaging guidelines, SPDX licensing, strict unbundling, mock chroots, fedpkg, Koji, Bodhi, EPEL. |
+| **`opensuse-packaging`** | [`skills/opensuse-packaging/`](skills/opensuse-packaging/SKILL.md) | **ACTIVE** | openSUSE spec conventions, `%service_add_post`, Open Build Service (OBS), osc CLI, Tumbleweed vs Leap. |
+| **`linux-distribution-engineering`** | [`skills/linux-distribution-engineering/`](skills/linux-distribution-engineering/SKILL.md) | **ACTIVE** | APT, DNF repomd, Zypper, Pacman repo architectures; offline GPG signing; package promotion; rollback. |
+| **`reproducible-builds`** | [`skills/reproducible-builds/`](skills/reproducible-builds/SKILL.md) | **ACTIVE** | Bit-for-bit determinism, SOURCE_DATE_EPOCH, diffoscope, reprotest, SPDX/CycloneDX SBOMs, SLSA Level 3. |
+| **`linux-release-maintenance`** | [`skills/linux-release-maintenance/`](skills/linux-release-maintenance/SKILL.md) | **ACTIVE** | Upstream release tracking (uscan/Anitya), patch queue lifecycle, ABI transitions, CVE backporting. |
 | **`kernel-engineering`** | [`skills/kernel-engineering/`](skills/kernel-engineering/SKILL.md) | **ACTIVE** | Subsystem architecture, Kbuild/Kconfig, regression bisect, kernel patching, debugging, and upstream LKML workflow. |
 | **`driver-engineering`** | [`skills/driver-engineering/`](skills/driver-engineering/SKILL.md) | **ACTIVE** | Device model, bus subsystems (PCI/USB/I2C/SPI), probe lifecycle, DMA, interrupts, and power management. |
 | **`systemd-engineering`** | [`skills/systemd-engineering/`](skills/systemd-engineering/SKILL.md) | **ACTIVE** | Unit architecture, service lifecycle, security sandboxing, cgroups v2 resource limits, and journald troubleshooting. |
@@ -163,6 +171,16 @@ When an agent develops or reviews a native Linux desktop application (e.g., "Dev
 5. `linux-build-engineering` applies compiler hardening flags (`-D_FORTIFY_SOURCE=3 -fstack-protector-strong`) and configures reproducible build inputs (`SOURCE_DATE_EPOCH`).
 6. It runs `evals/eval_native_apps.py` to ensure compliance across all 34 native application benchmarks.
 
+### 5.6 Cross-Distribution, Release and Supply-Chain Engineering
+When an agent maintains a multi-distribution software project (e.g., "Package and release a daemon across Debian, Ubuntu, Fedora, and openSUSE with reproducible builds"):
+1. `linux-engineer` routes the task across `linux-release-maintenance`, `debian-packaging`, `ubuntu-packaging`, `fedora-packaging`, `opensuse-packaging`, and `reproducible-builds`.
+2. `debian-packaging` and `ubuntu-packaging` author clean source packages using debhelper 13+ and DEP-3 quilt patches, preparing PPA uploads via `dput`.
+3. `fedora-packaging` enforces strict unbundling and SPDX licensing, verifying builds in clean chroots via `mock`.
+4. `opensuse-packaging` adheres to openSUSE shared library naming policies (`libfoo1`) and prepares OBS builds via `osc`.
+5. `reproducible-builds` normalizes build timestamps via `SOURCE_DATE_EPOCH`, maps build paths (`-ffile-prefix-map`), verifies binary identity with `diffoscope`, and generates SPDX 2.3 SBOMs and SLSA Level 3 attestations.
+6. `linux-distribution-engineering` verifies repository metadata signatures, promotes packages through dev/staging/production, and enforces atomic metadata updates.
+7. It runs `evals/eval_cross_distribution.py` to ensure compliance across all 48 cross-distribution benchmarks.
+
 ---
 
 ## 6. Development & Quality Assurance
@@ -170,7 +188,7 @@ When an agent develops or reviews a native Linux desktop application (e.g., "Dev
 All tooling is implemented using the Python 3 standard library with zero external dependencies.
 
 ### 6.1 Validate Skills
-Verify that all 15 canonical skills comply with the `agentskills.io` specification:
+Verify that all 29 canonical skills comply with the `agentskills.io` specification:
 ```bash
 python3 scripts/validate-skills.py
 ```
@@ -182,36 +200,48 @@ python3 scripts/check-references.py
 ```
 
 ### 6.3 Run the Test Suite
-Execute the complete automated test suite (47+ unit and integration tests):
+Execute the complete automated test suite (62 unit and integration tests):
 ```bash
 python3 tests/run_all_tests.py
 ```
 
-### 6.4 Run Native Application Engineering Evaluations
+### 6.4 Run Cross-Distribution Engineering Evaluations
+Run the 48 cross-distribution, release, and supply-chain evaluation scenarios across Debian, Ubuntu, RPM, Fedora, openSUSE, repository engineering, reproducible builds, and release maintenance:
+```bash
+python3 evals/eval_cross_distribution.py
+```
+
+### 6.5 Run Advanced Engineering Evaluations
+Run the 36 advanced engineering evaluation scenarios across debugging, performance, security, observability, fuzzing, and regression engineering:
+```bash
+python3 evals/eval_advanced_engineering.py
+```
+
+### 6.6 Run Native Application Engineering Evaluations
 Run the 34 native application engineering evaluation scenarios across applications, Qt, GTK, desktop integration, and build systems:
 ```bash
 python3 evals/eval_native_apps.py
 ```
 
-### 6.5 Run Systems Engineering Evaluations
+### 6.7 Run Systems Engineering Evaluations
 Run the 28 core systems engineering evaluation scenarios across kernel, drivers, systemd, boot, networking, and storage:
 ```bash
 python3 evals/eval_systems.py
 ```
 
-### 6.6 Run Packaging Evaluations
+### 6.8 Run Packaging Evaluations
 Run the 18 Arch Linux packaging evaluation scenarios:
 ```bash
 python3 evals/arch-packaging/eval_arch_packaging.py
 ```
 
-### 6.7 Run Skill-Routing Evaluations
+### 6.9 Run Skill-Routing Evaluations
 Run the routing evaluation scenarios:
 ```bash
 python3 evals/routing/eval_router.py
 ```
 
-### 6.8 Run Research Evaluations
+### 6.10 Run Research Evaluations
 Run the 6 research and evidence evaluation scenarios:
 ```bash
 python3 evals/research/eval_research.py

@@ -49,22 +49,23 @@ When contributing engineering knowledge or reference documents:
 Before submitting a pull request, verify that all local checks pass:
 
 ```bash
-# 1. Validate all skill directories against the Agent Skills standard:
+# 1. Validate all 29 skill directories against the Agent Skills standard:
 python3 scripts/validate-skills.py
 
-# 2. Verify all internal relative markdown links:
+# 2. Verify all internal relative markdown links (0 broken links):
 python3 scripts/check-references.py
 
-# 3. Run the complete automated test suite (55+ unit and integration tests):
+# 3. Run the complete automated test suite (62 unit and integration tests):
 python3 tests/run_all_tests.py
 
-# 4. Run application, systems, and advanced engineering evaluation suites:
+# 4. Run cross-distribution, advanced, application, and systems evaluation suites:
+python3 evals/eval_cross_distribution.py
 python3 evals/eval_advanced_engineering.py
 python3 evals/eval_native_apps.py
 python3 evals/eval_systems.py
 ```
 
-All 55+ automated tests and benchmark evaluations must pass with exit code `0`.
+All 62 automated tests and benchmark evaluations must pass with exit code `0`.
 
 ---
 
