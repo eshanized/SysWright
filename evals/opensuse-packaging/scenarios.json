@@ -1,0 +1,56 @@
+[
+  {
+    "id": "eval_suse_01_opensuse_spec",
+    "domain": "opensuse-packaging",
+    "eval_type": "suse_opensuse_spec",
+    "title": "Author spec file conforming to openSUSE guidelines and macro conventions",
+    "input": "Create an openSUSE spec file for a system daemon. What openSUSE-specific macros should be used for CMake building, systemd scriptlets, and test execution?",
+    "expected_specialists": ["opensuse-packaging"],
+    "evidence_requirements": ["Use of %cmake and %cmake_build (or %make_build) macros", "Use of openSUSE systemd macros (%service_add_pre, %service_add_post, %service_del_preun, %service_del_postun)", "Use of %ctest for test execution in %check section"]
+  },
+  {
+    "id": "eval_suse_02_obs_failure",
+    "domain": "opensuse-packaging",
+    "eval_type": "suse_obs_failure",
+    "title": "Diagnose Open Build Service build failure using osc CLI",
+    "input": "An OBS package shows status `failed` for repository `openSUSE_Tumbleweed` on `x86_64`. How does an engineer investigate the failure from the command line?",
+    "expected_specialists": ["opensuse-packaging"],
+    "evidence_requirements": ["Checking build status using osc results", "Fetching the remote build log using osc buildlog or osc log", "Locating the compiler error or unpackaged files warning in the log output"]
+  },
+  {
+    "id": "eval_suse_03_repo_config",
+    "domain": "opensuse-packaging",
+    "eval_type": "suse_repo_config",
+    "title": "Configure multi-distribution targets in Open Build Service project",
+    "input": "An openSUSE package maintainer wants their OBS home project to build packages simultaneously for openSUSE Tumbleweed, openSUSE Leap 15.6, and Fedora 40. How is this configured in OBS?",
+    "expected_specialists": ["opensuse-packaging"],
+    "evidence_requirements": ["Editing project metadata using osc meta prj -e", "Adding <repository> definitions linking to openSUSE:Factory, openSUSE:Leap:15.6, and Fedora:40", "Configuring target architecture tags (<arch>x86_64</arch>)"]
+  },
+  {
+    "id": "eval_suse_04_osc_workflow",
+    "domain": "opensuse-packaging",
+    "eval_type": "suse_osc_workflow",
+    "title": "Execute complete osc package development and submit request workflow",
+    "input": "A maintainer wants to update a package in `openSUSE:Factory`. What is the complete sequence of `osc` commands from branching to creating the final submit request?",
+    "expected_specialists": ["opensuse-packaging"],
+    "evidence_requirements": ["Branching the package via osc branch openSUSE:Factory <package>", "Checking out and testing locally via osc co and osc build", "Committing changes and creating a submit request via osc commit and osc sr"]
+  },
+  {
+    "id": "eval_suse_05_soname_naming",
+    "domain": "opensuse-packaging",
+    "eval_type": "suse_soname_naming",
+    "title": "Enforce openSUSE Shared Library Policy on package naming",
+    "input": "A project builds `libxyz.so.2.1.0` with SONAME `libxyz.so.2`. According to openSUSE Packaging Guidelines, what MUST the binary package containing the library be named?",
+    "expected_specialists": ["opensuse-packaging"],
+    "evidence_requirements": ["Naming the package strictly libxyz2 matching the SONAME", "Separating development symlinks and headers into libxyz-devel", "Explanation that this enables parallel installation of different library major versions"]
+  },
+  {
+    "id": "eval_suse_06_tumbleweed_leap",
+    "domain": "opensuse-packaging",
+    "eval_type": "suse_tumbleweed_leap",
+    "title": "Reconcile spec file differences between Tumbleweed and openSUSE Leap",
+    "input": "Tumbleweed uses GCC 14 and modern Python 3.12, while Leap 15.6 has GCC 12 and Python 3.6/3.11 modules. How should an openSUSE spec file handle toolchain differences across both targets?",
+    "expected_specialists": ["opensuse-packaging"],
+    "evidence_requirements": ["Use of conditional macros testing 0%{?suse_version} and 0%{?is_opensuse}", "Checking suse_version > 1500 for Tumbleweed vs <= 1500 for Leap", "Conditionally requesting newer compiler packages or Python stacks for Leap"]
+  }
+]

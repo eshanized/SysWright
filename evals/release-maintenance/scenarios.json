@@ -1,0 +1,56 @@
+[
+  {
+    "id": "eval_rel_01_rebase_patch_series",
+    "domain": "release-maintenance",
+    "eval_type": "rel_rebase_patch_series",
+    "title": "Audit and rebase downstream patch series onto new upstream release",
+    "input": "Upstream releases version 2.4.0. The downstream package maintains five custom patches in `debian/patches/` and Fedora spec. Two patches were upstreamed in 2.4.0, one has merge conflicts, and two apply cleanly. What is the engineering workflow to upgrade the package?",
+    "expected_specialists": ["linux-release-maintenance", "debian-packaging", "fedora-packaging"],
+    "evidence_requirements": ["Auditing upstream git commits/changelog to identify and drop already-merged downstream patches", "Rebasing remaining active patches using quilt or git am and refreshing line offsets", "Documenting dropped and refreshed patches in package changelogs"]
+  },
+  {
+    "id": "eval_rel_02_upstream_security_backport",
+    "domain": "release-maintenance",
+    "eval_type": "rel_upstream_security_backport",
+    "title": "Backport minimal security fix for CVE to Long Term Support release",
+    "input": "CVE-2026-54321 affects `libproto 1.8.2` running on an enterprise LTS distribution. Upstream fixed the bug in `libproto 2.1.0` alongside extensive API refactoring. How should a maintainer safely backport this fix to 1.8.2?",
+    "expected_specialists": ["linux-release-maintenance", "linux-security"],
+    "evidence_requirements": ["Isolating the minimal fix delta from upstream without pulling in unrelated refactorings or new features", "Preserving binary ABI compatibility (no changes to struct layouts or exported symbol signatures)", "Adding a regression test verifying the exploit is mitigated without breaking existing functionality"]
+  },
+  {
+    "id": "eval_rel_03_abi_transition",
+    "domain": "release-maintenance",
+    "eval_type": "rel_abi_transition",
+    "title": "Coordinate shared library SONAME bump and reverse dependency transition",
+    "input": "A C library project bumps its SONAME from `libdata.so.3` to `libdata.so.4` due to struct changes. How must distribution maintainers coordinate this ABI transition across the repository?",
+    "expected_specialists": ["linux-release-maintenance", "linux-regression-engineering"],
+    "evidence_requirements": ["Verification of ABI breakage using abi-compliance-checker or libabigail (abidiff)", "Creation of new binary package (libdata4) co-installable with old package (libdata3)", "Coordinated rebuild scheduling for all reverse dependencies linking against the old SONAME"]
+  },
+  {
+    "id": "eval_rel_04_multi_distro_coordination",
+    "domain": "release-maintenance",
+    "eval_type": "rel_multi_distro_coordination",
+    "title": "Coordinate synchronized release across Arch, Debian, Ubuntu, Fedora, and openSUSE",
+    "input": "A systems software project is ready for release 1.5.0. How should the maintainer synchronize package definitions across Arch (PKGBUILD), Debian/Ubuntu (debian/), Fedora (spec), and openSUSE (spec/changes)?",
+    "expected_specialists": ["linux-release-maintenance", "arch-packaging", "debian-packaging", "fedora-packaging", "opensuse-packaging"],
+    "evidence_requirements": ["Creation of unified upstream git release tag and signed source tarball", "Updating package version, checksums, and changelogs across all distribution packaging directories", "Running containerized matrix builds to verify that all target distributions compile cleanly before tagging release"]
+  },
+  {
+    "id": "eval_rel_05_upstream_watch",
+    "domain": "release-maintenance",
+    "eval_type": "rel_upstream_watch",
+    "title": "Configure automated upstream release tracking with debian/watch and Anitya",
+    "input": "To avoid missing upstream security releases, how can a distribution maintenance team configure automated upstream release monitoring using `debian/watch` and release-monitoring.org (Anitya)?",
+    "expected_specialists": ["linux-release-maintenance", "debian-packaging", "fedora-packaging"],
+    "evidence_requirements": ["Authoring a debian/watch file with version 4 format and regex matching upstream release tags", "Registering the package mapping on release-monitoring.org (Anitya) for Fedora/Arch notification", "Configuring automated verification of upstream cryptographic signatures (pgpmode=auto)"]
+  },
+  {
+    "id": "eval_rel_06_release_readiness_gate",
+    "domain": "release-maintenance",
+    "eval_type": "rel_release_readiness_gate",
+    "title": "Execute formal Go/No-Go release readiness review",
+    "input": "A team is preparing to publish release 2.0.0. One non-critical automated test failed intermittently on arm64, and the lintian check reports an unexpanded macro warning. How should the release lead conduct the Go/No-Go review?",
+    "expected_specialists": ["linux-release-maintenance"],
+    "evidence_requirements": ["Enforcement of strict Go/No-Go criteria: zero unhandled build or test failures allowed on supported architectures", "Triage of intermittent test failure as a blocking regression until root cause is understood", "Correction of linter warnings (lintian/rpmlint) prior to granting release sign-off"]
+  }
+]

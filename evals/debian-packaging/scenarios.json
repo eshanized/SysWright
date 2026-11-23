@@ -1,0 +1,56 @@
+[
+  {
+    "id": "eval_deb_01_debhelper_compat",
+    "domain": "debian-packaging",
+    "eval_type": "deb_debhelper_compat",
+    "title": "Modernize legacy debian/rules with debhelper 13+ sequencer",
+    "input": "A legacy Debian source package uses explicit calls to `dh_install`, `dh_strip`, `dh_makeshlibs`, and manual configure scripts in debian/rules. How should this be modernized to debhelper-compat 13 with proper overrides?",
+    "expected_specialists": ["debian-packaging"],
+    "evidence_requirements": ["Adoption of dh $@ sequencer", "Declaration of debhelper-compat (= 13) in Build-Depends or debian/control", "Use of override_dh_auto_configure and override_dh_auto_test for customizations"]
+  },
+  {
+    "id": "eval_deb_02_control_review",
+    "domain": "debian-packaging",
+    "eval_type": "deb_control_review",
+    "title": "Audit debian/control for Multi-Arch, architecture tags, and dynamic substitutions",
+    "input": "Audit this debian/control snippet: `Package: libfoo1 \n Architecture: all \n Depends: libc6, libssl3`. What errors exist and how must Multi-Arch and runtime dependencies be corrected?",
+    "expected_specialists": ["debian-packaging"],
+    "evidence_requirements": ["Correction of Architecture: any for compiled shared library", "Addition of Multi-Arch: same for co-installable multiarch library", "Replacement of manual libc6/libssl3 dependencies with ${shlibs:Depends} and ${misc:Depends}"]
+  },
+  {
+    "id": "eval_deb_03_missing_build_deps",
+    "domain": "debian-packaging",
+    "eval_type": "deb_missing_build_deps",
+    "title": "Diagnose missing Build-Depends in clean chroot build",
+    "input": "A Debian package compiles cleanly on a developer's workstation but fails in sbuild with `make: cmake: command not found` and `ninja: fatal: ninja not found`. Why did this happen and how is it resolved?",
+    "expected_specialists": ["debian-packaging", "linux-build-engineering"],
+    "evidence_requirements": ["Identification of undeclared dependencies present on developer host but absent in minimal chroot", "Addition of cmake and ninja-build to Build-Depends in debian/control", "Verification using clean sbuild or chroot build"]
+  },
+  {
+    "id": "eval_deb_04_quilt_dep3_patch",
+    "domain": "debian-packaging",
+    "eval_type": "deb_quilt_dep3_patch",
+    "title": "Author DEP-3 compliant quilt patch for upstream bugfix",
+    "input": "An upstream C library has a NULL pointer dereference bug in `parser.c`. We need to backport the fix to a Debian package using quilt. How should the patch be created and documented?",
+    "expected_specialists": ["debian-packaging"],
+    "evidence_requirements": ["Creation of patch under debian/patches/ with registration in debian/patches/series", "Inclusion of mandatory DEP-3 headers (Description, Author, Origin, Bug-Debian, Forwarded)", "Use of quilt push/refresh or gbp pq for patch workflow"]
+  },
+  {
+    "id": "eval_deb_05_sbuild_failure",
+    "domain": "debian-packaging",
+    "eval_type": "deb_sbuild_failure",
+    "title": "Troubleshoot isolated sbuild failure and missing test environment",
+    "input": "During sbuild on Debian Sid, the build passes compilation but fails during `dh_auto_test` with `Cannot connect to D-Bus session bus`. How should this test failure be addressed in debian/rules without disabling tests entirely?",
+    "expected_specialists": ["debian-packaging", "desktop-integration"],
+    "evidence_requirements": ["Identification of missing headless D-Bus session daemon in isolated chroot", "Wrapping test execution with dbus-run-session in override_dh_auto_test", "Addition of dbus to Build-Depends"]
+  },
+  {
+    "id": "eval_deb_06_autopkgtest",
+    "domain": "debian-packaging",
+    "eval_type": "deb_autopkgtest",
+    "title": "Configure autopkgtest integration for installed binary verification",
+    "input": "A Debian package maintainer wants to add DEP-8 continuous integration tests to verify that the compiled binary executes properly once installed on a target system. How is autopkgtest configured?",
+    "expected_specialists": ["debian-packaging"],
+    "evidence_requirements": ["Creation of debian/tests/control", "Declaration of Tests or Test-Command and Depends: @", "Explanation that autopkgtest tests the installed binary package in a clean testbed rather than the source build tree"]
+  }
+]

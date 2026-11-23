@@ -1,0 +1,56 @@
+[
+  {
+    "id": "eval_ubu_01_ppa_preparation",
+    "domain": "ubuntu-packaging",
+    "eval_type": "ubu_ppa_preparation",
+    "title": "Prepare source package and upload to Launchpad PPA",
+    "input": "A developer wants to distribute an application on Ubuntu 24.04 via a Launchpad Personal Package Archive (PPA). What steps are required to build the source package, sign it, and upload it via dput?",
+    "expected_specialists": ["ubuntu-packaging"],
+    "evidence_requirements": ["Generation of source-only upload via debuild -S or dpkg-buildpackage -S -sa", "Signing the source changes file with a GPG key registered on Launchpad", "Uploading the package using dput ppa:<user>/<ppa> <package>_source.changes"]
+  },
+  {
+    "id": "eval_ubu_02_delta_review",
+    "domain": "ubuntu-packaging",
+    "eval_type": "ubu_delta_review",
+    "title": "Audit Ubuntu delta against upstream Debian package",
+    "input": "An Ubuntu maintainer is updating a package synced from Debian. The current Ubuntu package version is `2.1.0-1ubuntu2` and Debian has released `2.1.0-2`. How should the maintainer inspect the existing delta, decide what to keep, and version the new Ubuntu release?",
+    "expected_specialists": ["ubuntu-packaging", "debian-packaging"],
+    "evidence_requirements": ["Inspection of delta using ubuntu-diff or debdiff", "Identification of whether Ubuntu-specific patches were merged into Debian 2.1.0-2", "Proper Ubuntu versioning (2.1.0-2ubuntu1) if delta remains, or direct sync if delta is eliminated"]
+  },
+  {
+    "id": "eval_ubu_03_sru_bug_template",
+    "domain": "ubuntu-packaging",
+    "eval_type": "ubu_sru_bug_template",
+    "title": "Structure a Stable Release Update (SRU) bug report and test plan",
+    "input": "A severe bug in network-manager causes WiFi connection drops on Ubuntu 24.04 LTS (Noble). A fix is ready in the development release. What formal documentation must accompany the SRU bug report for the Ubuntu SRU team?",
+    "expected_specialists": ["ubuntu-packaging"],
+    "evidence_requirements": ["Mandatory SRU sections: [Impact], [Test Plan], [Where problems could occur]", "Detailed step-by-step test plan demonstrating reproduction of failure and verification of fix", "Requirement for package to spend mandatory 7 days in noble-proposed before release to noble-updates"]
+  },
+  {
+    "id": "eval_ubu_04_series_targeting",
+    "domain": "ubuntu-packaging",
+    "eval_type": "ubu_series_targeting",
+    "title": "Diagnose Launchpad upload rejection due to invalid distribution suite",
+    "input": "A maintainer builds a package for Ubuntu and uploads it to Launchpad via dput, but Launchpad sends a rejection email: `Rejected: Distribution 'unstable' is not supported on Launchpad`. What caused this and how is it fixed?",
+    "expected_specialists": ["ubuntu-packaging"],
+    "evidence_requirements": ["Identification that debian/changelog targeted Debian 'unstable' instead of an Ubuntu series codename", "Updating debian/changelog to target the specific series (e.g., 'noble' or 'jammy')", "Rebuilding the source package and re-uploading via dput"]
+  },
+  {
+    "id": "eval_ubu_05_launchpad_multiarch",
+    "domain": "ubuntu-packaging",
+    "eval_type": "ubu_launchpad_multiarch",
+    "title": "Diagnose Launchpad build failure on 32-bit armhf due to 64-bit time_t transition",
+    "input": "A C application compiles cleanly on amd64 and arm64 in Launchpad, but fails on Ubuntu 24.04 armhf with `error: format '%ld' expects argument of type 'long int', but argument has type 'time_t {aka long long int}'`. What caused this failure?",
+    "expected_specialists": ["ubuntu-packaging", "linux-application-engineering"],
+    "evidence_requirements": ["Identification of Ubuntu 24.04 / Debian 64-bit time_t transition (t64) for Year 2038 compliance on 32-bit architectures", "Explanation that time_t is now 64-bit (long long) on armhf", "Fixing code by using appropriate format specifiers or explicit type casting"]
+  },
+  {
+    "id": "eval_ubu_06_sync_merge_conflict",
+    "domain": "ubuntu-packaging",
+    "eval_type": "ubu_sync_merge_conflict",
+    "title": "Resolve merge conflict between new Debian upstream and Ubuntu delta",
+    "input": "When running `git ubuntu merge` or `merge-changelog` to rebase an Ubuntu delta on a new Debian release, conflicts arise in debian/control and debian/rules. What principles govern resolving the conflict?",
+    "expected_specialists": ["ubuntu-packaging", "debian-packaging"],
+    "evidence_requirements": ["Obligation to minimize delta by upstreaming changes back to Debian whenever possible", "Careful preservation of genuine Ubuntu-specific requirements (AppArmor profiles, Mir/Wayland transitions, launchpad paths)", "Documentation of the merge rationale and remaining delta in debian/changelog"]
+  }
+]

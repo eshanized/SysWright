@@ -1,0 +1,56 @@
+[
+  {
+    "id": "eval_rpm_01_spec_review",
+    "domain": "rpm-packaging",
+    "eval_type": "rpm_spec_review",
+    "title": "Audit core RPM spec file anatomy and macro usage",
+    "input": "An engineer authors an RPM spec file with hardcoded paths: `/usr/bin/myapp`, `/etc/myapp.conf`, and calls `make; make install` manually in `%build` and `%install`. How should this spec be refactored to use standard RPM macros and directories?",
+    "expected_specialists": ["rpm-packaging", "linux-build-engineering"],
+    "evidence_requirements": ["Replacement of hardcoded paths with %{_bindir}, %{_sysconfdir}, and %{_datadir}", "Adoption of standard build macros (%make_build, %make_install, %cmake_build, or %autosetup)", "Proper population of %files section using %config(noreplace) and %license"]
+  },
+  {
+    "id": "eval_rpm_02_dependency_generation",
+    "domain": "rpm-packaging",
+    "eval_type": "rpm_dependency_generation",
+    "title": "Leverage automatic RPM dependency generation and eliminate redundant manual tags",
+    "input": "An RPM spec file includes manual tags: `Requires: libc.so.6, libpthread.so.0, libm.so.6, libssl.so.3`. Is this recommended in RPM packaging, and how does RPM handle dynamic library dependencies?",
+    "expected_specialists": ["rpm-packaging"],
+    "evidence_requirements": ["Explanation that rpmbuild automatically invokes find-requires and find-provides on compiled ELF binaries", "Identification that manual soname Requires are anti-patterns that risk version drift and architecture mismatches", "Removal of redundant manual library requires, keeping only high-level package or capability requirements"]
+  },
+  {
+    "id": "eval_rpm_03_scriptlet_trap",
+    "domain": "rpm-packaging",
+    "eval_type": "rpm_scriptlet_trap",
+    "title": "Remediate scriptlet execution trap during package upgrade and uninstall",
+    "input": "An RPM package includes `%preun systemctl stop myapp.service` without checking `$1`. What disaster happens when the user upgrades the package from version 1.0 to 1.1?",
+    "expected_specialists": ["rpm-packaging", "systemd-engineering"],
+    "evidence_requirements": ["Explanation of RPM upgrade sequence: new package %pre, new %post, OLD package %preun, OLD package %postun", "Identification that unchecked %preun stops or disables the newly upgraded service when old package is uninstalled", "Fixing with $1 == 0 check (or using standard %systemd_preun macros or file triggers)"]
+  },
+  {
+    "id": "eval_rpm_04_split_package",
+    "domain": "rpm-packaging",
+    "eval_type": "rpm_split_package",
+    "title": "Design split RPM subpackages for shared library and development headers",
+    "input": "A C++ library project produces both a shared library `libbar.so.1` and development headers `bar.h`. How should the RPM spec be structured to create a base library subpackage and a `-devel` subpackage with strict architecture-bound dependencies?",
+    "expected_specialists": ["rpm-packaging"],
+    "evidence_requirements": ["Definition of %package devel subpackage", "Enforcement of architecture-bound dependency: Requires: %{name}%{?_isa} = %{version}-%{release}", "Splitting %files: runtime .so.1* in base package, development .so symlink and headers in -devel package"]
+  },
+  {
+    "id": "eval_rpm_05_version_syntax",
+    "domain": "rpm-packaging",
+    "eval_type": "rpm_version_syntax",
+    "title": "Analyze RPM version sorting rules and pre-release tilde syntax",
+    "input": "An engineer wants to package an alpha pre-release `2.0.0-alpha1` followed by final release `2.0.0`. If they set `Version: 2.0.0alpha1`, will RPM consider `2.0.0` an upgrade or downgrade? How should pre-releases be formatted in RPM?",
+    "expected_specialists": ["rpm-packaging"],
+    "evidence_requirements": ["Explanation that in RPM, alphabetic characters sort after nothing (2.0.0alpha1 is considered NEWER than 2.0.0)", "Use of the tilde character (~) which sorts BEFORE everything (2.0.0~alpha1 < 2.0.0)", "Recommendation of Version: 2.0.0 with Release: 0.1.alpha1%{?dist} or Version: 2.0.0~alpha1"]
+  },
+  {
+    "id": "eval_rpm_06_rpmsign_verification",
+    "domain": "rpm-packaging",
+    "eval_type": "rpm_rpmsign_verification",
+    "title": "Sign RPM package artifacts and verify signatures",
+    "input": "An automated pipeline builds an RPM package. How does the release engineer cryptographically sign the package with GPG using rpmsign, and how can clients verify the package integrity?",
+    "expected_specialists": ["rpm-packaging", "linux-security"],
+    "evidence_requirements": ["Execution of rpmsign --addsign or rpm --addsign with configured GPG key", "Verification of package signatures using rpm -Kv or rpm --checksig", "Importing distribution public GPG key into rpmdb via rpm --import"]
+  }
+]

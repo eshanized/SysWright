@@ -1,0 +1,56 @@
+[
+  {
+    "id": "eval_repro_01_timestamp_diagnosis",
+    "domain": "reproducible-builds",
+    "eval_type": "repro_timestamp_diagnosis",
+    "title": "Diagnose non-deterministic binary builds caused by embedded timestamps",
+    "input": "Two consecutive builds of a C application produced differing SHA-256 hashes. Running diffoscope shows discrepancies inside the `.rodata` section containing current date and time strings. How should this be resolved to ensure deterministic compilation?",
+    "expected_specialists": ["reproducible-builds", "linux-build-engineering"],
+    "evidence_requirements": ["Identification of __DATE__ and __TIME__ compiler macros or wall-clock usage", "Exporting SOURCE_DATE_EPOCH tied to the last git commit or changelog entry", "Replacing volatile compile-time macros with static version strings or SOURCE_DATE_EPOCH-aware tooling"]
+  },
+  {
+    "id": "eval_repro_02_diffoscope_analysis",
+    "domain": "reproducible-builds",
+    "eval_type": "repro_diffoscope_analysis",
+    "title": "Analyze diffoscope output for archive ordering and file permission variance",
+    "input": "A package build archive differs between builder nodes. The diffoscope report shows: `file list order differs in data.tar.xz` and `permissions 0644 vs 0664`. What caused these variances and what build flags eliminate them?",
+    "expected_specialists": ["reproducible-builds"],
+    "evidence_requirements": ["Identification of filesystem readdir ordering non-determinism and umask variances across build hosts", "Using tar --sort=name to enforce deterministic directory traversal order", "Using tar --mode=go=rX,u+rw or explicit umask 0022 normalization to clamp permissions"]
+  },
+  {
+    "id": "eval_repro_03_build_path_mapping",
+    "domain": "reproducible-builds",
+    "eval_type": "repro_build_path_mapping",
+    "title": "Eliminate host-specific build paths from debug symbols and binaries",
+    "input": "A software package builds with different hashes when compiled in `/home/alice/src` vs `/builds/runner-2/src`. Diffoscope shows path differences in the `.debug_info` DWARF sections. How can absolute build paths be normalized across builds?",
+    "expected_specialists": ["reproducible-builds", "linux-build-engineering"],
+    "evidence_requirements": ["Identification of compiler embedding absolute working directory paths into debug symbols", "Application of -ffile-prefix-map=${PWD}=. and -fdebug-prefix-map=${PWD}=. compiler flags", "Application of --remap-path-prefix for Rust/Cargo builds"]
+  },
+  {
+    "id": "eval_repro_04_sbom_validation",
+    "domain": "reproducible-builds",
+    "eval_type": "repro_sbom_validation",
+    "title": "Generate and validate standardized SPDX 2.3 JSON Software Bill of Materials",
+    "input": "An enterprise client requires a machine-readable Software Bill of Materials (SBOM) for a deployed Linux service. What data must the SBOM contain to satisfy modern compliance standards and what tooling can generate and validate it?",
+    "expected_specialists": ["reproducible-builds", "linux-security"],
+    "evidence_requirements": ["Generation of SPDX 2.3/3.0 or CycloneDX 1.5 JSON manifest", "Inclusion of component names, versions, Package URLs (purl), licenses, and cryptographic hashes (SHA-256)", "Validation of SBOM schema using tools such as syft and spdx-tools"]
+  },
+  {
+    "id": "eval_repro_05_slsa_provenance",
+    "domain": "reproducible-builds",
+    "eval_type": "repro_slsa_provenance",
+    "title": "Generate and verify SLSA Level 3 build provenance attestation",
+    "input": "To achieve SLSA Build Level 3 compliance, a build pipeline must generate an authenticated, non-forgeable record of how the package was produced. What information must be recorded in the in-toto provenance predicate and how is it verified?",
+    "expected_specialists": ["reproducible-builds", "linux-security"],
+    "evidence_requirements": ["Creation of in-toto provenance statement binding artifact digest to build parameters", "Recording of immutable source repository URI, git commit SHA, build type, and builder ID", "Verification using slsa-verifier or Sigstore Cosign against public transparency log"]
+  },
+  {
+    "id": "eval_repro_06_untrusted_env",
+    "domain": "reproducible-builds",
+    "eval_type": "repro_untrusted_env",
+    "title": "Harden build scripts against host environment contamination and randomness",
+    "input": "A build script produces different binaries depending on whether it is run by a user in Germany, the US, or on a build server with 64 vs 4 CPU cores. What environment sanitization must be enforced?",
+    "expected_specialists": ["reproducible-builds"],
+    "evidence_requirements": ["Enforcing locale normalization: export LC_ALL=C.UTF-8 and LANG=C.UTF-8", "Enforcing timezone normalization: export TZ=UTC", "Disabling multi-threaded non-deterministic compiler output or seeding compiler PRNGs (-frandom-seed)"]
+  }
+]

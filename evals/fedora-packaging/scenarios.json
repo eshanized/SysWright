@@ -1,0 +1,56 @@
+[
+  {
+    "id": "eval_fed_01_fedora_spec_prep",
+    "domain": "fedora-packaging",
+    "eval_type": "fed_fedora_spec_prep",
+    "title": "Author spec file conforming to Fedora Packaging Guidelines",
+    "input": "An open-source utility needs a spec file for submission to Fedora. What modern Fedora guidelines must be followed regarding release numbering, changelogs, and license expressions?",
+    "expected_specialists": ["fedora-packaging"],
+    "evidence_requirements": ["Use of Release: %autorelease and %changelog \\n %autochangelog", "Declaration of valid SPDX license identifier (e.g., Apache-2.0, MIT, GPL-2.0-or-later)", "Exclusion of redundant Group: tag and BuildRoot tags obsolete in modern Fedora"]
+  },
+  {
+    "id": "eval_fed_02_mock_failure",
+    "domain": "fedora-packaging",
+    "eval_type": "fed_mock_failure",
+    "title": "Diagnose isolated mock build failure on Fedora Rawhide",
+    "input": "A package builds on a developer's Fedora 40 workstation but fails in `mock -r fedora-rawhide-x86_64` with compiler errors about missing headers. How does the maintainer diagnose and resolve this issue?",
+    "expected_specialists": ["fedora-packaging", "linux-build-engineering"],
+    "evidence_requirements": ["Inspection of mock build logs (build.log and root.log)", "Identification of missing BuildRequires absent in the clean Rawhide chroot", "Fixing the spec by adding appropriate BuildRequires and re-verifying with mock"]
+  },
+  {
+    "id": "eval_fed_03_unbundling_enforcement",
+    "domain": "fedora-packaging",
+    "eval_type": "fed_unbundling_enforcement",
+    "title": "Enforce Fedora strict unbundling policy for third-party libraries",
+    "input": "An upstream C project includes embedded copies of `sqlite3.c`, `cJSON.c`, and `zlib` in its source tree. Fedora packaging policy strictly forbids bundled libraries. How should this be handled in the spec file?",
+    "expected_specialists": ["fedora-packaging", "linux-security"],
+    "evidence_requirements": ["Removal of bundled source directories in %prep (e.g., rm -rf vendor/)", "Addition of system BuildRequires: sqlite-devel, cjson-devel, zlib-ng-compat-devel", "Patching or passing build flags to force the build system to link against system shared libraries"]
+  },
+  {
+    "id": "eval_fed_04_koji_build",
+    "domain": "fedora-packaging",
+    "eval_type": "fed_koji_build",
+    "title": "Execute scratch build and analyze task logs on Koji build system",
+    "input": "Before pushing an update to Fedora dist-git, how does a maintainer test the build across all official architectures (x86_64, aarch64, s390x, ppc64le) using Koji?",
+    "expected_specialists": ["fedora-packaging"],
+    "evidence_requirements": ["Submission of scratch build using fedpkg scratch-build --srpm or koji build --scratch", "Monitoring task status and analyzing per-architecture build.log files", "Verification that all architecture builders succeed before committing to dist-git"]
+  },
+  {
+    "id": "eval_fed_05_bodhi_update",
+    "domain": "fedora-packaging",
+    "eval_type": "fed_bodhi_update",
+    "title": "Create Bodhi update for stable release with automated gating",
+    "input": "A package build succeeds in Koji for `f40`. What is the procedure to submit this package as an update to Fedora 40 users via Bodhi, and what gating criteria must be met before it reaches stable?",
+    "expected_specialists": ["fedora-packaging"],
+    "evidence_requirements": ["Creation of Bodhi update via fedpkg update or Bodhi web UI/CLI", "Specifying update type (bugfix, security, enhancement) and referencing resolved bug IDs", "Testing gating: package goes to updates-testing, requires positive karma (+3) or 7-day aging period"]
+  },
+  {
+    "id": "eval_fed_06_epel_compatibility",
+    "domain": "fedora-packaging",
+    "eval_type": "fed_epel_compatibility",
+    "title": "Maintain spec compatibility across Fedora and EPEL 9/10",
+    "input": "A maintainer wants to use a single spec file for both Fedora 40 and EPEL 9. EPEL 9 has older CMake and does not have the modern `%meson_build` defaults. How is the spec file structured?",
+    "expected_specialists": ["fedora-packaging", "rpm-packaging"],
+    "evidence_requirements": ["Use of conditional macros based on 0%{?rhel} and 0%{?fedora}", "Handling older toolchains in EPEL (e.g., cmake3 vs cmake, gcc-toolset)", "Ensuring BuildRequires and macros conditionally resolve on both RHEL and Fedora targets"]
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "id": "eval_dist_01_signed_repo_design",
+    "domain": "distribution-engineering",
+    "eval_type": "dist_signed_repo_design",
+    "title": "Design cryptographically signed repository architecture with subkey rotation",
+    "input": "An enterprise wants to host a public Debian/Ubuntu APT and Fedora DNF repository. What cryptographic key hierarchy and signing workflow should be established to ensure repository authenticity while protecting the master private key?",
+    "expected_specialists": ["linux-distribution-engineering", "linux-security"],
+    "evidence_requirements": ["Separation of offline master key from online repository signing subkeys", "Generation of InRelease / Release.gpg for APT and repomd.xml.asc for DNF", "Subkey expiration policy and periodic rotation schedule without rotating the root trusted public key"]
+  },
+  {
+    "id": "eval_dist_02_invalid_metadata",
+    "domain": "distribution-engineering",
+    "eval_type": "dist_invalid_metadata",
+    "title": "Diagnose client 404 and checksum mismatch during mirror synchronization",
+    "input": "Users report that `apt update` intermittently fails with `Hash Sum mismatch` or `404 Not Found` when downloading packages from a newly mirrored repository. What causes this synchronization race condition and how is it prevented?",
+    "expected_specialists": ["linux-distribution-engineering"],
+    "evidence_requirements": ["Identification of race condition where mirrors sync metadata files before package files have completed downloading", "Enforcement of two-stage rsync ordering (sync pool/ first, then dists/ metadata)", "Adoption of by-hash metadata layout to prevent race conditions during updates"]
+  },
+  {
+    "id": "eval_dist_03_staged_promotion",
+    "domain": "distribution-engineering",
+    "eval_type": "dist_staged_promotion",
+    "title": "Implement staged repository promotion pipeline with atomic metadata updates",
+    "input": "How should software packages be promoted from CI/CD into `dev`, `staging`, and `production` repositories, and how must metadata updates be executed on production servers to prevent client-side read errors?",
+    "expected_specialists": ["linux-distribution-engineering"],
+    "evidence_requirements": ["Implementation of staged environments (dev -> staging -> production) with automated gating tests", "Promotion of identical binary packages without recompilation", "Atomic replacement of repository metadata (e.g. symlink swap or directory rename) to eliminate partial-write windows"]
+  },
+  {
+    "id": "eval_dist_04_upgrade_analysis",
+    "domain": "distribution-engineering",
+    "eval_type": "dist_upgrade_analysis",
+    "title": "Analyze upgrade failures caused by unhandled conffiles and file collisions",
+    "input": "During a fleet upgrade from distro version 1 to 2, hundreds of systems stall at interactive dpkg conffile prompts or fail with RPM file collision errors (`file /etc/foo conflicts between attempted installs of pkg-a and pkg-b`). How are these packaging issues audited and resolved?",
+    "expected_specialists": ["linux-distribution-engineering", "debian-packaging", "rpm-packaging"],
+    "evidence_requirements": ["Detection of unhandled configuration file changes and adoption of ucf or %config(noreplace)", "Auditing for file collisions across package boundaries using lintian/rpmlint or repository queries", "Resolution of file moves using Breaks/Replaces in Debian or Obsoletes/Conflicts in RPM"]
+  },
+  {
+    "id": "eval_dist_05_rollback_strategy",
+    "domain": "distribution-engineering",
+    "eval_type": "dist_rollback_strategy",
+    "title": "Execute emergency repository rollback without breaking client dependency caches",
+    "input": "A flawed version of a critical networking utility `netfoo 3.0.0-1` was published to production, causing boot hangs. Simply deleting `netfoo 3.0.0-1` from the repo broke client updates with 404s and did not downgrade installed clients. What is the correct emergency rollback procedure?",
+    "expected_specialists": ["linux-distribution-engineering"],
+    "evidence_requirements": ["Explanation why deleting packages from pools causes 404s and fails to downgrade clients", "Execution of epoch bump / fast-forward revert package (e.g., netfoo 1:2.9.0-1 or 2.9.0-2+revert)", "Repository snapshot reversion and client downgrade guidance (apt-get --allow-downgrades or dnf distro-sync)"]
+  },
+  {
+    "id": "eval_dist_06_solver_validation",
+    "domain": "distribution-engineering",
+    "eval_type": "dist_solver_validation",
+    "title": "Validate repository co-installability and detect broken dependencies using SAT solvers",
+    "input": "Before publishing a release of 5,000 packages, how can release engineers mathematically verify that all packages are installable and that no broken dependency chains or unresolvable conflicts exist in the archive?",
+    "expected_specialists": ["linux-distribution-engineering"],
+    "evidence_requirements": ["Execution of formal SAT solver tools (such as dose-distcheck or dose-deb-coinstall for APT)", "Execution of dnf repoquery --unsolved for RPM repositories", "Automated gating halting publication if broken packages or uninstallable leaves are detected"]
+  }
+]
