@@ -2,7 +2,7 @@
 
 ## 1. Scope & Desktop Neutrality
 
-Linux Engineering applications must avoid hardcoding assumptions about specific desktop environments. An application should run seamlessly across **KDE Plasma**, **GNOME**, **Xfce**, **Cinnamon**, **COSMIC**, and **LXQt**.
+Syswright applications must avoid hardcoding assumptions about specific desktop environments. An application should run seamlessly across **KDE Plasma**, **GNOME**, **Xfce**, **Cinnamon**, **COSMIC**, and **LXQt**.
 
 ---
 

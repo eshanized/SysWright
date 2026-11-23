@@ -4,7 +4,7 @@ description: Comprehensive Linux debugging specialist. Diagnoses user-space appl
 license: Apache-2.0
 compatibility: Requires Linux environment, GDB/LLDB, strace, and debug symbols.
 metadata:
-  author: Linux Engineering Contributors
+  author: Eshan Roy
   version: "0.1.0"
 ---
 

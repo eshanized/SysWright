@@ -4,7 +4,7 @@ description: Linux networking engineering skill for kernel network stacks, iprou
 license: Apache-2.0
 compatibility: Requires Linux environment with iproute2, nftables, and systemd network tools.
 metadata:
-  author: Linux Engineering Contributors
+  author: Eshan Roy
   version: "0.1.0"
   claude_context: "fork"
   claude_agent: "general"

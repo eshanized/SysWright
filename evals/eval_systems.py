@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Linux Systems Engineering Evaluation Engine
-Part of Linux Engineering (Phase 3)
+Part of Syswright (Phase 3)
 
 Deterministic evaluation suite that verifies AI agent responses and engineering
 recommendations against authoritative Linux kernel, driver, systemd, boot,

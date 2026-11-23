@@ -1,4 +1,4 @@
-# Open Decisions, Licensing & Technical Uncertainties: Linux Engineering
+# Open Decisions, Licensing & Technical Uncertainties: Syswright
 
 ## 1. Governance & Purpose
 
@@ -11,7 +11,7 @@ In accordance with Phase 0 directives, **no final decision on these items has be
 ## 2. Decision Record 1: Project Licensing Model
 
 ### 2.1 The Problem
-Linux Engineering produces both **executable code** (Python generators, verification scripts, evaluation harnesses) and **extensive engineering knowledge** (Agent Skills, technical references, architecture guides). We must select a license that maximizes open-source adoption, protects contributors with patent grants, and respects third-party intellectual property.
+Syswright produces both **executable code** (Python generators, verification scripts, evaluation harnesses) and **extensive engineering knowledge** (Agent Skills, technical references, architecture guides). We must select a license that maximizes open-source adoption, protects contributors with patent grants, and respects third-party intellectual property.
 
 ### 2.2 Comparison of Licensing Options
 
@@ -24,8 +24,8 @@ Linux Engineering produces both **executable code** (Python generators, verifica
 
 ### 2.3 Non-Infringement & Separation from Reference Project (`unslop`)
 - The reference project (`heydamir/unslop`) is licensed under **CC-BY-4.0**.
-- Linux Engineering has **not copied** any text, phrasing, or code from `unslop`.
-- Linux Engineering does **not automatically inherit** `unslop`'s license.
+- Syswright has **not copied** any text, phrasing, or code from `unslop`.
+- Syswright does **not automatically inherit** `unslop`'s license.
 
 ### 2.4 Recommendation for Project Owner
 > **Recommendation: Option B (Apache-2.0) or Option C (Dual License Apache-2.0 / CC-BY-4.0).**
@@ -80,7 +80,7 @@ While Phase 1 through 3 target Arch Linux, Phase 4 expands to additional distrib
 
 ### 5.2 Trade-Off Analysis
 
-| Ecosystem | Candidate Distributions | Packaging Tech | Init / Sandboxing | Pros & Cons for Linux Engineering |
+| Ecosystem | Candidate Distributions | Packaging Tech | Init / Sandboxing | Pros & Cons for Syswright |
 |:---|:---|:---|:---|:---|
 | **Debian / Ubuntu Family** | Debian 12 (Bookworm),<br>Ubuntu 24.04 LTS | `dpkg`, `debhelper`,<br>`sbuild`, APT | systemd,<br>AppArmor default | **Pros**: Enormous server and developer install base; strict packaging standards (`lintian`).<br>**Cons**: Older LTS kernel versions require backport awareness. |
 | **Fedora / RHEL Family** | Fedora 41,<br>RHEL 9 / 10 | RPM, `spec`,<br>`mock`, DNF | systemd,<br>SELinux default | **Pros**: Upstream-aligned rolling/rapid kernel updates; native SELinux integration.<br>**Cons**: Complex spec macro syntax. |

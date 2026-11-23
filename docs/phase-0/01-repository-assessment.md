@@ -1,4 +1,4 @@
-# Repository Assessment: Linux Engineering
+# Repository Assessment: Syswright
 
 ## 1. Inspection Context & Environment
 
@@ -87,7 +87,7 @@ The untracked directory `.agents/skills/gravitas/` contains the Gravitas runtime
   - Adversarial critique, anti-rationalization, memory protocols, context management, tool orchestration.
 
 **Assessment & Preservation Decision**:
-The Gravitas runtime provides foundational reliability, invariant enforcement, and evidence verification for Linux Engineering. All files under `.agents/skills/gravitas/` and `skills-lock.json` are **preserved without modification**.
+The Gravitas runtime provides foundational reliability, invariant enforcement, and evidence verification for Syswright. All files under `.agents/skills/gravitas/` and `skills-lock.json` are **preserved without modification**.
 
 ---
 

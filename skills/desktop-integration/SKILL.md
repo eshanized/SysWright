@@ -1,6 +1,9 @@
 ---
 name: desktop-integration
 description: Linux desktop integration covering Wayland protocols, X11/XWayland, D-Bus IPC, XDG Desktop Portals, and Freedesktop standards.
+metadata:
+  author: Eshan Roy
+  version: "0.1.0"
 ---
 
 # Desktop Integration Engineering

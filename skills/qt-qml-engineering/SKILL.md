@@ -1,6 +1,9 @@
 ---
 name: qt-qml-engineering
 description: Native Linux application engineering for Qt 6, QML, Qt Quick, Qt Widgets, and C++ integration.
+metadata:
+  author: Eshan Roy
+  version: "0.1.0"
 ---
 
 # Qt/QML Engineering

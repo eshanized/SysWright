@@ -1,8 +1,8 @@
-# Executive Summary: Linux Engineering (Phase 0)
+# Executive Summary: Syswright (Phase 0)
 
 ## 1. Project Vision & Mission
 
-**Linux Engineering** is a research-first, evidence-driven engineering intelligence system designed for autonomous AI coding agents (including Claude Code, OpenAI Codex, and standards-compliant Agent Skills runtimes). 
+**Syswright** is a research-first, evidence-driven engineering intelligence system designed for autonomous AI coding agents (including Claude Code, OpenAI Codex, and standards-compliant Agent Skills runtimes). 
 
 Modern AI coding agents frequently suffer from critical operational defects when tasked with Linux systems engineering:
 - **Premature mutation**: Modifying source code, kernel trees, or system configuration before diagnosing the runtime environment or identifying root causes.
@@ -10,7 +10,7 @@ Modern AI coding agents frequently suffer from critical operational defects when
 - **Unverified completion**: Declaring a task "fixed" merely because a prompt completed without checking compiler diagnostics, test suites, sanitizers, or system journals.
 - **Host destruction risk**: Blindly invoking privileged commands (`sudo`, destructive partition writes, unsandboxed kernel module loading) without an isolated execution harness or rollback plan.
 
-Linux Engineering solves these failure modes by enforcing a strict engineering lifecycle:
+Syswright solves these failure modes by enforcing a strict engineering lifecycle:
 $$\text{Reconnaissance} \longrightarrow \text{Authoritative Research} \longrightarrow \text{Evidence Capture} \longrightarrow \text{Scoped Mutation} \longrightarrow \text{Deterministic Verification}$$
 
 The project is initially targeted at **Arch Linux** due to its rolling-release model, upstream-vanilla packaging, and modern userspace, while retaining a modular, distribution-agnostic architectural abstraction capable of supporting Debian, Ubuntu, Fedora, and openSUSE in subsequent phases.
@@ -23,7 +23,7 @@ flowchart TD
         OA["Generic Agent Skills (agentskills.io)"]
     end
 
-    subgraph Linux_Engineering_Core["Linux Engineering Intelligence Core"]
+    subgraph Linux_Engineering_Core["Syswright Intelligence Core"]
         ORCH["linux-engineer (Master Router)"]
         RES["linux-research (Evidence & Authority Engine)"]
         ENV["linux-environment (Host/Target Prober)"]
@@ -64,7 +64,7 @@ flowchart TD
 
 ## 2. Core Philosophy
 
-The defining ethos of Linux Engineering is:
+The defining ethos of Syswright is:
 > **Research before implementation. Evidence before assumptions. Verification before completion.**
 
 1. **Understand the actual task**: Formulate explicit problem statements, identifying constraints and boundaries.
@@ -88,7 +88,7 @@ The defining ethos of Linux Engineering is:
 - **OpenAI Codex Compatibility**: Adopts `SKILL.md` within skill folders, leverages `AGENTS.md` for persistent repository-level instructions, and integrates with MCP servers via plugin configurations.
 - **Architectural Conclusion**: We must not maintain separate, diverging skill bodies for different platforms. The canonical intelligence must reside in standards-compliant Agent Skills in `skills/` and `references/`. Platform-specific adapters and manifests (`.claude-plugin/`, `adapters/codex/`) are built deterministically from canonical sources.
 
-### B. Linux Engineering Specialization & Progressive Disclosure
+### B. Syswright Specialization & Progressive Disclosure
 - Linux systems engineering requires deep domain knowledge (e.g., kernel synchronization primitives, zero-copy socket buffers, systemd sandbox directives, PKGBUILD split packaging).
 - Dumping all guidance into a monolithic prompt or single `SKILL.md` causes severe context exhaustion and instruction drift.
 - **Progressive Disclosure Pattern**:

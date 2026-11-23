@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Deterministic Skill Packaging Tool
-Part of Linux Engineering (Phase 1)
+Part of Syswright
 
 Packages canonical Agent Skills and references into distribution artifacts:
 - 'archive': Deterministic .tar.gz bundle for general Agent Skills runtimes.
@@ -73,7 +73,7 @@ def safe_copy_file(src: Path, dst: Path, base_dst: Path) -> None:
 
 def package_archive(repo_root: Path, output_dir: Path, version: str = "0.1.0") -> Path:
     """Create a deterministic .tar.gz distribution archive."""
-    archive_name = f"linux-engineering-{version}.tar.gz"
+    archive_name = f"syswright-{version}.tar.gz"
     output_dir.mkdir(parents=True, exist_ok=True)
     target_tar = output_dir / archive_name
 
@@ -106,7 +106,7 @@ def package_archive(repo_root: Path, output_dir: Path, version: str = "0.1.0") -
             if not p.exists():
                 continue
             if p.is_file():
-                tar.add(p, arcname=f"linux-engineering/{item}", filter=tar_filter)
+                tar.add(p, arcname=f"syswright/{item}", filter=tar_filter)
             elif p.is_dir():
                 for root, dirs, files in os.walk(p):
                     # Sort for determinism
@@ -117,7 +117,7 @@ def package_archive(repo_root: Path, output_dir: Path, version: str = "0.1.0") -
                         if is_excluded(fp):
                             continue
                         rel_in_repo = fp.relative_to(repo_root)
-                        tar.add(fp, arcname=f"linux-engineering/{rel_in_repo}", filter=tar_filter)
+                        tar.add(fp, arcname=f"syswright/{rel_in_repo}", filter=tar_filter)
 
     return target_tar
 

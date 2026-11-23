@@ -1,8 +1,8 @@
-# Technical Architecture & Repository Blueprint: Linux Engineering
+# Technical Architecture & Repository Blueprint: Syswright
 
 ## 1. Architectural Philosophy & Design Principles
 
-The technical architecture of **Linux Engineering** is founded on five uncompromising engineering principles:
+The technical architecture of **Syswright** is founded on five uncompromising engineering principles:
 
 1. **Strict Separation of Canonical Intelligence and Platform Distribution**:
    Domain engineering knowledge must exist in exactly one place. Platform-specific artifacts (Claude Code plugins, Codex `AGENTS.md`, marketplace manifests) are compiled deterministically from canonical sources.
@@ -19,10 +19,10 @@ The technical architecture of **Linux Engineering** is founded on five uncomprom
 
 ## 2. Target Repository Blueprint
 
-The complete target directory layout for Linux Engineering is structured as follows:
+The complete target directory layout for Syswright is structured as follows:
 
 ```text
-linux-engineering/
+syswright/
 ├── .claude-plugin/                  # Generated Claude Code plugin packaging
 │   ├── plugin.json                  # Plugin manifest and metadata
 │   └── marketplace.json             # Marketplace catalogue declaration
@@ -113,7 +113,7 @@ flowchart LR
     subgraph Generated_Artifacts["Generated Platform Outputs (Never Manually Edited)"]
         CLAUDE[".claude-plugin/plugin.json\n.claude-plugin/marketplace.json"]
         CODEX["AGENTS.md\nadapters/codex/agents/openai.yaml"]
-        BUNDLE["dist/linux-engineering.tar.gz\n(Agent Skills Archive)"]
+        BUNDLE["dist/syswright.tar.gz\n(Agent Skills Archive)"]
     end
 
     SKILLS --> VAL
@@ -145,7 +145,7 @@ The generator script (`scripts/build_distribution.py`):
 3. **Generates OpenAI Codex Artifacts**:
    - Synthesizes the master `AGENTS.md` at the repository root, detailing overall project boundaries, the 6 Gravitas invariants, and skill activation cues.
    - Outputs `adapters/codex/agents/openai.yaml` declaring tool bindings.
-4. **Builds Release Packages**: Packages a standalone distribution tarball (`dist/linux-engineering.tar.gz`) for vanilla Agent Skills platforms.
+4. **Builds Release Packages**: Packages a standalone distribution tarball (`dist/syswright.tar.gz`) for vanilla Agent Skills platforms.
 
 ### 3.3 Verification & Safety Automation (`scripts/`)
 - `scripts/validate_skills.py`: Invokes `skills-ref validate` across all skill folders during CI.

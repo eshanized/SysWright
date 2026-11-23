@@ -1,8 +1,8 @@
-# Validation, Testing & Verification Guide: Linux Engineering
+# Validation, Testing & Verification Guide: Syswright
 
 ## 1. Overview
 
-Linux Engineering enforces strict automated verification across all skills, references, scripts, and evaluation scenarios.
+Syswright enforces strict automated verification across all skills, references, scripts, and evaluation scenarios.
 
 Every component must pass:
 1. **Skill Specification Validation** (`scripts/validate-skills.py`)

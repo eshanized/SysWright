@@ -4,7 +4,7 @@ description: Linux upstream release maintenance and multi-distribution lifecycle
 license: Apache-2.0
 compatibility: Requires Linux environment and git.
 metadata:
-  author: Linux Engineering Contributors
+  author: Eshan Roy
   version: "0.1.0"
 ---
 

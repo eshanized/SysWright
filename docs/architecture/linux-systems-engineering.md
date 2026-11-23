@@ -2,7 +2,7 @@
 
 ## 1. Overview & Context
 
-**Linux Systems Engineering** expands the Linux Engineering platform beyond package management into the core operating system. Introduced in Phase 3, this subsystem delivers six deeply specialized, authoritative Agent Skills complying with the canonical `agentskills.io` standard:
+**Linux Systems Engineering** expands the Syswright platform beyond package management into the core operating system. Introduced in Phase 3, this subsystem delivers six deeply specialized, authoritative Agent Skills complying with the canonical `agentskills.io` standard:
 
 1. **`kernel-engineering`**: Kernel source navigation, Kconfig/Kbuild compilation, regression bisecting, patching, debugging, and upstream contribution.
 2. **`driver-engineering`**: Linux device model, bus subsystems (PCI, USB, I2C, SPI), probe mechanics, DMA, interrupts, and power management.

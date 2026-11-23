@@ -20,7 +20,7 @@ flowchart TD
     ATTACK --> V5["Embedded Precompiled Binaries in Source Tarballs"]
     ATTACK --> V6["Privileged Host Mutation during Build"]
 
-    subgraph Defense["Linux Engineering Mitigations"]
+    subgraph Defense["Syswright Mitigations"]
         D1["SHA-256 / BLAKE2b Cryptographic Checksums"]
         D2["Isolated Clean-Chroot Build Sandbox (devtools)"]
         D3["Offline Build Sandbox (Cargo --frozen, Meson --wrap-mode=nodownload)"]

@@ -4,7 +4,7 @@ description: Ubuntu packaging and release maintenance specialist. Manages Ubuntu
 license: Apache-2.0
 compatibility: Requires Linux environment, devscripts, dput, and sbuild.
 metadata:
-  author: Linux Engineering Contributors
+  author: Eshan Roy
   version: "0.1.0"
 ---
 

@@ -1,6 +1,6 @@
-# Linux Engineering: Persistent Repository Guidance for AI Agents
+# Syswright: Persistent Repository Guidance for AI Agents
 
-Welcome to **Linux Engineering**. When working inside this repository, you must adhere to the core engineering philosophy:
+Welcome to **Syswright**. When working inside this repository, you must adhere to the core engineering philosophy:
 > **Research before implementation. Evidence before assumptions. Verification before completion.**
 
 ---

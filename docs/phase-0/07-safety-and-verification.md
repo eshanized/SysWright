@@ -1,4 +1,4 @@
-# Safety Model & Verification Architecture: Linux Engineering
+# Safety Model & Verification Architecture: Syswright
 
 ## 1. The Systems Engineering Safety Mandate
 
@@ -9,14 +9,14 @@ Operating at the Linux systems, kernel, driver, and packaging levels carries sev
 - **System Service Outages**: Accidental interruption of core host services (`NetworkManager`, `systemd-resolved`, `sshd`).
 - **Host Compromise**: Running untrusted build scripts or installing malicious packages from the AUR.
 
-Linux Engineering enforces an uncompromising safety architecture:
+Syswright enforces an uncompromising safety architecture:
 > **Automate safe diagnostics and isolated builds; strictly gate destructive or privileged operations behind human checkpoints and deterministic rollback plans.**
 
 ---
 
 ## 2. Four-Tier Operational Risk Model
 
-Every command, tool invocation, and action proposed by Linux Engineering skills is classified into one of four operational risk tiers:
+Every command, tool invocation, and action proposed by Syswright skills is classified into one of four operational risk tiers:
 
 ```mermaid
 flowchart TD

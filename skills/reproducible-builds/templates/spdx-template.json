@@ -6,8 +6,8 @@
   "documentNamespace": "https://example.org/spdx/myapp-1.2.3-uuid-placeholder",
   "creationInfo": {
     "creators": [
-      "Tool: LinuxEngineering-SBOMGenerator-1.0",
-      "Organization: Linux Engineering Team"
+      "Tool: Syswright-SBOMGenerator-1.0",
+      "Organization: Syswright Team"
     ],
     "created": "2026-04-01T12:00:00Z"
   },
@@ -28,7 +28,7 @@
       ],
       "licenseConcluded": "Apache-2.0",
       "licenseDeclared": "Apache-2.0",
-      "copyrightText": "Copyright 2026 Linux Engineering Contributors"
+      "copyrightText": "Copyright 2026 Eshan Roy"
     }
   ],
   "relationships": [

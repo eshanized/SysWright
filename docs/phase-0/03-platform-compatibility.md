@@ -1,4 +1,4 @@
-# Platform Compatibility & Multi-Agent Architecture: Linux Engineering
+# Platform Compatibility & Multi-Agent Architecture: Syswright
 
 ## 1. Executive Problem Statement
 
@@ -6,7 +6,7 @@ A central challenge in building modern AI coding agent skill systems is platform
 
 If an engineering system maintains separate instruction sets for each platform, the documentation inevitably diverges, test matrices explode, and maintenance costs become unsustainable. Conversely, if a system restricts itself strictly to the lowest common denominator, it sacrifices powerful platform-native capabilities such as Claude Code's background subagents (`context: fork`) or Codex's repository-level persistent execution guidance (`AGENTS.md`).
 
-This document analyzes the official specifications of the **Agent Skills open standard**, **Claude Code**, and **OpenAI Codex**, compares three architectural models, and presents a zero-duplication hybrid distribution architecture for Linux Engineering.
+This document analyzes the official specifications of the **Agent Skills open standard**, **Claude Code**, and **OpenAI Codex**, compares three architectural models, and presents a zero-duplication hybrid distribution architecture for Syswright.
 
 ---
 
@@ -116,9 +116,9 @@ Claude Code respects the standard fields but introduces rich operational control
 Multi-skill packages in Claude Code are bundled into plugins defined by `.claude-plugin/plugin.json`:
 ```json
 {
-  "name": "linux-engineering",
+  "name": "syswright",
   "description": "Comprehensive engineering intelligence for Linux systems development",
-  "author": { "name": "Linux Engineering Contributors" },
+  "author": { "name": "Eshan Roy" },
   "version": "0.1.0",
   "license": "Apache-2.0"
 }
@@ -151,7 +151,7 @@ Unlike Claude Code’s `CLAUDE.md`, Codex officially indexes `AGENTS.md` at the 
 
 ## 4. Architectural Comparison of Integration Approaches
 
-We evaluated three architectural approaches for Linux Engineering:
+We evaluated three architectural approaches for Syswright:
 
 ```text
 APPROACH A: Separate Native Implementations
@@ -206,7 +206,7 @@ We recommend **Approach C**: Canonical Agent Skills with a Deterministic Platfor
    license: Apache-2.0
    compatibility: Requires Linux, pacman, makepkg, namcap
    metadata:
-     author: Linux Engineering Contributors
+     author: Eshan Roy
      version: 0.1.0
      claude_paths: "PKGBUILD,*/PKGBUILD"
      claude_context: "fork"

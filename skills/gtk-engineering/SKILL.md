@@ -1,6 +1,9 @@
 ---
 name: gtk-engineering
 description: Modern GTK 4, GLib, GObject, GIO, and Libadwaita native Linux application development and accessibility engineering.
+metadata:
+  author: Eshan Roy
+  version: "0.1.0"
 ---
 
 # GTK Engineering

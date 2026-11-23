@@ -2,7 +2,7 @@
 
 ## 1. Supported Agent Environments
 
-Linux Engineering is designed around the open standard **Agent Skills specification** (`agentskills.io`). Because the canonical skills in `skills/` avoid proprietary formatting, they work natively across multiple agent platforms.
+Syswright is designed around the open standard **Agent Skills specification** (`agentskills.io`). Because the canonical skills in `skills/` avoid proprietary formatting, they work natively across multiple agent platforms.
 
 ### 1.1 Google Antigravity CLI / Gemini Code Assist
 - **Native Support**: Antigravity natively loads skills from `.agents/skills/` or declared workspaces.

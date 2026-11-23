@@ -1,8 +1,8 @@
-# Arch-First Engineering & Distribution Strategy: Linux Engineering
+# Arch-First Engineering & Distribution Strategy: Syswright
 
 ## 1. Rationale for the Arch-First Baseline
 
-Linux distributions differ in packaging formats, init system policies, filesystem hierarchies, and patch philosophies. To establish an engineering intelligence system without getting bogged down in distribution-specific quirks, Linux Engineering adopts an **Arch-First baseline**.
+Linux distributions differ in packaging formats, init system policies, filesystem hierarchies, and patch philosophies. To establish an engineering intelligence system without getting bogged down in distribution-specific quirks, Syswright adopts an **Arch-First baseline**.
 
 ### 1.1 Why Arch Linux?
 1. **Upstream-Vanilla Packaging**:
@@ -115,7 +115,7 @@ Arch uses **`mkinitcpio`** as its primary initramfs generator:
 
 ## 5. Distribution-Agnostic Portability Architecture
 
-While Arch Linux is our initial target, the technical architecture of Linux Engineering is strictly **distribution-agnostic**.
+While Arch Linux is our initial target, the technical architecture of Syswright is strictly **distribution-agnostic**.
 
 We enforce a 3-layer decoupled architecture:
 

@@ -4,7 +4,7 @@ description: Arch Linux packaging specialist skill for the complete packaging li
 license: Apache-2.0
 compatibility: Requires Linux environment, makepkg, pacman, and Python 3. devtools recommended for clean chroots.
 metadata:
-  author: Linux Engineering Contributors
+  author: Eshan Roy
   version: "0.1.0"
   claude_context: "fork"
   claude_agent: "general"

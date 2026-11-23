@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Reference Link & Integrity Checker
-Part of Linux Engineering (Phase 1)
+Part of Syswright
 
 Scans Markdown documentation and skills to verify that all relative file links,
 anchor targets, and documentation cross-references resolve to existing files.

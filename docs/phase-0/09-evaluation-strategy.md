@@ -1,10 +1,10 @@
-# Evaluation Strategy & Benchmark Suite: Linux Engineering
+# Evaluation Strategy & Benchmark Suite: Syswright
 
 ## 1. The Evaluation Philosophy: Evidence Over Persuasiveness
 
 A fundamental failure mode of AI coding benchmarks is evaluating agents on **conversational plausibility** rather than **observable engineering correctness**. An agent can generate eloquent, authoritative-sounding explanations that are technically defective, introduce subtle kernel concurrency races, or fail clean chroot compilation.
 
-Linux Engineering enforces an empirical evaluation standard:
+Syswright enforces an empirical evaluation standard:
 > **A skill evaluation passes only when deterministic validators (compilers, linters, test runners, kernel verifiers) execute and report zero errors. Conversational self-assessment is completely disqualified as pass evidence.**
 
 ```mermaid
@@ -42,7 +42,7 @@ Every evaluation scenario is scored across five objective dimensions:
 
 ## 3. The 15 Mandatory Evaluation Scenarios
 
-The Linux Engineering evaluation benchmark (`evals/`) comprises 15 rigorous, real-world engineering scenarios:
+The Syswright evaluation benchmark (`evals/`) comprises 15 rigorous, real-world engineering scenarios:
 
 ### Scenario 1: Kernel Driver Concurrency Bug
 - **Task**: A mock platform driver has a race condition between its interrupt handler and its `remove()` callback during module unloading.

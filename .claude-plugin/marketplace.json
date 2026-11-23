@@ -1,12 +1,12 @@
 {
-  "name": "linux-engineering-marketplace",
-  "description": "Local marketplace for Linux Engineering skills and plugins",
+  "name": "syswright-marketplace",
+  "description": "Local marketplace for Syswright skills and plugins",
   "owner": {
-    "name": "Linux Engineering Contributors"
+    "name": "Eshan Roy"
   },
   "plugins": [
     {
-      "name": "linux-engineering",
+      "name": "syswright",
       "source": "./",
       "description": "Research-first engineering intelligence and specialist skills for Linux systems development."
     }

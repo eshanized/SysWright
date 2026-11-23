@@ -1,10 +1,10 @@
 {
-  "name": "linux-engineering",
+  "name": "syswright",
   "description": "Research-first engineering intelligence and specialist skills for Linux systems development.",
   "version": "0.1.0",
   "author": {
-    "name": "Linux Engineering Contributors"
+    "name": "Eshan Roy"
   },
-  "homepage": "https://github.com/udaysharmadev/LinuxEngineering",
+  "homepage": "https://github.com/eshanized/Syswright",
   "license": "Apache-2.0"
 }

@@ -4,7 +4,7 @@ description: openSUSE, SUSE Linux Enterprise, and Open Build Service (OBS) packa
 license: Apache-2.0
 compatibility: Requires Linux environment, osc, and build.
 metadata:
-  author: Linux Engineering Contributors
+  author: Eshan Roy
   version: "0.1.0"
 ---
 

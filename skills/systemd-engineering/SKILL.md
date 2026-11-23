@@ -4,7 +4,7 @@ description: Specialist skill for systemd system and service management, unit ar
 license: Apache-2.0
 compatibility: Requires Linux environment with systemd userspace tooling (systemd-analyze, systemctl).
 metadata:
-  author: Linux Engineering Contributors
+  author: Eshan Roy
   version: "0.1.0"
   claude_context: "fork"
   claude_agent: "general"

@@ -4,7 +4,7 @@ description: Linux reproducible builds, software bill of materials (SBOM), and s
 license: Apache-2.0
 compatibility: Requires Linux environment, diffoscope, and reprotest.
 metadata:
-  author: Linux Engineering Contributors
+  author: Eshan Roy
   version: "0.1.0"
 ---
 

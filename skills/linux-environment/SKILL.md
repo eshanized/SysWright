@@ -4,7 +4,7 @@ description: Safe, unprivileged Linux environment discovery skill. Detects activ
 license: Apache-2.0
 compatibility: Requires Linux environment and Python 3.
 metadata:
-  author: Linux Engineering Contributors
+  author: Eshan Roy
   version: "0.1.0"
   claude_context: "fork"
   claude_agent: "general"

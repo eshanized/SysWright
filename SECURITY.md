@@ -1,8 +1,8 @@
-# Security Policy: Linux Engineering
+# Security Policy: Syswright
 
 ## 1. Security Philosophy
 
-**Linux Engineering** operates at the intersection of AI coding agents and Linux systems engineering (including kernel, driver, packaging, and init systems development). Because systems operations carry inherent operational risks, our architecture is built around strict isolation, privilege separation, and verifiable safety tiers.
+**Syswright** operates at the intersection of AI coding agents and Linux systems engineering (including kernel, driver, packaging, and init systems development). Because systems operations carry inherent operational risks, our architecture is built around strict isolation, privilege separation, and verifiable safety tiers.
 
 ---
 
@@ -27,7 +27,7 @@ All workflows and skills must comply with the **Four-Tier Operational Safety Mod
 
 ## 4. Reporting Security Vulnerabilities
 
-If you discover a security vulnerability, isolation escape, or unsafe autonomous execution pattern within Linux Engineering:
+If you discover a security vulnerability, isolation escape, or unsafe autonomous execution pattern within Syswright:
 1. **Do not open a public issue.**
 2. Report the vulnerability privately to the project maintainers via email or security advisory.
 3. Provide a detailed reproduction report, affected platforms (Claude Code, Codex, Antigravity), and proposed remediation.

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Linux Cross-Distribution, Release and Supply-Chain Engineering Evaluation Engine
-Part of Linux Engineering (Phase 6)
+Part of Syswright (Phase 6)
 
 Deterministic evaluation suite that verifies AI agent responses and engineering
 recommendations across:
@@ -855,7 +855,7 @@ def run_cross_distribution_evals(scenarios_file: Path, responses: Dict[str, str]
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Evaluate Cross-Distribution Linux Engineering scenarios.")
+    parser = argparse.ArgumentParser(description="Evaluate Cross-Distribution Syswright scenarios.")
     parser.add_argument("--domain", choices=[
         "debian-packaging", "ubuntu-packaging", "rpm-packaging",
         "fedora-packaging", "opensuse-packaging", "distribution-engineering",

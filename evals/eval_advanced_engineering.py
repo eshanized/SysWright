@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Linux Advanced Engineering Evaluation Engine
-Part of Linux Engineering (Phase 5)
+Part of Syswright (Phase 5)
 
 Deterministic evaluation suite that verifies AI agent responses and engineering
 recommendations across:
@@ -700,7 +700,7 @@ def run_advanced_engineering_evals(scenarios_file: Path, responses: Dict[str, st
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Evaluate Advanced Linux Engineering scenarios.")
+    parser = argparse.ArgumentParser(description="Evaluate Advanced Syswright scenarios.")
     parser.add_argument("--domain", choices=["debugging", "performance", "security", "observability", "fuzzing", "regression", "all"], default="all")
     args = parser.parse_args()
 

@@ -4,7 +4,7 @@ description: Linux storage engineering skill for block devices, filesystems (ext
 license: Apache-2.0
 compatibility: Requires Linux environment with storage userspace tooling (lsblk, blkid, cryptsetup, lvm2).
 metadata:
-  author: Linux Engineering Contributors
+  author: Eshan Roy
   version: "0.1.0"
   claude_context: "fork"
   claude_agent: "general"

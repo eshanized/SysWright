@@ -1,10 +1,10 @@
 ---
 name: linux-engineer
-description: Primary entry-point and master orchestrator for Linux Engineering. Classifies engineering requests, decomposes complex tasks, coordinates environment discovery and authoritative research, enforces operational safety tiers, and selects appropriate workflows. Use whenever the user asks for Linux systems engineering, kernel investigation, service development, packaging, or debugging.
+description: Primary entry-point and master orchestrator for Syswright. Classifies engineering requests, decomposes complex tasks, coordinates environment discovery and authoritative research, enforces operational safety tiers, and selects appropriate workflows. Use whenever the user asks for Linux systems engineering, kernel investigation, service development, packaging, or debugging.
 license: Apache-2.0
 compatibility: Requires Linux environment, Python 3.
 metadata:
-  author: Linux Engineering Contributors
+  author: Eshan Roy
   version: "0.1.0"
   claude_context: "fork"
   claude_agent: "coordinator"
@@ -12,7 +12,7 @@ metadata:
 
 # Linux Engineer: Master Orchestrator & Intent Router
 
-The `linux-engineer` skill serves as the primary gateway to Linux Engineering. It analyzes incoming requests, classifies intent, initiates unprivileged environment discovery, engages authoritative research, and routes tasks to appropriate specialist workflows.
+The `linux-engineer` skill serves as the primary gateway to Syswright. It analyzes incoming requests, classifies intent, initiates unprivileged environment discovery, engages authoritative research, and routes tasks to appropriate specialist workflows.
 
 ---
 

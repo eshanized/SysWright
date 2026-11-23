@@ -4,7 +4,7 @@
 During Phase 0, the initial high-level roadmap (`docs/phase-0/10-roadmap-and-phase-1.md`) contemplated implementing `arch-packaging` and `systemd-engineering` in Phase 1 alongside the three foundation skills (`linux-engineer`, `linux-research`, `linux-environment`).
 
 Upon entering Phase 1 implementation, the engineering charter and requirements explicitly refined the scope boundaries:
-1. Establish the operational foundation of Linux Engineering.
+1. Establish the operational foundation of Syswright.
 2. Deliver the three foundation skills:
    - `linux-engineer` (Master orchestrator and router)
    - `linux-research` (Authoritative upstream evidence engine)

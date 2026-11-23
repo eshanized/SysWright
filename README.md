@@ -1,4 +1,4 @@
-# Linux Engineering
+# Syswright
 
 [![Standard: Agent Skills](https://img.shields.io/badge/standard-Agent%20Skills-blue?style=flat-square)](https://agentskills.io)
 [![Platform: Claude Code](https://img.shields.io/badge/platform-Claude%20Code-purple?style=flat-square)](https://code.claude.com)
@@ -15,7 +15,7 @@ A research-first, evidence-driven engineering intelligence system and specialist
 
 Standard AI coding agents frequently fail at Linux systems engineering: they hallucinate deprecated kernel APIs, recommend 10-year-old blog snippets, guess systemd configurations, and declare tasks "fixed" without running compilers or linters.
 
-**Linux Engineering** replaces this guesswork with an uncompromising systems engineering runtime:
+**Syswright** replaces this guesswork with an uncompromising systems engineering runtime:
 1. **Understand the actual task**: Problem decomposition and constraint mapping.
 2. **Establish version boundaries**: Never assume kernel or userspace version; probe target environment.
 3. **Query authoritative upstream sources**: Research official upstream manuals (`docs.kernel.org`, `freedesktop.org`, `man7.org`, POSIX).
@@ -27,10 +27,10 @@ Standard AI coding agents frequently fail at Linux systems engineering: they hal
 
 ## 2. Multi-Agent Compatibility Architecture
 
-Linux Engineering implements a **Single-Source Canonical Architecture with Platform-Specific Distribution Adapters**:
+Syswright implements a **Single-Source Canonical Architecture with Platform-Specific Distribution Adapters**:
 
 ```text
-linux-engineering/
+syswright/
 ├── .claude-plugin/              # Claude Code native plugin integration
 │   ├── plugin.json
 │   └── marketplace.json
@@ -265,7 +265,7 @@ For full safety details, see [references/safety-policy.md](references/safety-pol
 
 ```mermaid
 timeline
-    title Linux Engineering Phased Development Roadmap
+    title Syswright Phased Development Roadmap
     Phase 0 : Research & Architecture Foundation (Completed)
     Phase 1 : Core Foundation & Multi-Agent Distribution (Completed)
     Phase 2 : Kernel, Driver, Packaging & Boot Specialists

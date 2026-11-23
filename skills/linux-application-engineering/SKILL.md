@@ -1,6 +1,9 @@
 ---
 name: linux-application-engineering
 description: General Linux native application engineering for CLI tools, background daemons, and system applications in Rust, C, and C++.
+metadata:
+  author: Eshan Roy
+  version: "0.1.0"
 ---
 
 # Linux Application Engineering

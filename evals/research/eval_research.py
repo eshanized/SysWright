@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Research Evaluation Engine
-Part of Linux Engineering (Phase 1)
+Part of Syswright (Phase 1)
 
 Evaluates technical research outputs against authoritative evidence standards:
 - Deprecation detection for obsolete APIs.

@@ -4,7 +4,7 @@ description: Defensive Linux security engineering specialist. Conducts architect
 license: Apache-2.0
 compatibility: Requires Linux environment, systemd, libcap, and seccomp.
 metadata:
-  author: Linux Engineering Contributors
+  author: Eshan Roy
   version: "0.1.0"
 ---
 

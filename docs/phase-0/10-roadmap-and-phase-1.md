@@ -1,12 +1,12 @@
-# Project Roadmap & Phase 1 Implementation Specification: Linux Engineering
+# Project Roadmap & Phase 1 Implementation Specification: Syswright
 
 ## 1. Overall Project Roadmap (Phases 0–5)
 
-The development of **Linux Engineering** is structured across six sequential, milestone-driven phases. Each phase builds upon the verified architectural foundation of the preceding phase.
+The development of **Syswright** is structured across six sequential, milestone-driven phases. Each phase builds upon the verified architectural foundation of the preceding phase.
 
 ```mermaid
 timeline
-    title Linux Engineering Phased Development Roadmap
+    title Syswright Phased Development Roadmap
     Phase 0 : Research & Architecture : Competitive analysis : Platform compatibility : Safety & eval blueprints
     Phase 1 : Core Foundation & Arch Packaging : linux-engineer & research : arch-packaging & systemd : Distribution compiler
     Phase 2 : Kernel & Driver Engineering : kernel & driver skills : boot-engineering : QEMU microVM testbed
@@ -54,7 +54,7 @@ Exhaustive reference documents will be authored under `references/`:
 - `scripts/build_distribution.py`: Python compiler that parses `skills/`, verifies schema compliance, and generates:
   - `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` for Claude Code.
   - Root `AGENTS.md` and `adapters/codex/agents/openai.yaml` for OpenAI Codex.
-  - Distribution archive `dist/linux-engineering-0.1.0.tar.gz`.
+  - Distribution archive `dist/syswright-0.1.0.tar.gz`.
 - `scripts/validate_skills.py`: CI script wrapping `skills-ref validate` to verify 100% standard compliance.
 - `scripts/namcap_gate.sh`: Deterministic wrapper running `namcap` on PKGBUILDs and package archives, emitting machine-readable JSON pass/fail reports.
 

@@ -4,7 +4,7 @@ description: Linux performance engineering and profiling specialist. Investigate
 license: Apache-2.0
 compatibility: Requires Linux environment, perf, and sysstat tools.
 metadata:
-  author: Linux Engineering Contributors
+  author: Eshan Roy
   version: "0.1.0"
 ---
 

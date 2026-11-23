@@ -1,8 +1,8 @@
-# Linux Engineering — Phase 5 Architecture: Advanced Engineering, Security, Performance and Reliability
+# Syswright — Phase 5 Architecture: Advanced Engineering, Security, Performance and Reliability
 
 ## 1. Executive Summary
 
-Phase 5 expands **Linux Engineering** from systems implementation into root-cause diagnosis, performance measurement, defensive security hardening, deep kernel observability, automated defect discovery (fuzzing), and regression engineering.
+Phase 5 expands **Syswright** from systems implementation into root-cause diagnosis, performance measurement, defensive security hardening, deep kernel observability, automated defect discovery (fuzzing), and regression engineering.
 
 AI coding agents are frequently prone to speculative fixes, premature optimizations, exaggerated vulnerability claims, and untested assumptions. Phase 5 equips agents with the tools and discipline of principal Linux engineers:
 - **Evidence over Intuition**: Never alter code based on an error message without an isolated hypothesis and proof of invariant violation.
@@ -14,7 +14,7 @@ AI coding agents are frequently prone to speculative fixes, premature optimizati
 
 ## 2. Specialist Domain Architecture
 
-Phase 5 introduces six specialized capabilities that cooperate through the existing Linux Engineering ecosystem:
+Phase 5 introduces six specialized capabilities that cooperate through the existing Syswright ecosystem:
 
 ```
                                   ┌────────────────────────┐

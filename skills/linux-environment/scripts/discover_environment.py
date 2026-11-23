@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Linux Environment Discovery Tool
-Part of Linux Engineering (Phase 1)
+Part of Syswright
 
 Performs safe, unprivileged, read-only discovery of the host or target Linux
 environment, including distribution identity, kernel version, execution context

@@ -4,7 +4,7 @@ description: Authoritative technical research engine for Linux systems engineeri
 license: Apache-2.0
 compatibility: Requires Linux environment, network access or local kernel/system documentation.
 metadata:
-  author: Linux Engineering Contributors
+  author: Eshan Roy
   version: "0.1.0"
   claude_context: "fork"
   claude_agent: "general"

@@ -8,7 +8,7 @@ This document details the architecture, procedures, and safety invariants for bu
 
 ## 2. Rationale: The Dirty Build Anti-Pattern
 
-Building packages directly on the host system (`makepkg -s`) is an engineering anti-pattern that violates Linux Engineering standards:
+Building packages directly on the host system (`makepkg -s`) is an engineering anti-pattern that violates Syswright standards:
 
 | Hazard | Host `makepkg` (Dirty Build) | `devtools` (Clean Chroot) |
 |:---|:---|:---|

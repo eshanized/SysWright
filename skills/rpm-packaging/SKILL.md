@@ -4,7 +4,7 @@ description: Core RPM packaging and build engineering specialist. Covers RPM pac
 license: Apache-2.0
 compatibility: Requires Linux environment, rpm-build, rpmlint, and rpmdevtools.
 metadata:
-  author: Linux Engineering Contributors
+  author: Eshan Roy
   version: "0.1.0"
 ---
 

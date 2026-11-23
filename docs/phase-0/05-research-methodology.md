@@ -1,4 +1,4 @@
-# Research Methodology & Evidence Standard: Linux Engineering
+# Research Methodology & Evidence Standard: Syswright
 
 ## 1. The Core Research Mandate
 
@@ -7,7 +7,7 @@ AI coding agents frequently fail in systems engineering because they **assume in
 2. Quotes informal blog posts or StackOverflow snippets that apply to 10-year-old distributions.
 3. Modifies working production code without verifying whether the problem is actually a configuration, permission, or environmental issue.
 
-Linux Engineering enforces a strict engineering mandate:
+Syswright enforces a strict engineering mandate:
 > **No code or configuration change may be proposed or executed without prior authoritative evidence.**
 
 Every technical claim must be grounded in an authoritative source, verified against the active target version, and documented in a structured evidence ledger.
@@ -34,7 +34,7 @@ flowchart TD
 
 ### Detailed Authority Tiers
 
-| Tier | Source Category | Authoritative Examples | Permitted Use in Linux Engineering |
+| Tier | Source Category | Authoritative Examples | Permitted Use in Syswright |
 |:---:|:---|:---|:---|
 | **Tier 1** | **Upstream Documentation & Specifications** | `docs.kernel.org`, `freedesktop.org/software/systemd/man/`, `man7.org` (Linux man-pages project), POSIX.1-2024, ISO C23 / C++23. | **Primary Authority**. Establishes intended API contracts, calling conventions, and lifecycle. |
 | **Tier 2** | **Upstream Source Repositories** | `git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git`, `github.com/systemd/systemd`, GNU C Library git. | **Ground Truth**. Overrides all documentation when documentation is ambiguous or outdated. |

@@ -1,6 +1,9 @@
 ---
 name: linux-build-engineering
 description: Native Linux build systems engineering for compilers (GCC/Clang), modern CMake, Meson, Ninja, and Cargo.
+metadata:
+  author: Eshan Roy
+  version: "0.1.0"
 ---
 
 # Linux Build Engineering

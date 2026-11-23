@@ -4,7 +4,7 @@ description: Linux regression investigation, isolation, and prevention specialis
 license: Apache-2.0
 compatibility: Requires Linux environment, git, and build toolchains.
 metadata:
-  author: Linux Engineering Contributors
+  author: Eshan Roy
   version: "0.1.0"
 ---
 

@@ -2,7 +2,7 @@
 
 ## 1. Architectural Model
 
-Linux Engineering implements a **Single-Source Canonical Architecture with Platform-Specific Distribution Adapters**.
+Syswright implements a **Single-Source Canonical Architecture with Platform-Specific Distribution Adapters**.
 
 ```mermaid
 flowchart TD
@@ -22,7 +22,7 @@ flowchart TD
     subgraph Platform_Targets["Multi-Agent Distribution Targets"]
         CLAUDE[".claude-plugin/ (Claude Code Plugin)\n- plugin.json\n- marketplace.json\n- Auto-discovery from skills/"]
         CODEX["adapters/codex/ (OpenAI Codex)\n- AGENTS.md (Root repo instructions)\n- openai.yaml (MCP tool bindings)"]
-        BUNDLE["dist/ (Agent Skills Archive)\n- linux-engineering-*.tar.gz"]
+        BUNDLE["dist/ (Agent Skills Archive)\n- syswright-*.tar.gz"]
     end
 
     Canonical_Core --> VAL
@@ -58,7 +58,7 @@ Shared engineering knowledge (such as research methodology, safety classificatio
 
 ### 3.1 Claude Code Plugin Architecture
 Claude Code discovers skills either from project `.claude/skills/`, user `~/.claude/skills/`, or via the native plugin packaging format:
-- `.claude-plugin/plugin.json`: Declares the plugin name (`linux-engineering`), version, description, author, and license.
+- `.claude-plugin/plugin.json`: Declares the plugin name (`syswright`), version, description, author, and license.
 - `.claude-plugin/marketplace.json`: Declares the marketplace catalog entry pointing to `./` as the plugin source.
 - Claude Code natively indexes skills in `skills/` when loaded as a plugin directory (`--plugin-dir .`).
 

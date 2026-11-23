@@ -4,7 +4,7 @@
 
 Systems engineering operations carry high operational blast radiuses. Unlike application development where errors typically cause caught exceptions, systems errors can freeze the kernel, brick bootloaders, or destroy filesystem metadata.
 
-Linux Engineering enforces an uncompromising safety invariant:
+Syswright enforces an uncompromising safety invariant:
 > **Autonomous execution is permitted exclusively for safe diagnostics, scoped workspace mutations, and isolated sandboxes. Privileged, destructive, or host-mutating actions strictly require explicit human authorization.**
 
 ---

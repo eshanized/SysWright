@@ -4,7 +4,7 @@ description: Linux boot chain and firmware specialist skill for UEFI, bootloader
 license: Apache-2.0
 compatibility: Requires Linux environment with UEFI userspace tooling (efibootmgr, mkinitcpio).
 metadata:
-  author: Linux Engineering Contributors
+  author: Eshan Roy
   version: "0.1.0"
   claude_context: "fork"
   claude_agent: "general"

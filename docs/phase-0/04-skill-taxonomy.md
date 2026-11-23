@@ -1,8 +1,8 @@
-# Specialist Skill Taxonomy: Linux Engineering
+# Specialist Skill Taxonomy: Syswright
 
 ## 1. Overview & Architectural Hierarchy
 
-The Linux Engineering system organizes specialized Linux engineering capabilities into a structured, modular catalog of **17 specialist skills**. Rather than forcing all domain knowledge into a single unmaintainable monolithic prompt, the system employs a three-tier hierarchy:
+The Syswright system organizes specialized Linux engineering capabilities into a structured, modular catalog of **17 specialist skills**. Rather than forcing all domain knowledge into a single unmaintainable monolithic prompt, the system employs a three-tier hierarchy:
 
 1. **Foundation Layer (3 Skills)**: The central orchestration, authoritative research, and environment detection tier.
 2. **Core Engineering Layer (8 Skills)**: Foundational Linux development disciplines (kernel, drivers, packaging, systemd, boot, applications, desktop, build systems).

@@ -1,4 +1,4 @@
-# Template: Linux Engineering Research Report
+# Template: Syswright Research Report
 
 # Research Report: [Subject / Problem Title]
 

@@ -2,7 +2,7 @@
 
 ## 1. Scope & The Accessibility Imperative
 
-In Linux Engineering, accessibility is an uncompromising engineering requirement. Software that only functions with a mouse and fails for keyboard or screen reader users is defective.
+In Syswright, accessibility is an uncompromising engineering requirement. Software that only functions with a mouse and fails for keyboard or screen reader users is defective.
 GTK 4 implements native accessibility through the **Assistive Technology Service Provider Interface (AT-SPI v2)** using the `GtkAccessible` interface.
 
 ---

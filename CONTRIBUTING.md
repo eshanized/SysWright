@@ -1,6 +1,6 @@
-# Contributing to Linux Engineering
+# Contributing to Syswright
 
-Thank you for your interest in contributing to **Linux Engineering**! This project provides a research-first engineering intelligence system for AI coding agents working on Linux systems development.
+Thank you for your interest in contributing to **Syswright**! This project provides a research-first engineering intelligence system for AI coding agents working on Linux systems development.
 
 ---
 

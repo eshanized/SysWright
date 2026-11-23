@@ -1,5 +1,5 @@
 interface:
-  name: linux-engineering
+  name: syswright
   version: "0.1.0"
   description: "Research-first engineering intelligence system for Linux systems development."
 skills:

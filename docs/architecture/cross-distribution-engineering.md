@@ -1,8 +1,8 @@
-# Linux Engineering — Phase 6 Architecture: Cross-Distribution, Release and Supply-Chain Engineering
+# Syswright — Phase 6 Architecture: Cross-Distribution, Release and Supply-Chain Engineering
 
 ## 1. Executive Summary
 
-Phase 6 expands **Linux Engineering** from single-distribution packaging (Arch Linux) and systems programming into a comprehensive multi-distribution, release maintenance, and software supply-chain ecosystem.
+Phase 6 expands **Syswright** from single-distribution packaging (Arch Linux) and systems programming into a comprehensive multi-distribution, release maintenance, and software supply-chain ecosystem.
 
 In professional Linux engineering, software rarely targets a single platform. An application or system service must be reliably packaged, distributed, and maintained across **Debian, Ubuntu, Fedora, openSUSE, Arch Linux, and Enterprise Linux (RHEL/SLE)** without confusing their conflicting policies, macro conventions, directory layouts, or release workflows.
 

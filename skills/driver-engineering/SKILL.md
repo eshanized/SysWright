@@ -4,7 +4,7 @@ description: Linux device driver engineering skill for hardware interface develo
 license: Apache-2.0
 compatibility: Requires Linux environment, Python 3, make, GCC or Clang toolchains.
 metadata:
-  author: Linux Engineering Contributors
+  author: Eshan Roy
   version: "0.1.0"
   claude_context: "fork"
   claude_agent: "general"

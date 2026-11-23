@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Linux Native Application Engineering Evaluation Engine
-Part of Linux Engineering (Phase 4)
+Part of Syswright (Phase 4)
 
 Deterministic evaluation suite that verifies AI agent responses and engineering
 recommendations against authoritative Linux application architecture, Qt 6/QML,
@@ -721,7 +721,7 @@ Evaluation Rationale:
 GTK 4 Accessibility Audit (AT-SPI Compliance):
 Audit Findings:
 1. Non-Compliant Icon-Only Buttons:
-   An icon-only button (`media-playback-start-symbolic`) contains no text label. AT-SPI screen readers (such as Orca) announce this control as an unlabeled, empty button, making the application unusable for visually impaired users. In Linux Engineering, accessibility is an essential requirement.
+   An icon-only button (`media-playback-start-symbolic`) contains no text label. AT-SPI screen readers (such as Orca) announce this control as an unlabeled, empty button, making the application unusable for visually impaired users. In Syswright, accessibility is an essential requirement.
 2. Tooltip is Not an Accessible Label:
    A tooltip provides mouse-hover help but is not guaranteed to be announced as the primary accessible name by assistive technologies.
 3. Remediation:

@@ -1,10 +1,10 @@
-# Authoritative Source Register: Linux Engineering
+# Authoritative Source Register: Syswright
 
 ## 1. Register Overview & Governance
 
 This source register documents all authoritative technical sources, standards specifications, upstream repositories, and maintainer manuals inspected during **Phase 0**.
 
-Every source recorded here has been directly evaluated for technical veracity, software version applicability, and architectural relevance to the Linux Engineering system.
+Every source recorded here has been directly evaluated for technical veracity, software version applicability, and architectural relevance to the Syswright system.
 
 - **Inspection Date**: November 23, 2026
 - **Auditor**: Principal Linux Systems Architect & AI Agent Skills Architect
@@ -18,7 +18,7 @@ Every source recorded here has been directly evaluated for technical veracity, s
 |:---:|:---|:---:|:---:|:---:|:---|
 | **SRC-01** | **Agent Skills Specification**<br>`https://agentskills.io/specification` | **Tier 1**<br>(Open Standard) | Spec v1.0 | Agent Standards | Establishes the vendor-neutral format for `SKILL.md` (directory name match, frontmatter rules: `name`, `description`, `license`, `compatibility`, `metadata`, `allowed-tools`). Mandates progressive disclosure and validation via `skills-ref`. Forms our canonical skill baseline. |
 | **SRC-02** | **Claude Code: Extend Claude with Skills**<br>`https://code.claude.com/docs/en/skills` | **Tier 1**<br>(Vendor Official) | Claude Code v2.1.300+ | Platform Compatibility | Documents Claude's adoption of the Agent Skills standard and its rich frontmatter extensions (`when_to_use`, `paths`, `context: fork`, `agent`, `model`, `effort`, `hooks`, `arguments`). Establishes how subagents and background tasks execute. |
-| **SRC-03** | **Claude Code: Plugins Overview & Specification**<br>`https://code.claude.com/docs/en/plugins` | **Tier 1**<br>(Vendor Official) | Claude Code v2.1.300+ | Packaging & Plugins | Documents multi-skill packaging using `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json`. Governs how Linux Engineering bundles skills, hooks, and agents for Claude Code users. |
+| **SRC-03** | **Claude Code: Plugins Overview & Specification**<br>`https://code.claude.com/docs/en/plugins` | **Tier 1**<br>(Vendor Official) | Claude Code v2.1.300+ | Packaging & Plugins | Documents multi-skill packaging using `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json`. Governs how Syswright bundles skills, hooks, and agents for Claude Code users. |
 | **SRC-04** | **OpenAI Codex: Skills Concept Guide**<br>`https://developers.openai.com/plugins/concepts/skills` | **Tier 1**<br>(Vendor Official) | Codex / GPT-6 Astra | Platform Compatibility | Documents OpenAI's skill implementation using `SKILL.md` folders, frontmatter, and complementary MCP server tooling. Governs how skills teach models repeatable workflows without baking in live state. |
 | **SRC-05** | **OpenAI Cookbook: Iterating Development Workflows with Codex**<br>`https://developers.openai.com/cookbook/examples/codex/iterating-development-workflows-with-codex` | **Tier 1**<br>(Vendor Official) | Codex 2026 | Platform Compatibility | Documents the official role of `AGENTS.md` as durable, persistent repository-level guidance read before tool calls. Validates generating root `AGENTS.md` for Codex support. |
 | **SRC-06** | **The Linux Kernel Documentation**<br>`https://docs.kernel.org/` | **Tier 1**<br>(Upstream Official) | Linux 6.18+ LTS / Mainline | Kernel Engineering | Authoritative upstream documentation covering Kbuild, Kconfig, device drivers, synchronization primitives, memory management, and subsystem architectures. |
@@ -45,8 +45,8 @@ Every source recorded here has been directly evaluated for technical veracity, s
 ## 3. Disclosures & Unresolved Technical Discrepancies
 
 1. **Agent Skills `allowed-tools` Portability**:
-   While the `agentskills.io` standard includes `allowed-tools` as an experimental frontmatter field, support varies significantly across runtimes. Claude Code supports `allowed-tools` during the turn the skill is invoked, whereas standard OpenAI Codex plugins manage tool access via MCP manifests in `agents/openai.yaml`. Linux Engineering relies on standard OS tool invocations and treats `allowed-tools` as an advisory hint.
+   While the `agentskills.io` standard includes `allowed-tools` as an experimental frontmatter field, support varies significantly across runtimes. Claude Code supports `allowed-tools` during the turn the skill is invoked, whereas standard OpenAI Codex plugins manage tool access via MCP manifests in `agents/openai.yaml`. Syswright relies on standard OS tool invocations and treats `allowed-tools` as an advisory hint.
 2. **`systemd-analyze security` Scoring Thresholds**:
-   The numeric score calculated by `systemd-analyze security` is derived from weighted heuristics that change across systemd releases (e.g., v252 vs v256). Linux Engineering defines the threshold dynamically based on the active systemd version reported by `linux-environment`.
+   The numeric score calculated by `systemd-analyze security` is derived from weighted heuristics that change across systemd releases (e.g., v252 vs v256). Syswright defines the threshold dynamically based on the active systemd version reported by `linux-environment`.
 3. **Host Tool Availability vs. Clean Chroot**:
    The host machine currently has `makepkg` and `namcap`, but lacks `pkgctl` in user PATH. Phase 1 will support clean chroot builds via direct `arch-nspawn` or guide unprivileged users to user-mode container alternatives.

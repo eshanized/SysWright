@@ -4,7 +4,7 @@ description: Linux observability, tracing, and telemetry specialist. Designs non
 license: Apache-2.0
 compatibility: Requires Linux environment, modern kernel with eBPF/BTF support.
 metadata:
-  author: Linux Engineering Contributors
+  author: Eshan Roy
   version: "0.1.0"
 ---
 

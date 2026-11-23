@@ -4,7 +4,7 @@ description: Fedora and EPEL packaging and maintenance specialist. Enforces Fedo
 license: Apache-2.0
 compatibility: Requires Linux environment, fedpkg, mock, and koji.
 metadata:
-  author: Linux Engineering Contributors
+  author: Eshan Roy
   version: "0.1.0"
 ---
 

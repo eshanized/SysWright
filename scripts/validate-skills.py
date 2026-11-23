@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Agent Skills Validator (Zero External Dependencies)
-Part of Linux Engineering (Phase 1)
+Part of Syswright
 
 Validates skill directories against the Agent Skills open specification (agentskills.io).
 Checks SKILL.md existence, YAML frontmatter syntax, name/directory matching,

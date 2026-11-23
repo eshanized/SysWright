@@ -4,7 +4,7 @@ description: Debian package engineering and maintenance specialist. Guides sourc
 license: Apache-2.0
 compatibility: Requires Linux environment, dpkg-dev, debhelper, and devscripts.
 metadata:
-  author: Linux Engineering Contributors
+  author: Eshan Roy
   version: "0.1.0"
 ---
 
