@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Linux Systems Engineering Evaluation Engine
-Part of Syswright (Phase 3)
+Part of Syswright
 
 Deterministic evaluation suite that verifies AI agent responses and engineering
 recommendations against authoritative Linux kernel, driver, systemd, boot,
@@ -324,7 +324,7 @@ def evaluate_systems_scenario(scenario: Dict[str, Any], response_text: str) -> T
 def get_reference_systems_responses() -> Dict[str, str]:
     """
     Returns reference gold-standard engineering responses for all 28
-    Phase 3 systems scenarios.
+    systems evaluation scenarios.
     """
     return {
         # -------------------------------------------------------------
@@ -917,7 +917,7 @@ def main():
     all_logs = []
 
     print("=" * 70)
-    print("Linux Systems Engineering — Phase 3 Evaluation Suite")
+    print("Linux Systems Engineering Evaluation Suite")
     print("=" * 70)
 
     for domain_name, domain_path in domain_dirs.items():
@@ -950,7 +950,7 @@ def main():
     print("=" * 70)
 
     if total_evals > 0 and total_passed == total_evals:
-        print("OVERALL VERDICT: PASS (All 28 Phase 3 scenarios passed cleanly)")
+        print("OVERALL VERDICT: PASS (All 28 evaluation scenarios passed cleanly)")
         sys.exit(0)
     else:
         print("OVERALL VERDICT: FAIL")

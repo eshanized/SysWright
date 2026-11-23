@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Unit tests for package-skills.py
-Part of Syswright (Phase 1)
+Part of Syswright
 """
 
 import importlib.util

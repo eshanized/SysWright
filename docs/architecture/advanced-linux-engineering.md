@@ -1,10 +1,10 @@
-# Syswright — Phase 5 Architecture: Advanced Engineering, Security, Performance and Reliability
+# Syswright — Advanced Linux Engineering: Security, Performance, Observability and Reliability
 
 ## 1. Executive Summary
 
-Phase 5 expands **Syswright** from systems implementation into root-cause diagnosis, performance measurement, defensive security hardening, deep kernel observability, automated defect discovery (fuzzing), and regression engineering.
+This architecture expands **Syswright** from systems implementation into root-cause diagnosis, performance measurement, defensive security hardening, deep kernel observability, automated defect discovery (fuzzing), and regression engineering.
 
-AI coding agents are frequently prone to speculative fixes, premature optimizations, exaggerated vulnerability claims, and untested assumptions. Phase 5 equips agents with the tools and discipline of principal Linux engineers:
+AI coding agents are frequently prone to speculative fixes, premature optimizations, exaggerated vulnerability claims, and untested assumptions. This subsystem equips agents with the tools and discipline of principal Linux engineers:
 - **Evidence over Intuition**: Never alter code based on an error message without an isolated hypothesis and proof of invariant violation.
 - **Measurement over Speculation**: Never claim a performance optimization without statistically valid, repeated benchmark distributions.
 - **Defensive Rigor over Hype**: Distinguish actual distribution backports from naive version mismatches; never exaggerate local crashes into remote vulnerabilities.
@@ -14,7 +14,7 @@ AI coding agents are frequently prone to speculative fixes, premature optimizati
 
 ## 2. Specialist Domain Architecture
 
-Phase 5 introduces six specialized capabilities that cooperate through the existing Syswright ecosystem:
+The advanced engineering subsystem introduces six specialized capabilities that cooperate through the Syswright ecosystem:
 
 ```
                                   ┌────────────────────────┐
@@ -131,7 +131,7 @@ flowchart LR
 
 ## 5. Verification & Evaluation Strategy
 
-The Phase 5 evaluation infrastructure consists of 36 deterministic evaluation scenarios across 6 test domains in `evals/`:
+The advanced engineering evaluation infrastructure consists of 36 deterministic evaluation scenarios across 6 test domains in `evals/`:
 - `evals/debugging/scenarios.json`: 6 scenarios.
 - `evals/performance/scenarios.json`: 6 scenarios.
 - `evals/security/scenarios.json`: 8 scenarios.

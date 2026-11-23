@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Linux Cross-Distribution, Release and Supply-Chain Engineering Evaluation Engine
-Part of Syswright (Phase 6)
+Part of Syswright
 
 Deterministic evaluation suite that verifies AI agent responses and engineering
 recommendations across:
@@ -479,7 +479,7 @@ def evaluate_cross_distribution_scenario(scenario: Dict[str, Any], response_text
 
 def get_reference_cross_distribution_responses() -> Dict[str, str]:
     """
-    Returns reference engineering responses that satisfy all 48 Phase 6
+    Returns reference engineering responses that satisfy all 48 cross-distribution
     cross-distribution evaluation scenarios.
     """
     return {
@@ -879,7 +879,7 @@ def main():
     grand_total = 0
 
     print("=" * 70)
-    print("Linux Cross-Distribution Engineering Evaluation Benchmark (Phase 6)")
+    print("Linux Cross-Distribution Engineering Evaluation Benchmark")
     print("=" * 70)
 
     for domain in domains:

@@ -2,7 +2,7 @@
 
 ## 1. Overview & Context
 
-`arch-packaging` is the first distribution-specific specialist skill in **Syswright**, introduced in Phase 2. While the foundation skills (`linux-engineer`, `linux-research`, `linux-environment`) establish a distribution-agnostic systems engineering baseline, `arch-packaging` equips AI coding agents with deep, authoritative specialization in Arch Linux package engineering.
+`arch-packaging` equips AI coding agents with deep, authoritative specialization in Arch Linux package engineering, operating alongside the foundation skills (`linux-engineer`, `linux-research`, `linux-environment`).
 
 An agent utilizing this skill operates not as a simplistic template generator, but as an experienced Arch Linux package maintainer adhering to the principles:
 > **Research before implementation. Evidence before assumptions. Verification before completion.**

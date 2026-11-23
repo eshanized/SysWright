@@ -3,7 +3,7 @@
 [![Standard: Agent Skills](https://img.shields.io/badge/standard-Agent%20Skills-blue?style=flat-square)](https://agentskills.io)
 [![Platform: Claude Code](https://img.shields.io/badge/platform-Claude%20Code-purple?style=flat-square)](https://code.claude.com)
 [![Platform: OpenAI Codex](https://img.shields.io/badge/platform-OpenAI%20Codex-green?style=flat-square)](https://developers.openai.com)
-[![License: Pending Owner Approval](https://img.shields.io/badge/license-Apache--2.0%20(Recommended)-orange?style=flat-square)](docs/phase-0/12-open-decisions.md)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue?style=flat-square)](#)
 
 A research-first, evidence-driven engineering intelligence system and specialist skill catalog for AI coding agents (Claude Code, OpenAI Codex, Antigravity CLI, and Agent Skills runtimes).
 
@@ -44,13 +44,13 @@ syswright/
 ├── scripts/                     # Zero-dependency validation & packaging tools
 ├── evals/                       # Evaluation benchmark suites & fixtures
 ├── tests/                       # Automated unit & integration tests
-├── docs/                        # Architecture specs & Phase 0/1/2 documentation
+├── docs/                        # Subsystem architecture specifications & documentation portal
 └── AGENTS.md                    # Persistent repository guidance for AI coding agents
 ```
 
 ---
 
-## 3. Skill Catalog (Phase 6 Status)
+## 3. Specialist Skill Catalog
 
 | Skill Name | Directory | Status | Primary Purpose |
 |:---|:---|:---:|:---|
@@ -261,17 +261,14 @@ For full safety details, see [references/safety-policy.md](references/safety-pol
 
 ---
 
-## 8. Roadmap
+## 8. Documentation Portal
 
-```mermaid
-timeline
-    title Syswright Phased Development Roadmap
-    Phase 0 : Research & Architecture Foundation (Completed)
-    Phase 1 : Core Foundation & Multi-Agent Distribution (Completed)
-    Phase 2 : Kernel, Driver, Packaging & Boot Specialists
-    Phase 3 : Native Systems (Rust/C/C++), Desktop, Debugging & Performance
-    Phase 4 : Distribution Expansion (Debian/Fedora) & Security Hardening
-    Phase 5 : Upstream Release (b4), Automated Benchmark CI & Marketplace Publishing
-```
+Comprehensive subsystem architecture specifications and development guides are available in [`docs/`](docs/README.md):
 
-For detailed phase specifications, refer to [docs/phase-0/10-roadmap-and-phase-1.md](docs/phase-0/10-roadmap-and-phase-1.md) and [docs/architecture/adr-007-phase-1-foundation-scoping.md](docs/architecture/adr-007-phase-1-foundation-scoping.md).
+- [**Linux Systems Engineering**](docs/architecture/linux-systems-engineering.md): Kernel, driver, systemd, bootloader, networking, and storage subsystem architectures.
+- [**Native Application Engineering**](docs/architecture/native-application-engineering.md): GUI toolkits (Qt 6, GTK 4), Wayland/D-Bus desktop integration, and modern build generators.
+- [**Advanced Linux Engineering**](docs/architecture/advanced-linux-engineering.md): Root-cause debugging, runtime performance profiling, defensive hardening, kernel tracing, fuzzing, and regression isolation.
+- [**Arch Packaging Engineering**](docs/architecture/arch-packaging.md): PKGBUILD standards, clean-chroot build isolation, static namcap analysis, and AUR publishing.
+- [**Cross-Distribution & Supply-Chain**](docs/architecture/cross-distribution-engineering.md): Debian, Ubuntu, RPM, Fedora, openSUSE packaging, reproducible builds, and release lifecycle management.
+- [**Canonical & Adapter Architecture**](docs/architecture/canonical-and-adapter-architecture.md): Multi-agent runtime abstraction and plugin packaging.
+- [**Validation & Testing Guide**](docs/development/validation-and-testing.md): Automated verification benchmarks and test suite execution.

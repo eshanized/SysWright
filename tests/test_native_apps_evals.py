@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Unit and Integration Tests for Linux Native Application Engineering Evaluations
-Part of Syswright (Phase 4)
+Part of Syswright
 """
 
 import json

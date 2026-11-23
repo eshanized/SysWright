@@ -131,7 +131,7 @@ Classify the proposed action according to [../../references/safety-policy.md](..
 
 ## 2. Specialist Skill Catalog Status
 
-In Phase 6, the **three Foundation Skills** and **twenty-six Domain Specialists** are fully active:
+All **three Foundation Skills** and **twenty-six Domain Specialists** are fully active:
 
 | Engineering Discipline | Assigned Skill | Status | Handled via Foundation / Specialist |
 |:---|:---|:---:|:---|

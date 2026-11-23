@@ -1,12 +1,12 @@
-# Syswright — Phase 6 Architecture: Cross-Distribution, Release and Supply-Chain Engineering
+# Syswright — Cross-Distribution, Release and Supply-Chain Engineering Architecture
 
 ## 1. Executive Summary
 
-Phase 6 expands **Syswright** from single-distribution packaging (Arch Linux) and systems programming into a comprehensive multi-distribution, release maintenance, and software supply-chain ecosystem.
+This architecture establishes **Syswright** as a comprehensive multi-distribution, release maintenance, and software supply-chain engineering ecosystem.
 
 In professional Linux engineering, software rarely targets a single platform. An application or system service must be reliably packaged, distributed, and maintained across **Debian, Ubuntu, Fedora, openSUSE, Arch Linux, and Enterprise Linux (RHEL/SLE)** without confusing their conflicting policies, macro conventions, directory layouts, or release workflows.
 
-Phase 6 equips AI agents with the capabilities and discipline of senior distribution maintainers and supply-chain security architects:
+This subsystem equips AI agents with the capabilities and discipline of senior distribution maintainers and supply-chain security architects:
 - **Distribution Policy Fidelity**: Never confuse Debian policy with Fedora guidelines or openSUSE conventions. Enforce exact macro standards, license formats (SPDX), and scriptlet rules.
 - **Repository Integrity & Key Separation**: Separate offline master GPG keys from online signing subkeys; eliminate mirror synchronization race conditions via two-stage rsync and `by-hash` metadata; prevent broken client caches using fast-forward epoch reverts rather than naive package deletion.
 - **Bit-for-Bit Reproducibility**: Eliminate build non-determinism via `SOURCE_DATE_EPOCH`, `-ffile-prefix-map`, and archive sorting; diagnose variances using `diffoscope` and `reprotest`.
@@ -17,7 +17,7 @@ Phase 6 equips AI agents with the capabilities and discipline of senior distribu
 
 ## 2. Specialist Domain Architecture
 
-Phase 6 introduces eight specialist engineering capabilities that coordinate through the central orchestrator:
+The cross-distribution subsystem introduces eight specialist engineering capabilities that coordinate through the central orchestrator:
 
 ```text
                                          ┌────────────────────────┐
@@ -95,7 +95,7 @@ Phase 6 introduces eight specialist engineering capabilities that coordinate thr
 
 ## 4. Operational Safety Tier Enforcement
 
-Phase 6 enforces the four-tier operational safety policy:
+The cross-distribution ecosystem enforces the four-tier operational safety policy:
 - **Tier 0 (Diagnostics & Auditing)**: Autonomous execution. Inspecting repository metadata, checking GPG signature status, running `diffoscope` diffs, auditing patch series, checking `uscan --dry-run`, and reading build logs (`osc results`, `mock` logs, Koji tasks).
 - **Tier 1 (Workspace Builds)**: Autonomous execution. Compiling packages in local workspace directories, rebasing quilt patch queues, updating spec/PKGBUILD files in workspace branches, and generating SBOMs.
 - **Tier 2 (Isolated Chroots & Containers)**: Autonomous execution after container/chroot verification. Running isolated builds via `sbuild`, `mock`, `extra-x86_64-build`, `osc build`, or `reprotest`.
@@ -105,7 +105,7 @@ Phase 6 enforces the four-tier operational safety policy:
 
 ## 5. Verification & Evaluation Framework
 
-Phase 6 introduces **48 deterministic evaluation scenarios** across eight domains in `evals/`:
+The cross-distribution subsystem introduces **48 deterministic evaluation scenarios** across eight domains in `evals/`:
 - `evals/debian-packaging/scenarios.json` (6 scenarios)
 - `evals/ubuntu-packaging/scenarios.json` (6 scenarios)
 - `evals/rpm-packaging/scenarios.json` (6 scenarios)

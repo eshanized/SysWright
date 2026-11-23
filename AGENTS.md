@@ -20,7 +20,7 @@ Welcome to **Syswright**. When working inside this repository, you must adhere t
 ## 2. Mandatory Workflow Sequence
 
 Whenever assigned a task in this repository:
-1. **Read Architecture & Decisions**: Consult `docs/architecture/` and relevant Phase 0 records before architectural changes.
+1. **Read Architecture & Decisions**: Consult `docs/architecture/` and technical references before architectural changes.
 2. **Research Authoritative Sources**: Query official upstream documentation (kernel.org, freedesktop.org, POSIX) following [references/source-authority.md](references/source-authority.md).
 3. **Follow Dependency Discipline**: Avoid adding third-party dependencies or external Python libraries. Use the Python 3 standard library.
 4. **Validate Skills & References**: After editing skills or documentation, execute:

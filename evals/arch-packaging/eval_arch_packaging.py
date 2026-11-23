@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Arch Packaging Evaluation Engine
-Part of Syswright (Phase 2)
+Part of Syswright
 
 Deterministic evaluation suite that verifies AI agent responses, PKGBUILDs,
 and packaging recommendations against authoritative Arch Linux packaging

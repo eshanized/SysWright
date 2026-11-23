@@ -2,7 +2,7 @@
 
 ## 1. Overview & Context
 
-**Linux Systems Engineering** expands the Syswright platform beyond package management into the core operating system. Introduced in Phase 3, this subsystem delivers six deeply specialized, authoritative Agent Skills complying with the canonical `agentskills.io` standard:
+**Linux Systems Engineering** expands the Syswright platform beyond package management into the core operating system. This subsystem delivers six deeply specialized, authoritative Agent Skills complying with the canonical `agentskills.io` standard:
 
 1. **`kernel-engineering`**: Kernel source navigation, Kconfig/Kbuild compilation, regression bisecting, patching, debugging, and upstream contribution.
 2. **`driver-engineering`**: Linux device model, bus subsystems (PCI, USB, I2C, SPI), probe mechanics, DMA, interrupts, and power management.
@@ -18,7 +18,7 @@ These specialist skills operate under the repository's foundational engineering 
 
 ## 2. Architectural Separation: Networking & Storage
 
-A key architectural mandate of Phase 3 is the deliberate separation of networking and storage into independent specialist skills:
+A key architectural mandate is the deliberate separation of networking and storage into independent specialist skills:
 
 ```mermaid
 flowchart TD
@@ -50,7 +50,7 @@ flowchart TD
 
 ## 3. Foundation Skill Integration
 
-The six systems specialists do not reinvent research, host reconnaissance, or orchestration; they integrate directly with the existing Phase 1 tri-skill foundation:
+The six systems specialists do not reinvent research, host reconnaissance, or orchestration; they integrate directly with the tri-skill foundation:
 
 ```mermaid
 flowchart TD
@@ -156,7 +156,7 @@ skills/
 
 ## 6. Evaluation Framework & Verification
 
-Phase 3 introduces a comprehensive evaluation framework ensuring AI agents make authoritative, evidence-backed decisions and strictly respect safety invariants:
+Syswright provides a comprehensive systems evaluation framework ensuring AI agents make authoritative, evidence-backed decisions and strictly respect safety invariants:
 
 - **28 Deterministic Evaluation Scenarios**:
   - `evals/kernel/scenarios.json`: 5 scenarios (regression bisect, atomic locking review, maintainer routing, module build diagnosis, patch provenance).

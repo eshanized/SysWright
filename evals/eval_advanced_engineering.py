@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Linux Advanced Engineering Evaluation Engine
-Part of Syswright (Phase 5)
+Part of Syswright
 
 Deterministic evaluation suite that verifies AI agent responses and engineering
 recommendations across:
@@ -350,7 +350,7 @@ def evaluate_advanced_engineering_scenario(scenario: Dict[str, Any], response_te
 def get_reference_advanced_engineering_responses() -> Dict[str, str]:
     """
     Authoritative, evidence-backed reference responses satisfying all 36
-    evaluation scenarios across Phase 5 advanced engineering domains.
+    evaluation scenarios across evaluation domains.
     """
     return {
         "eval_dbg_01_segfault": (
@@ -716,7 +716,7 @@ def main():
     grand_total = 0
 
     print("=" * 70)
-    print("Linux Advanced Engineering Evaluation Benchmark (Phase 5)")
+    print("Linux Advanced Engineering Evaluation Benchmark")
     print("=" * 70)
 
     for domain in domains:

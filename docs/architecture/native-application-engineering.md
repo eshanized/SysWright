@@ -2,7 +2,7 @@
 
 ## 1. Overview & Context
 
-**Native Linux Application Engineering** expands the Syswright platform into native user-space application development, desktop integration, and build systems engineering. Introduced in Phase 4, this capability delivers five deeply specialized, authoritative Agent Skills complying with the canonical `agentskills.io` standard:
+**Native Linux Application Engineering** expands the Syswright platform into native user-space application development, desktop integration, and build systems engineering. This capability delivers five deeply specialized, authoritative Agent Skills complying with the canonical `agentskills.io` standard:
 
 1. **`linux-application-engineering`**: High-level application architecture, language selection (Rust, C, C++), CLI tool engineering, background daemons, process lifecycle management, XDG state management, and application security.
 2. **`qt-qml-engineering`**: Qt 6, QML language, Qt Quick scene graph, declarative QML/C++ integration, Qt Widgets, and Qt unit testing.
@@ -106,7 +106,7 @@ All native applications must package and validate standard metadata:
 
 ## 7. Verification & Evaluation Framework
 
-Phase 4 includes a comprehensive evaluation suite verifying AI agent guidance across 34 realistic scenarios:
+Syswright includes a comprehensive native application evaluation suite verifying AI agent guidance across 34 realistic scenarios:
 - `evals/applications/scenarios.json`: 8 scenarios (Rust CLI, C systems leaks, modern C++ RAII, systemd daemon, local microservices rejection, zombie reaping, path traversal, concurrency deadlock).
 - `evals/qt/scenarios.json`: 7 scenarios (QML business logic separation, CMake QML module, synchronous XHR blocking, broken property bindings, setContextProperty modernization, GUI thread blocking, Qt Widgets vs Quick).
 - `evals/gtk/scenarios.json`: 5 scenarios (GTK 4 application lifecycle, GObject floating reference leaks, GMainContext blocking, standard GTK 4 vs Libadwaita, AT-SPI accessibility).

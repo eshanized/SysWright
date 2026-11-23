@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Routing Evaluation Engine
-Part of Syswright (Phase 1)
+Part of Syswright
 
 Evaluates whether the central linux-engineer skill correctly routes
 incoming engineering requests to appropriate foundation skills and

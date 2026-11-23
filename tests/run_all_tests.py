@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Master Test Runner
-Part of Syswright (Phase 1)
+Part of Syswright
 
 Discovers and runs all automated unit and integration tests across:
 - Skill directory validation

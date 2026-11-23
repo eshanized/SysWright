@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Unit and Integration Tests for Linux Cross-Distribution Engineering Evaluations
-Part of Syswright (Phase 6)
+Part of Syswright
 """
 
 import json

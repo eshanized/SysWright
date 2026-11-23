@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Linux Native Application Engineering Evaluation Engine
-Part of Syswright (Phase 4)
+Part of Syswright
 
 Deterministic evaluation suite that verifies AI agent responses and engineering
 recommendations against authoritative Linux application architecture, Qt 6/QML,
@@ -347,7 +347,7 @@ def evaluate_native_apps_scenario(scenario: Dict[str, Any], response_text: str) 
 def get_reference_native_apps_responses() -> Dict[str, str]:
     """
     Returns reference gold-standard engineering responses for all 34
-    Phase 4 native application engineering scenarios.
+    native application evaluation scenarios.
     """
     return {
         # -------------------------------------------------------------
@@ -1077,7 +1077,7 @@ def main():
     all_logs = []
 
     print("=" * 75)
-    print("Linux Native Application Engineering — Phase 4 Evaluation Suite")
+    print("Linux Native Application Engineering Evaluation Suite")
     print("=" * 75)
 
     for domain_name, domain_path in domain_dirs.items():
@@ -1110,7 +1110,7 @@ def main():
     print("=" * 75)
 
     if total_evals > 0 and total_passed == total_evals:
-        print("OVERALL VERDICT: PASS (All 34 Phase 4 scenarios passed cleanly)")
+        print("OVERALL VERDICT: PASS (All 34 evaluation scenarios passed cleanly)")
         sys.exit(0)
     else:
         print("OVERALL VERDICT: FAIL")

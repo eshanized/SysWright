@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Static Validation Tests for Packaging Templates
-Part of Syswright (Phase 2)
+Part of Syswright
 
 Performs non-executing static validation on PKGBUILD templates:
 - Verifies template structural invariants and variable declarations.

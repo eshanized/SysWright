@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Unit tests for Arch Packaging Evaluations
-Part of Syswright (Phase 2)
+Part of Syswright
 """
 
 import sys
