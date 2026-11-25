@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Install SysWright skills into every detected supported agent.
 
-The installer is intentionally dependency-free and only manages the named
-SysWright skill directories. It never removes or overwrites existing content.
+The installer is dependency-free, installs only canonical skill directories,
+and never removes or overwrites existing content.
 """
 
 import argparse
@@ -23,20 +23,18 @@ class Agent:
 
 
 def discover_agents(home: Optional[Path] = None, path: Optional[str] = None) -> list:
-    """Return supported agents detected from executable or user config presence."""
+    """Detect supported agents from their executable or user config directory."""
     home = home or Path.home()
     agents = [
         Agent("claude", "Claude Code", "claude", home / ".claude", home / ".claude" / "skills"),
         Agent("codex", "OpenAI Codex", "codex", home / ".codex", home / ".agents" / "skills"),
     ]
-    found = []
-    for agent in agents:
-        if shutil.which(agent.executable, path=path) or agent.config_dir.is_dir():
-            found.append(agent)
-    return found
+    return [agent for agent in agents
+            if shutil.which(agent.executable, path=path) or agent.config_dir.is_dir()]
 
 
 def find_skills(repo_root: Path) -> list:
+    """Find canonical skills and reject symlinks anywhere in their trees."""
     skills_root = repo_root / "skills"
     if not skills_root.is_dir():
         raise FileNotFoundError("No skills/ directory found; run install.py from the SysWright checkout.")
@@ -44,8 +42,12 @@ def find_skills(repo_root: Path) -> list:
     for candidate in sorted(skills_root.iterdir()):
         if candidate.is_symlink():
             raise ValueError("Refusing symlinked skill directory: {}".format(candidate))
-        if candidate.is_dir() and (candidate / "SKILL.md").is_file():
-            skills.append(candidate)
+        if not candidate.is_dir() or not (candidate / "SKILL.md").is_file():
+            continue
+        for entry in candidate.rglob("*"):
+            if entry.is_symlink():
+                raise ValueError("Refusing symlink inside skill '{}': {}".format(candidate.name, entry))
+        skills.append(candidate)
     if not skills:
         raise ValueError("No valid skills containing SKILL.md were found.")
     return skills
@@ -53,25 +55,37 @@ def find_skills(repo_root: Path) -> list:
 
 def plan_install(skills: Iterable[Path], agents: Iterable[Agent], scope: str,
                  repo_root: Path, cwd: Path) -> list:
+    """Resolve the per-agent installation root for user or repository scope."""
     plans = []
     for agent in agents:
         if scope == "repo":
-            if agent.name == "claude":
-                destination = cwd / ".claude" / "skills"
-            else:
-                destination = cwd / ".agents" / "skills"
+            parent = ".claude" if agent.name == "claude" else ".agents"
+            destination = cwd / parent / "skills"
         else:
             destination = agent.skill_dir
         plans.append((agent, destination))
     return plans
 
 
+def _has_symlink_component(path: Path) -> bool:
+    """Check existing path components without resolving through symlinks."""
+    current = Path(path.anchor)
+    for part in path.parts[1:]:
+        current = current / part
+        if current.is_symlink():
+            return True
+    return False
+
+
 def install(skills: list, plans: list, dry_run: bool = False) -> int:
-    """Preflight every destination, then copy; existing skills are never overwritten."""
+    """Preflight all targets, then copy; conflicts abort the entire operation."""
     conflicts = []
     for agent, destination in plans:
-        if destination.exists() and (destination.is_symlink() or not destination.is_dir()):
-            conflicts.append("{}: destination is not a real directory: {}".format(agent.label, destination))
+        if _has_symlink_component(destination):
+            conflicts.append("{}: destination path contains a symlink: {}".format(agent.label, destination))
+            continue
+        if destination.exists() and not destination.is_dir():
+            conflicts.append("{}: destination is not a directory: {}".format(agent.label, destination))
             continue
         for skill in skills:
             target = destination / skill.name
@@ -81,7 +95,7 @@ def install(skills: list, plans: list, dry_run: bool = False) -> int:
         print("Installation aborted; no files were changed:", file=sys.stderr)
         for conflict in conflicts:
             print("  - " + conflict, file=sys.stderr)
-        print("Move the conflicting skill directories aside before retrying.", file=sys.stderr)
+        print("Move conflicting skill directories aside before retrying.", file=sys.stderr)
         return 2
 
     for agent, destination in plans:
@@ -117,26 +131,25 @@ def main(argv: Optional[list] = None) -> int:
 
     detected = discover_agents()
     if args.list_agents:
-        if detected:
-            for agent in detected:
-                print("{} ({})".format(agent.label, agent.executable))
-        else:
+        for agent in detected:
+            print("{} ({})".format(agent.label, agent.executable))
+        if not detected:
             print("No supported agents detected.")
         return 0
 
     if args.agent:
-        by_name = {agent.name: agent for agent in (
-            Agent("claude", "Claude Code", "claude", Path.home() / ".claude",
-                  Path.home() / ".claude" / "skills"),
-            Agent("codex", "OpenAI Codex", "codex", Path.home() / ".codex",
-                  Path.home() / ".agents" / "skills"),
-        )}
-        selected = [by_name[name] for name in args.agent]
+        home = Path.home()
+        supported = {
+            "claude": Agent("claude", "Claude Code", "claude", home / ".claude", home / ".claude" / "skills"),
+            "codex": Agent("codex", "OpenAI Codex", "codex", home / ".codex", home / ".agents" / "skills"),
+        }
+        selected = [supported[name] for name in dict.fromkeys(args.agent)]
     else:
         selected = detected
 
     if not selected:
-        print("No supported agents detected. Install Claude Code or Codex, or use --agent.", file=sys.stderr)
+        print("No supported agents detected. Install Claude Code or Codex, or specify --agent.",
+              file=sys.stderr)
         return 1
 
     plans = plan_install(skills, selected, args.scope, repo_root, Path.cwd())
