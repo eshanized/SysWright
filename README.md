@@ -5,7 +5,7 @@
 [![Platform: OpenAI Codex](https://img.shields.io/badge/platform-OpenAI%20Codex-green?style=flat-square)](https://developers.openai.com)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue?style=flat-square)](#)
 
-A research-first, evidence-driven engineering intelligence system and specialist skill catalog for AI coding agents (Claude Code, OpenAI Codex, Antigravity CLI, and Agent Skills runtimes).
+A research-first, evidence-driven Linux engineering skill catalog for AI coding agents. Claude Code and Codex are the primary integration targets; other Agent Skills-compatible clients require platform-specific verification.
 
 ---
 
@@ -15,7 +15,7 @@ A research-first, evidence-driven engineering intelligence system and specialist
 
 Standard AI coding agents frequently fail at Linux systems engineering: they hallucinate deprecated kernel APIs, recommend 10-year-old blog snippets, guess systemd configurations, and declare tasks "fixed" without running compilers or linters.
 
-**Syswright** replaces this guesswork with an uncompromising systems engineering runtime:
+**SysWright** addresses this with reusable engineering workflows and specialist skills:
 1. **Understand the actual task**: Problem decomposition and constraint mapping.
 2. **Establish version boundaries**: Never assume kernel or userspace version; probe target environment.
 3. **Query authoritative upstream sources**: Research official upstream manuals (`docs.kernel.org`, `freedesktop.org`, `man7.org`, POSIX).
