@@ -136,6 +136,15 @@ def _iter_source_files(root: Path, repo_root: Path):
             yield candidate
 
 
+def _ensure_output_separate(repo_root: Path, output_dir: Path) -> None:
+    """Prevent generated artifacts from being written into packaged source trees."""
+    output = output_dir.resolve(strict=False)
+    for item in ("skills", "references", "docs", "adapters", ".claude-plugin"):
+        source = (repo_root / item).resolve(strict=False)
+        if _inside(output, source):
+            raise ValueError(f"Output directory must not be inside packaged source tree '{item}': {output}")
+
+
 def _source_date_epoch() -> int:
     value = os.environ.get("SOURCE_DATE_EPOCH", "0")
     try:
@@ -150,6 +159,7 @@ def _source_date_epoch() -> int:
 def package_archive(repo_root: Path, output_dir: Path, version: str = "0.1.0") -> Path:
     """Create a byte-for-byte reproducible gzip-compressed tar archive."""
     repo_root = repo_root.resolve(strict=True)
+    _ensure_output_separate(repo_root, output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     target = output_dir / f"syswright-{version}.tar.gz"
     mtime = _source_date_epoch()
@@ -194,6 +204,7 @@ def _new_output_directory(path: Path) -> Path:
 def package_claude_code(repo_root: Path, output_dir: Path) -> Path:
     """Create a Claude Code plugin directory without destructive replacement."""
     repo_root = repo_root.resolve(strict=True)
+    _ensure_output_separate(repo_root, output_dir)
     plugin_dir = _new_output_directory(output_dir / "claude-code-plugin")
     manifest_src = repo_root / ".claude-plugin"
     _copy_tree_files(manifest_src, plugin_dir / ".claude-plugin", repo_root)
@@ -205,6 +216,7 @@ def package_claude_code(repo_root: Path, output_dir: Path) -> Path:
 def package_codex(repo_root: Path, output_dir: Path) -> Path:
     """Create a Codex bundle with skills at the documented .agents/skills path."""
     repo_root = repo_root.resolve(strict=True)
+    _ensure_output_separate(repo_root, output_dir)
     codex_dir = _new_output_directory(output_dir / "codex-package")
 
     agents_md = repo_root / "AGENTS.md"
