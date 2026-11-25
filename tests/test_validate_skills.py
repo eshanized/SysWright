@@ -76,6 +76,30 @@ metadata:
         with self.assertRaises(FrontmatterParseError):
             extract_frontmatter(content)
 
+    def test_rejects_non_string_metadata_values(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            skill = Path(tmpdir) / "test-skill"
+            skill.mkdir()
+            (skill / "SKILL.md").write_text(
+                "---\\nname: test-skill\\ndescription: Valid description\\n"
+                "metadata:\\n  enabled: true\\n---\\n",
+                encoding="utf-8",
+            )
+            errors = validate_skill_directory(skill)
+            self.assertTrue(any("must both be strings" in error for error in errors))
+
+    def test_rejects_unknown_frontmatter_fields(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            skill = Path(tmpdir) / "test-skill"
+            skill.mkdir()
+            (skill / "SKILL.md").write_text(
+                "---\\nname: test-skill\\ndescription: Valid description\\n"
+                "claude_context: special\\n---\\n",
+                encoding="utf-8",
+            )
+            errors = validate_skill_directory(skill)
+            self.assertTrue(any("Unsupported frontmatter field" in error for error in errors))
+
     def test_broken_relative_link_detection(self):
         """Test detection of broken relative file references in SKILL.md."""
         with tempfile.TemporaryDirectory() as tmpdir:

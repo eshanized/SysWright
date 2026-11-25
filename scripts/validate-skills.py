@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
-"""
-Agent Skills Validator (Zero External Dependencies)
-Part of Syswright
+"""SysWright local structural validator with optional upstream skills-ref checks.
 
-Validates skill directories against the Agent Skills open specification (agentskills.io).
-Checks SKILL.md existence, YAML frontmatter syntax, name/directory matching,
-field constraints, and internal relative file reference integrity.
+The built-in checks are intentionally lightweight and are not a complete YAML
+implementation. Use --strict-spec with the upstream skills-ref CLI for the
+Agent Skills reference implementation validation.
 """
 
 import argparse
 import os
 import re
+import shutil
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple
@@ -155,6 +155,7 @@ def extract_frontmatter(content: str) -> Tuple[Dict[str, Any], str]:
 
 
 NAME_REGEX = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
+ALLOWED_FRONTMATTER_FIELDS = {"name", "description", "license", "compatibility", "metadata", "allowed-tools"}
 MD_LINK_REGEX = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
 
 
@@ -182,6 +183,10 @@ def validate_skill_directory(skill_dir: Path) -> List[str]:
         fm, body = extract_frontmatter(content)
     except FrontmatterParseError as e:
         return [f"Frontmatter parse error in {skill_md}: {e}"]
+
+    # Reject unknown top-level fields instead of silently accepting non-standard metadata.
+    for field in sorted(set(fm) - ALLOWED_FRONTMATTER_FIELDS):
+        errors.append(f"Unsupported frontmatter field: '{field}'")
 
     # 1. Validate 'name'
     name = fm.get("name")
@@ -215,15 +220,18 @@ def validate_skill_directory(skill_dir: Path) -> List[str]:
         elif len(compat) > 500:
             errors.append(f"'compatibility' length ({len(compat)}) exceeds 500 characters")
 
-    # 4. Validate 'metadata' (optional)
+    # 4. Validate optional string fields and metadata mapping.
+    for field in ("license", "allowed-tools"):
+        if field in fm and not isinstance(fm[field], str):
+            errors.append(f"'{field}' field must be a string")
     if "metadata" in fm:
         meta = fm["metadata"]
         if not isinstance(meta, dict):
             errors.append("'metadata' field must be a key-value mapping")
         else:
             for mk, mv in meta.items():
-                if not isinstance(mv, (str, bool, int)):
-                    errors.append(f"metadata key '{mk}' value must be a scalar (str, bool, int)")
+                if not isinstance(mk, str) or not isinstance(mv, str):
+                    errors.append(f"metadata key '{mk}' and its value must both be strings")
 
     # 5. Validate internal file references in body
     for match in MD_LINK_REGEX.finditer(body):
@@ -251,6 +259,7 @@ def main():
     parser = argparse.ArgumentParser(description="Validate Agent Skills compliance")
     parser.add_argument("skill_dirs", nargs="*", help="Optional skill directory paths to validate")
     parser.add_argument("--repo-root", default=".", help="Root directory of the repository")
+    parser.add_argument("--strict-spec", action="store_true", help="Also run upstream skills-ref (must be installed)")
     args = parser.parse_args()
 
     repo_root = Path(args.repo_root).resolve()
@@ -260,12 +269,23 @@ def main():
         print("No skill directories found to validate.")
         sys.exit(1)
 
+    if args.strict_spec and not shutil.which("skills-ref"):
+        parser.error("--strict-spec requires the upstream 'skills-ref' executable on PATH")
+
     all_passed = True
     seen_names: Set[str] = set()
 
     print(f"Validating {len(target_dirs)} skill(s)...")
     for sdir in target_dirs:
         errors = validate_skill_directory(sdir)
+        if args.strict_spec:
+            result = subprocess.run(
+                ["skills-ref", "validate", str(sdir)],
+                capture_output=True, text=True, check=False,
+            )
+            if result.returncode:
+                detail = (result.stdout + chr(10) + result.stderr).strip()
+                errors.append("Upstream skills-ref validation failed" + (f": {detail}" if detail else ""))
         skill_name = sdir.name
 
         if skill_name in seen_names:
