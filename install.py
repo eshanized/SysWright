@@ -8,18 +8,17 @@ and never removes or overwrites existing content.
 import argparse
 import shutil
 import sys
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable, Optional
 
 
-@dataclass(frozen=True)
 class Agent:
-    name: str
-    label: str
-    executable: str
-    config_dir: Path
-    skill_dir: Path
+    def __init__(self, name: str, label: str, executable: str, config_dir: Path, skill_dir: Path):
+        self.name = name
+        self.label = label
+        self.executable = executable
+        self.config_dir = config_dir
+        self.skill_dir = skill_dir
 
 
 def discover_agents(home: Optional[Path] = None, path: Optional[str] = None) -> list:
