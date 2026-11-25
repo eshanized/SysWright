@@ -98,6 +98,21 @@ class TestPackageSkills(unittest.TestCase):
                 self.assertTrue(any(name.endswith("/AGENTS.md") for name in names))
                 self.assertFalse(any("__pycache__" in name or "/.git/" in name for name in names))
 
+    def test_output_inside_packaged_source_tree_is_rejected(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            nested_output = self.repo_root / "skills" / ".syswright-test-output"
+            # Use a temporary fixture repository rather than touching the checkout.
+            repo = Path(tmpdir) / "repo"
+            (repo / "skills").mkdir(parents=True)
+            (repo / "skills" / "sample").mkdir()
+            (repo / "skills" / "sample" / "SKILL.md").write_text(
+                "---\\nname: sample\\ndescription: Sample skill\\n---\\n",
+                encoding="utf-8",
+            )
+            with self.assertRaises(ValueError):
+                package_archive(repo, repo / "skills" / "dist")
+            self.assertFalse((repo / "skills" / "dist").exists())
+
     def test_archive_rejects_invalid_source_date_epoch(self):
         previous = os.environ.get("SOURCE_DATE_EPOCH")
         os.environ["SOURCE_DATE_EPOCH"] = "not-an-epoch"
