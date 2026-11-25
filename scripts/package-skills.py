@@ -74,16 +74,31 @@ def safe_copy_file(src: Path, dst: Path, base_dst: Path, base_src: Path | None =
     if base_src is None:
         base_src = src.parent
     _validate_source(src, base_src)
+
+    if base_dst.is_symlink():
+        raise ValueError(f"Refusing symlinked output root: {base_dst}")
     base = base_dst.resolve(strict=True)
-    parent = dst.parent
-    parent.mkdir(parents=True, exist_ok=True)
-    if dst.is_symlink() or parent.is_symlink():
-        raise ValueError(f"Refusing symlinked destination: {dst}")
-    destination = dst.resolve(strict=False)
+    destination = Path(os.path.abspath(dst))
     if not _inside(destination, base):
         raise ValueError(f"Destination escapes output directory: {dst}")
-    shutil.copy2(src, dst, follow_symlinks=False)
 
+    # Check every existing component before mkdir: mkdir through an ancestor
+    # symlink could otherwise create files outside the intended output tree.
+    ancestor = destination.parent
+    while ancestor != base:
+        if not _inside(ancestor, base):
+            raise ValueError(f"Destination escapes output directory: {dst}")
+        if ancestor.is_symlink():
+            raise ValueError(f"Refusing symlinked destination component: {ancestor}")
+        ancestor = ancestor.parent
+    if destination.is_symlink():
+        raise ValueError(f"Refusing symlinked destination: {destination}")
+
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    resolved = destination.resolve(strict=False)
+    if not _inside(resolved, base):
+        raise ValueError(f"Destination escapes output directory: {dst}")
+    shutil.copy2(src, destination, follow_symlinks=False)
 
 def _iter_source_files(root: Path, repo_root: Path):
     """Yield sorted regular files, rejecting every encountered symlink."""
