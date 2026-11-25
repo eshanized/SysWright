@@ -11,6 +11,7 @@ import sys
 import tarfile
 import tempfile
 from pathlib import Path
+from typing import Optional
 
 val_script = Path(__file__).with_name("validate-skills.py")
 spec = importlib.util.spec_from_file_location("validate_skills", val_script)
@@ -69,7 +70,7 @@ def _validate_source(src: Path, base_src: Path) -> Path:
     return resolved
 
 
-def safe_copy_file(src: Path, dst: Path, base_dst: Path, base_src: Path | None = None) -> None:
+def safe_copy_file(src: Path, dst: Path, base_dst: Path, base_src: Optional[Path] = None) -> None:
     """Copy a regular repository file without following source or destination symlinks."""
     if base_src is None:
         base_src = src.parent
