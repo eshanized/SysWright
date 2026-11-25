@@ -100,7 +100,6 @@ class TestPackageSkills(unittest.TestCase):
 
     def test_output_inside_packaged_source_tree_is_rejected(self):
         with tempfile.TemporaryDirectory() as tmpdir:
-            nested_output = self.repo_root / "skills" / ".syswright-test-output"
             # Use a temporary fixture repository rather than touching the checkout.
             repo = Path(tmpdir) / "repo"
             (repo / "skills").mkdir(parents=True)
