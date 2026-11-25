@@ -88,39 +88,63 @@ syswright/
 
 ## 4. Installation & Setup
 
-### 4.1 Claude Code
-Install as a local plugin in Claude Code:
+### 4.1 Automatic multi-agent installation
+
+Clone SysWright, then run the installer from the repository root:
+
 ```bash
-# In an interactive Claude Code terminal session:
+python3 install.py
+```
+
+The installer detects supported local agent installations and installs **all SysWright skills** into each detected agent's user-level skill directory:
+
+| Agent | Detection | User-level skill directory |
+|:---|:---|:---|
+| Claude Code | `claude` executable or `~/.claude/` configuration | `~/.claude/skills/` |
+| OpenAI Codex | `codex` executable or `~/.codex/` configuration | `~/.agents/skills/` |
+
+If both agents are installed, both receive the skills. Existing skill directories are never overwritten; any conflict aborts the full installation before files are copied.
+
+Useful options:
+
+```bash
+python3 install.py --list-agents
+python3 install.py --dry-run
+python3 install.py --agent claude
+python3 install.py --agent claude --agent codex
+python3 install.py --scope repo
+```
+
+Repository scope installs into `.claude/skills/` and/or `.agents/skills/` in the current working directory. Use `--agent` to explicitly select an agent even when automatic detection does not find its executable/configuration. The installer is standard-library-only.
+
+### 4.2 Claude Code plugin distribution
+
+The repository also includes a Claude Code plugin manifest for plugin-based distribution. From an interactive Claude Code session:
+
+```text
 /plugin install ./
 ```
+
 Or start Claude Code with the plugin directory loaded:
+
 ```bash
-claude --plugin-dir /path/to/LinuxEngineering
+claude --plugin-dir /path/to/SysWright
 ```
 
-### 4.2 OpenAI Codex
-Codex discovers repository skills from `.agents/skills/` and user-level skills from `~/.agents/skills/`. Generate a validated bundle:
+### 4.3 Build distribution artifacts
+
+To build a Claude Code plugin bundle or Codex bundle without installing directly:
+
 ```bash
-python3 scripts/package-skills.py --target codex --output dist/
+python3 scripts/package-skills.py --target all --output dist/
 ```
 
-Install the bundled skills for the current user (review the bundle before copying):
-```bash
-mkdir -p "$HOME/.agents"
-cp -a dist/codex-package/.agents/skills "$HOME/.agents/"
-```
+For Codex, the bundle places skills under `.agents/skills/`. The included repository-level `AGENTS.md` is guidance for a repository checkout; it should not be copied into a user's home directory as global instructions. See [the Codex adapter guide](adapters/codex/README.md).
 
-For repository-scoped installation, copy the generated `.agents/skills` directory into the repository root instead:
-```bash
-mkdir -p .agents
-cp -a dist/codex-package/.agents/skills .agents/
-```
+### 4.4 General Agent Skills archive
 
-The bundle also contains the repository-level `AGENTS.md`; copy that file only when installing SysWright as repository instructions. Restart Codex if newly installed skills do not appear. See the [Codex adapter guide](adapters/codex/README.md) for scope and update details.
+Build a portable archive for compatible runtimes:
 
-### 4.3 General Agent Skills Runtimes
-Build a standard distributable archive:
 ```bash
 python3 scripts/package-skills.py --target archive --output dist/
 ```
