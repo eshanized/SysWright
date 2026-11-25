@@ -162,6 +162,7 @@ def package_archive(repo_root: Path, output_dir: Path, version: str = "0.1.0") -
 def _copy_tree_files(source_root: Path, destination_root: Path, repo_root: Path) -> None:
     if not source_root.exists() and not source_root.is_symlink():
         return
+    destination_root.mkdir(parents=True, exist_ok=True)
     for source in _iter_source_files(source_root, repo_root):
         relative = source.relative_to(source_root)
         safe_copy_file(source, destination_root / relative, destination_root, repo_root)
