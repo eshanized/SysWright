@@ -139,7 +139,7 @@ def package_archive(repo_root: Path, output_dir: Path, version: str = "0.1.0") -
     mtime = _source_date_epoch()
     items = ["skills", "references", "docs", "adapters", ".claude-plugin", "AGENTS.md"]
 
-    with target.open("wb") as raw:
+    with target.open("xb") as raw:
         # Explicit gzip metadata avoids the wall-clock timestamp written by w:gz.
         with gzip.GzipFile(filename="", mode="wb", fileobj=raw, mtime=mtime, compresslevel=9) as compressed:
             with tarfile.open(fileobj=compressed, mode="w") as archive:
@@ -163,7 +163,7 @@ def _copy_tree_files(source_root: Path, destination_root: Path, repo_root: Path)
     if not source_root.exists() and not source_root.is_symlink():
         return
     for source in _iter_source_files(source_root, repo_root):
-        relative = source.relative_to(repo_root)
+        relative = source.relative_to(source_root)
         safe_copy_file(source, destination_root / relative, destination_root, repo_root)
 
 
