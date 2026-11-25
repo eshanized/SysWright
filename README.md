@@ -199,7 +199,7 @@ When an agent maintains a multi-distribution software project (e.g., "Package an
 
 ## 6. Development & Quality Assurance
 
-The local structural validator and packaging utilities use Python's standard library. For authoritative Agent Skills conformance checks, install the upstream `skills-ref` reference validator (Python 3.11+) and run `python3 scripts/validate-skills.py --strict-spec`.
+The local structural validator and packaging utilities use Python's standard library. For an additional check against the upstream Agent Skills reference implementation, install `skills-ref` (Python 3.11+) and run `python3 scripts/validate-skills.py --strict-spec`.
 
 ### 6.1 Validate Skills
 Run local structural checks for all canonical skills:
