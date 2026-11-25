@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
-"""
-Agent Skills Validator (Zero External Dependencies)
-Part of Syswright
+"""SysWright local structural validator with optional upstream skills-ref checks.
 
-Validates skill directories against the Agent Skills open specification (agentskills.io).
-Checks SKILL.md existence, YAML frontmatter syntax, name/directory matching,
-field constraints, and internal relative file reference integrity.
+The built-in checks are intentionally lightweight and are not a complete YAML
+implementation. Use --strict-spec with the upstream skills-ref CLI for the
+Agent Skills reference implementation validation.
 """
 
 import argparse
@@ -286,7 +284,7 @@ def main():
                 capture_output=True, text=True, check=False,
             )
             if result.returncode:
-                detail = (result.stdout + "\\n" + result.stderr).strip()
+                detail = (result.stdout + chr(10) + result.stderr).strip()
                 errors.append("Upstream skills-ref validation failed" + (f": {detail}" if detail else ""))
         skill_name = sdir.name
 
